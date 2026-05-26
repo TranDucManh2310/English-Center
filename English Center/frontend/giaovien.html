@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>English Center - Nhóm 3</title>
+  <meta name="description" content="Đội ngũ giáo viên English Center có kinh nghiệm luyện thi Tiếng Anh THPTQG.">
+  <meta name="keywords" content="">
+
+  <!-- Favicons -->
+  <link href="assets/img/logo.1.jpg" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+
+  <!-- Main CSS File -->
+  <link href="assets/css/main.css" rel="stylesheet">
+
+  <!-- =======================================================
+  * Template Name: Learner
+  * Template URL: https://bootstrapmade.com/learner-bootstrap-course-template/
+  * Updated: Jul 08 2025 with Bootstrap v5.3.7
+  * Author: BootstrapMade.com
+  * License: https://bootstrapmade.com/license/
+  ======================================================== -->
+</head>
+
+<body class="instructors-page">
+
+  <header id="header" class="header d-flex align-items-center sticky-top">
+    <div class="container-fluid container-xl position-relative d-flex align-items-center">
+
+      <a href="index.html" class="logo d-flex align-items-center me-auto">
+        <!-- Uncomment the line below if you also wish to use an image logo -->
+        <!-- <img src="assets/img/logo.webp" alt=""> -->
+        <h1 class="sitename">English Center</h1>
+      </a>
+
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li><a href="index.html">Trang chủ</a></li>
+          <li><a href="gioithieu.html">Giới thiệu</a></li>
+          <li><a href="khoahoc.html">Khóa học</a></li>
+          <li><a href="giaovien.html"  class="active">Giáo viên</a></li>
+          <li><a href="hocphi.html">Học Phí</a></li>
+          <li><a href="blog.html">Blog</a></li>
+          <li class="dropdown"><a href="#"><span>Tài nguyên</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+            <ul>
+              <li><a href="dethithu.html">Đề thi thử</a></li>
+              <li><a href="tailieuonthi.html">Tài liệu ôn thi</a></li>
+              <li><a href="sukien.html">Sự kiện</a></li>
+              <li><a href="404.html">Cộng đồng</a></li>
+            </ul>
+          </li>
+
+          <li><a href="lienhe.html">Liên hệ</a></li>
+        </ul>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
+
+      <div class="header-actions d-flex align-items-center">
+        <a class="btn-dangnhap" href="dangnhap.html"><i class="bi bi-person me-1"></i>Đăng Nhập</a>
+        <a class="btn-getstarted" href="dangky.html"><i class="bi bi-pencil-square me-1"></i>Đăng Ký</a>
+      </div>
+
+    </div>
+  </header>
+
+  <main class="main">
+
+    <!-- Page Title -->
+    <div class="page-title light-background">
+      <div class="container d-lg-flex justify-content-between align-items-center">
+        <h1 class="mb-2 mb-lg-0">Giáo Viên</h1>
+        <nav class="breadcrumbs">
+          <ol>
+            <li><a href="index.html">Trang chủ</a></li>
+            <li class="current">Giáo viên</li>
+          </ol>
+        </nav>
+      </div>
+    </div><!-- End Page Title -->
+
+    <!-- Instructors Section -->
+    <section id="instructors" class="instructors section">
+
+      <!-- Filter Bar -->
+      <div class="container mb-4" data-aos="fade-up" data-aos-delay="50">
+        <div class="d-flex flex-wrap align-items-center gap-2">
+          <span class="text-muted me-1" style="font-size:.9rem;">Lọc theo:</span>
+          <button class="btn btn-sm btn-primary filter-btn" onclick="filterTeachers('all', this)">Tất cả</button>
+          <button class="btn btn-sm btn-outline-secondary filter-btn" onclick="filterTeachers('nguphap', this)">Ngữ pháp</button>
+          <button class="btn btn-sm btn-outline-secondary filter-btn" onclick="filterTeachers('tuvung', this)">Từ vựng &amp; Phát âm</button>
+          <button class="btn btn-sm btn-outline-secondary filter-btn" onclick="filterTeachers('luyen-de', this)">Luyện đề</button>
+          <button class="btn btn-sm btn-outline-secondary filter-btn" onclick="filterTeachers('doc-hieu', this)">Đọc hiểu</button>
+          <button class="btn btn-sm btn-outline-secondary filter-btn" onclick="filterTeachers('on-thi', this)">Ôn thi cấp tốc</button>
+        </div>
+      </div>
+
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+        <div class="row gy-4" id="teachers-row">
+
+          <div class="col-xl-3 col-lg-4 col-md-6 teacher-item" data-filter="nguphap" data-aos="fade-up" data-aos-delay="200">
+            <div class="instructor-card">
+              <div class="instructor-image">
+                <img src="assets/img/education/NGUYEN THI LAN ANH.png" class="img-fluid" alt="">
+                <div class="overlay-content">
+                  <div class="rating-stars">
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-half"></i>
+                    <span>4.8</span>
+                  </div>
+                  <div class="course-count">
+                    <i class="bi bi-play-circle"></i>
+                    <span>4 khóa</span>
+                  </div>
+                </div>
+              </div>
+              <div class="instructor-info">
+                <h5>Nguyễn Thị Lan Anh</h5>
+                <p class="specialty">NGỮ PHÁP TRỌNG TÂM</p>
+                <p class="description">Thạc sĩ Sư phạm Tiếng Anh, 8 năm luyện thi THPTQG giúp học sinh nắm chắc toàn bộ ngữ pháp trọng tâm và tăng điểm nhanh.</p>
+                <div class="stats-grid">
+                  <div class="stat">
+                    <span class="number">2.1k</span>
+                    <span class="label">Học sinh</span>
+                  </div>
+                  <div class="stat">
+                    <span class="number">4.8</span>
+                    <span class="label">Đánh giá</span>
+                  </div>
+                </div>
+                <div class="action-buttons">
+                  <a href="#" class="btn-view" onclick="event.preventDefault();openTeacherModal(1)">Xem hồ sơ</a>
+                  <div class="social-links">
+                    <a href="#"><i class="bi bi-linkedin"></i></a>
+                    <a href="#"><i class="bi bi-twitter"></i></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-xl-3 col-lg-4 col-md-6 teacher-item" data-filter="luyen-de" data-aos="fade-up" data-aos-delay="250">
+            <div class="instructor-card">
+              <div class="instructor-image">
+                <img src="assets/img/education/TRAN DUC MINH.jpg" class="img-fluid" alt="">
+                <div class="overlay-content">
+                  <div class="rating-stars">
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <span>4.9</span>
+                  </div>
+                  <div class="course-count">
+                    <i class="bi bi-play-circle"></i>
+                    <span>6 khóa</span>
+                  </div>
+                </div>
+              </div>
+              <div class="instructor-info">
+                <h5>Trần Đức Minh</h5>
+                <p class="specialty">LUYỆN ĐỀ & CHIẾN LƯỢC THI</p>
+                <p class="description">IELTS 8.0, cựu giảng viên ĐH Ngoại Thương phân tích cấu trúc đề thi và giúp học sinh chinh phục điểm 8 trở lên.</p>
+                <div class="stats-grid">
+                  <div class="stat">
+                    <span class="number">3.5k</span>
+                    <span class="label">Học sinh</span>
+                  </div>
+                  <div class="stat">
+                    <span class="number">4.9</span>
+                    <span class="label">Đánh giá</span>
+                  </div>
+                </div>
+                <div class="action-buttons">
+                  <a href="#" class="btn-view" onclick="event.preventDefault();openTeacherModal(2)">Xem hồ sơ</a>
+                  <div class="social-links">
+                    <a href="#"><i class="bi bi-github"></i></a>
+                    <a href="#"><i class="bi bi-linkedin"></i></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-xl-3 col-lg-4 col-md-6 teacher-item" data-filter="tuvung" data-aos="fade-up" data-aos-delay="300">
+            <div class="instructor-card">
+              <div class="instructor-image">
+                <img src="assets/img/education/NGUYEN KHANH LINH.jpg" class="img-fluid" alt="">
+                <div class="overlay-content">
+                  <div class="rating-stars">
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star"></i>
+                    <span>4.6</span>
+                  </div>
+                  <div class="course-count">
+                    <i class="bi bi-play-circle"></i>
+                    <span>5 khóa</span>
+                  </div>
+                </div>
+              </div>
+              <div class="instructor-info">
+                <h5>Phạm Khánh Linh</h5>
+                <p class="specialty">TỪ VỰNG & PHÁT ÂM</p>
+                <p class="description">Thạc sĩ Ngôn ngữ Anh, ứng dụng AI phân tích lỗi phát âm giúp học sinh sửa đúng điểm yếu và tăng điểm nhanh trong kỳ thi.</p>
+                <div class="stats-grid">
+                  <div class="stat">
+                    <span class="number">1.8k</span>
+                    <span class="label">Học sinh</span>
+                  </div>
+                  <div class="stat">
+                    <span class="number">4.6</span>
+                    <span class="label">Đánh giá</span>
+                  </div>
+                </div>
+                <div class="action-buttons">
+                  <a href="#" class="btn-view" onclick="event.preventDefault();openTeacherModal(3)">Xem hồ sơ</a>
+                  <div class="social-links">
+                    <a href="#"><i class="bi bi-dribbble"></i></a>
+                    <a href="#"><i class="bi bi-behance"></i></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-xl-3 col-lg-4 col-md-6 teacher-item" data-filter="doc-hieu" data-aos="fade-up" data-aos-delay="350">
+            <div class="instructor-card">
+              <div class="instructor-image">
+                <img src="assets/img/education/LE HOANG NAM.webp" class="img-fluid" alt="">
+                <div class="overlay-content">
+                  <div class="rating-stars">
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-half"></i>
+                    <span>4.7</span>
+                  </div>
+                  <div class="course-count">
+                    <i class="bi bi-play-circle"></i>
+                    <span>4 khóa</span>
+                  </div>
+                </div>
+              </div>
+              <div class="instructor-info">
+                <h5>Lê Hoàng Nam</h5>
+                <p class="specialty">ĐỌC HIỂU & ĐIỀN TỪ</p>
+                <p class="description">Chuyên gia kỹ năng đọc hiểu và điền từ, hệ thống hóa các dạng bài thường gặp nhất trong đề thi THPTQG.</p>
+                <div class="stats-grid">
+                  <div class="stat">
+                    <span class="number">2.9k</span>
+                    <span class="label">Học sinh</span>
+                  </div>
+                  <div class="stat">
+                    <span class="number">4.7</span>
+                    <span class="label">Đánh giá</span>
+                  </div>
+                </div>
+                <div class="action-buttons">
+                  <a href="#" class="btn-view" onclick="event.preventDefault();openTeacherModal(4)">Xem hồ sơ</a>
+                  <div class="social-links">
+                    <a href="#"><i class="bi bi-instagram"></i></a>
+                    <a href="#"><i class="bi bi-facebook"></i></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-xl-3 col-lg-4 col-md-6 teacher-item" data-filter="luyen-de" data-aos="fade-up" data-aos-delay="400">
+            <div class="instructor-card">
+              <div class="instructor-image">
+                <img src="assets/img/education/NGO THI NGOC BICH.jpg" class="img-fluid" alt="">
+                <div class="overlay-content">
+                  <div class="rating-stars">
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <span>5.0</span>
+                  </div>
+                  <div class="course-count">
+                    <i class="bi bi-play-circle"></i>
+                    <span>3 khóa</span>
+                  </div>
+                </div>
+              </div>
+              <div class="instructor-info">
+                <h5>Ngô Thị Bích Ngọc</h5>
+                <p class="specialty">ĐỀ THI & PHÂN TÍCH LỖI SAI</p>
+                <p class="description">6 năm kinh nghiệm phân tích đề thi THPTQG, giúp học sinh nhận ra và sửa lỗi sai thường gặp nhất để không mất điểm oan.</p>
+                <div class="stats-grid">
+                  <div class="stat">
+                    <span class="number">980</span>
+                    <span class="label">Học sinh</span>
+                  </div>
+                  <div class="stat">
+                    <span class="number">5.0</span>
+                    <span class="label">Đánh giá</span>
+                  </div>
+                </div>
+                <div class="action-buttons">
+                  <a href="#" class="btn-view" onclick="event.preventDefault();openTeacherModal(5)">Xem hồ sơ</a>
+                  <div class="social-links">
+                    <a href="#"><i class="bi bi-linkedin"></i></a>
+                    <a href="#"><i class="bi bi-youtube"></i></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-xl-3 col-lg-4 col-md-6 teacher-item" data-filter="nguphap" data-aos="fade-up" data-aos-delay="450">
+            <div class="instructor-card">
+              <div class="instructor-image">
+                <img src="assets/img/education/HOANG THI THU HA.jpg" class="img-fluid" alt="">
+                <div class="overlay-content">
+                  <div class="rating-stars">
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star"></i>
+                    <span>4.5</span>
+                  </div>
+                  <div class="course-count">
+                    <i class="bi bi-play-circle"></i>
+                    <span>3 khóa</span>
+                  </div>
+                </div>
+              </div>
+              <div class="instructor-info">
+                <h5> Hoàng Thị Thu Hà</h5>
+                <p class="specialty">TIẾNG ANH NỀN TẢNG</p>
+                <p class="description">Cử nhân Sư phạm Tiếng Anh, chuyên dạy học sinh mất gốc, xây dựng nền tảng vững chắc từ phát âm đến ngữ pháp cơ bản.</p>
+                <div class="stats-grid">
+                  <div class="stat">
+                    <span class="number">1.5k</span>
+                    <span class="label">Học sinh</span>
+                  </div>
+                  <div class="stat">
+                    <span class="number">4.5</span>
+                    <span class="label">Đánh giá</span>
+                  </div>
+                </div>
+                <div class="action-buttons">
+                  <a href="#" class="btn-view" onclick="event.preventDefault();openTeacherModal(6)">Xem hồ sơ</a>
+                  <div class="social-links">
+                    <a href="#"><i class="bi bi-github"></i></a>
+                    <a href="#"><i class="bi bi-twitter"></i></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-xl-3 col-lg-4 col-md-6 teacher-item" data-filter="on-thi" data-aos="fade-up" data-aos-delay="500">
+            <div class="instructor-card">
+              <div class="instructor-image">
+                <img src="assets/img/education/teacher-8.webp" class="img-fluid" alt="">
+                <div class="overlay-content">
+                  <div class="rating-stars">
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-half"></i>
+                    <span>4.8</span>
+                  </div>
+                  <div class="course-count">
+                    <i class="bi bi-play-circle"></i>
+                    <span>5 khóa
+
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="instructor-info">
+                <h5>Vũ Đức Anh</h5>
+                <p class="specialty">ÔN THI CẤP TỐC</p>
+                <p class="description">IELTS 8.5, chuyên gia luyện thi cấp tốc tối ưu lộ trình ôn tập trong thời gian ngắn nhất để đạt điểm mục tiêu.</p>
+                <div class="stats-grid">
+                  <div class="stat">
+                    <span class="number">2.1k</span>
+                    <span class="label">Học sinh</span>
+                  </div>
+                  <div class="stat">
+                    <span class="number">4.8</span>
+                    <span class="label">Đánh giá</span>
+                  </div>
+                </div>
+                <div class="action-buttons">
+                  <a href="#" class="btn-view" onclick="event.preventDefault();openTeacherModal(7)">Xem hồ sơ</a>
+                  <div class="social-links">
+                    <a href="#"><i class="bi bi-linkedin"></i></a>
+                    <a href="#"><i class="bi bi-shield-check"></i></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-xl-3 col-lg-4 col-md-6 teacher-item" data-filter="tuvung" data-aos="fade-up" data-aos-delay="550">
+            <div class="instructor-card">
+              <div class="instructor-image">
+                <img src="assets/img/education/TRAN THI HUONG.jpg" class="img-fluid" alt="">
+                <div class="overlay-content">
+                  <div class="rating-stars">
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <i class="bi bi-star-fill"></i>
+                    <span>4.9</span>
+                  </div>
+                  <div class="course-count">
+                    <i class="bi bi-play-circle"></i>
+                    <span>4 khóa</span>
+                  </div>
+                </div>
+              </div>
+              <div class="instructor-info">
+                <h5>Trần Thị Hương</h5>
+                <p class="specialty">NGỮ ÂM & GIAO TIẾP</p>
+                <p class="description">Thạc sĩ Ngôn ngữ học, chuyên phát âm và ngữ điệu Tiếng Anh, giúp học sinh tự tin với phần nghe và phát âm trong đề thi.</p>
+                <div class="stats-grid">
+                  <div class="stat">
+                    <span class="number">1.3k</span>
+                    <span class="label">Học sinh</span>
+                  </div>
+                  <div class="stat">
+                    <span class="number">4.9</span>
+                    <span class="label">Đánh giá</span>
+                  </div>
+                </div>
+                <div class="action-buttons">
+                  <a href="#" class="btn-view" onclick="event.preventDefault();openTeacherModal(8)">Xem hồ sơ</a>
+                  <div class="social-links">
+                    <a href="#"><i class="bi bi-linkedin"></i></a>
+                    <a href="#"><i class="bi bi-cloud"></i></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section><!-- /Instructors Section -->
+
+  </main>
+
+  <!-- ===== MODAL HỒ SƠ GIÁO VIÊN ===== -->
+  <div class="modal fade" id="teacherModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content" style="border:none;border-radius:12px;overflow:hidden;">
+
+        <!-- HERO BANNER -->
+        <div class="instructor-hero-banner" style="position:relative;min-height:180px;overflow:hidden;">
+          <div class="hero-background" style="position:absolute;inset:0;">
+            <img id="m-bg" src="assets/img/education/showcase-4.webp" alt="" style="width:100%;height:100%;object-fit:cover;">
+            <div class="hero-overlay" style="position:absolute;inset:0;background:rgba(20,40,80,0.72);"></div>
+          </div>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+            style="position:absolute;top:1rem;right:1rem;z-index:10;"></button>
+          <div class="hero-content" style="position:relative;z-index:2;display:flex;align-items:flex-end;gap:1.2rem;padding:1.5rem 1.8rem;">
+            <div class="instructor-avatar" style="position:relative;flex-shrink:0;">
+              <img id="m-avatar" src="" alt="" style="width:90px;height:90px;border-radius:50%;object-fit:cover;border:3px solid rgba(255,255,255,0.7);">
+              <div class="status-badge" style="position:absolute;bottom:2px;right:-4px;background:var(--accent-color,#e84444);color:#fff;border-radius:20px;font-size:.68rem;padding:.15rem .5rem;display:flex;align-items:center;gap:.25rem;">
+                <i class="bi bi-patch-check-fill"></i><span>Verified</span>
+              </div>
+            </div>
+            <div class="instructor-info" style="color:#fff;">
+              <h4 id="m-name" style="margin:0 0 .2rem;font-weight:700;color:#fff;"></h4>
+              <p id="m-specialty" style="margin:0 0 .5rem;opacity:.8;font-size:.83rem;letter-spacing:.8px;"></p>
+              <div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.55rem;">
+                <span id="m-cred1" class="credential" style="background:rgba(255,255,255,.15);color:#fff;border-radius:4px;padding:.15rem .55rem;font-size:.75rem;"></span>
+                <span id="m-cred2" class="credential" style="background:rgba(255,255,255,.15);color:#fff;border-radius:4px;padding:.15rem .55rem;font-size:.75rem;"></span>
+                <span id="m-cred3" class="credential" style="background:rgba(255,255,255,.15);color:#fff;border-radius:4px;padding:.15rem .55rem;font-size:.75rem;"></span>
+              </div>
+              <div style="display:flex;align-items:center;gap:.5rem;">
+                <span id="m-stars" style="color:#ffc107;font-size:.85rem;"></span>
+                <span id="m-rating-text" style="font-size:.8rem;opacity:.85;"></span>
+              </div>
+            </div>
+            <div style="margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;gap:.5rem;">
+              <a href="lienhe.html" class="btn-contact" style="background:var(--accent-color,#e84444);color:#fff;border:none;border-radius:6px;padding:.4rem .9rem;font-size:.82rem;text-decoration:none;display:flex;align-items:center;gap:.4rem;">
+                <i class="bi bi-envelope"></i> Liên hệ
+              </a>
+              <div style="display:flex;gap:.6rem;">
+                <a href="#" style="color:rgba(255,255,255,.7);font-size:1.1rem;"><i class="bi bi-linkedin"></i></a>
+                <a href="#" style="color:rgba(255,255,255,.7);font-size:1.1rem;"><i class="bi bi-twitter-x"></i></a>
+                <a href="#" style="color:rgba(255,255,255,.7);font-size:1.1rem;"><i class="bi bi-youtube"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BODY: Tabs + Sidebar -->
+        <div class="modal-body p-0" style="background:#f8f9fa;">
+          <div class="container-fluid p-0">
+            <div class="row g-0">
+
+              <!-- LEFT: TABS -->
+              <div class="col-lg-8 p-4">
+                <ul class="nav nav-tabs custom-tabs mb-0" role="tablist" id="m-tabs" style="border-bottom:2px solid #e4e8ef;">
+                  <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#mt-about" type="button"><i class="bi bi-person me-1"></i>Giới thiệu</button></li>
+                  <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#mt-exp" type="button"><i class="bi bi-briefcase me-1"></i>Kinh nghiệm</button></li>
+                  <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#mt-courses" type="button"><i class="bi bi-book me-1"></i>Khóa học</button></li>
+                  <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#mt-reviews" type="button"><i class="bi bi-star me-1"></i>Đánh giá</button></li>
+                </ul>
+                <div class="tab-content custom-tab-content pt-4">
+
+                  <!-- TAB: GIỚI THIỆU -->
+                  <div class="tab-pane fade show active" id="mt-about">
+                    <div class="bio-section mb-4">
+                      <h5 class="fw-bold mb-3">Hồ sơ cá nhân</h5>
+                      <p id="m-bio" style="color:#555;line-height:1.8;"></p>
+                    </div>
+                    <div class="expertise-grid">
+                      <h5 class="fw-bold mb-3">Chuyên môn</h5>
+                      <div class="skills-grid" id="m-skills" style="display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem;"></div>
+                    </div>
+                  </div>
+
+                  <!-- TAB: KINH NGHIỆM -->
+                  <div class="tab-pane fade" id="mt-exp">
+                    <div class="experience-grid" id="m-experience"></div>
+                  </div>
+
+                  <!-- TAB: KHÓA HỌC -->
+                  <div class="tab-pane fade" id="mt-courses">
+                    <div class="courses-grid" id="m-courses-list"></div>
+                  </div>
+
+                  <!-- TAB: ĐÁNH GIÁ -->
+                  <div class="tab-pane fade" id="mt-reviews">
+                    <div class="reviews-container" id="m-reviews-list"></div>
+                  </div>
+
+                </div>
+              </div>
+
+              <!-- RIGHT: SIDEBAR -->
+              <div class="col-lg-4 p-4" style="border-left:1px solid #e4e8ef;">
+
+                <!-- Teaching Impact -->
+                <div class="stats-widget mb-4">
+                  <h6 class="fw-bold mb-3">Teaching Impact</h6>
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;">
+                    <div class="stat-box" style="background:#fff;border-radius:10px;padding:.9rem;text-align:center;border:1px solid #e4e8ef;">
+                      <i class="bi bi-people" style="font-size:1.3rem;color:var(--accent-color,#e84444);display:block;margin-bottom:.3rem;"></i>
+                      <strong id="m-s-students" style="display:block;font-size:1.05rem;"></strong>
+                      <small class="text-muted">Học sinh</small>
+                    </div>
+                    <div class="stat-box" style="background:#fff;border-radius:10px;padding:.9rem;text-align:center;border:1px solid #e4e8ef;">
+                      <i class="bi bi-book" style="font-size:1.3rem;color:var(--accent-color,#e84444);display:block;margin-bottom:.3rem;"></i>
+                      <strong id="m-s-courses" style="display:block;font-size:1.05rem;"></strong>
+                      <small class="text-muted">Khóa học</small>
+                    </div>
+                    <div class="stat-box" style="background:#fff;border-radius:10px;padding:.9rem;text-align:center;border:1px solid #e4e8ef;">
+                      <i class="bi bi-award" style="font-size:1.3rem;color:var(--accent-color,#e84444);display:block;margin-bottom:.3rem;"></i>
+                      <strong id="m-s-rating" style="display:block;font-size:1.05rem;"></strong>
+                      <small class="text-muted">Đánh giá</small>
+                    </div>
+                    <div class="stat-box" style="background:#fff;border-radius:10px;padding:.9rem;text-align:center;border:1px solid #e4e8ef;">
+                      <i class="bi bi-clock" style="font-size:1.3rem;color:var(--accent-color,#e84444);display:block;margin-bottom:.3rem;"></i>
+                      <strong id="m-s-years" style="display:block;font-size:1.05rem;"></strong>
+                      <small class="text-muted">Kinh nghiệm</small>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Thành tích -->
+                <div class="achievements-widget mb-4">
+                  <h6 class="fw-bold mb-3">Thành tích & Ghi nhận</h6>
+                  <div id="m-achievements-list"></div>
+                </div>
+
+                <!-- Liên hệ -->
+                <div class="contact-widget">
+                  <h6 class="fw-bold mb-3">Liên hệ</h6>
+                  <div style="display:flex;flex-direction:column;gap:.6rem;font-size:.85rem;color:#555;">
+                    <div style="display:flex;align-items:center;gap:.6rem;">
+                      <i class="bi bi-envelope" style="color:var(--accent-color,#e84444);width:18px;"></i>
+                      <span id="m-email"></span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:.6rem;">
+                      <i class="bi bi-telephone" style="color:var(--accent-color,#e84444);width:18px;"></i>
+                      <span>+84 (0) 987 654 321</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:.6rem;">
+                      <i class="bi bi-geo-alt" style="color:var(--accent-color,#e84444);width:18px;"></i>
+                      <span>English Center, 182 Lương Thế Vinh</span>
+                    </div>
+                  </div>
+                  <div style="margin-top:1rem;background:#f0f4ff;border-radius:8px;padding:.8rem 1rem;">
+                    <strong style="font-size:.82rem;display:block;margin-bottom:.3rem;">Giờ tiếp học sinh</strong>
+                    <p style="margin:0;font-size:.82rem;color:#555;" id="m-hours"></p>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <!-- ===== END MODAL ===== -->
+
+  <footer id="footer" class="footer accent-background">
+
+    <div class="container footer-top">
+      <div class="row gy-4">
+        <div class="col-lg-5 col-md-12 footer-about">
+          <a href="index.html" class="logo d-flex align-items-center">
+            <span class="sitename">English Center</span>
+          </a>
+          <p>Nền tảng ôn thi Tiếng Anh THPTQG chuyên biệt, đồng hành cùng học sinh lớp 12 trên hành trình chinh phục kỳ thi quan trọng nhất.</p>
+          <div class="social-links d-flex mt-4">
+            <a href=""><i class="bi bi-twitter-x"></i></a>
+            <a href=""><i class="bi bi-facebook"></i></a>
+            <a href=""><i class="bi bi-instagram"></i></a>
+            <a href=""><i class="bi bi-linkedin"></i></a>
+          </div>
+        </div>
+
+        <div class="col-lg-2 col-6 footer-links">
+          <h4>Thông tin</h4>
+          <ul>
+            <li><a href="index.html">Trang chủ</a></li>
+            <li><a href="gioithieu.html">Về chúng tôi</a></li>
+            <li><a href="khoahoc.html">Khóa học</a></li>
+            <li><a href="giaovien.html">Giáo viên</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="dieukhoan.html">Điều khoản dịch vụ</a></li>
+            <li><a href="quyenriengtu.html">Chính sách bảo mật</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-2 col-6 footer-links">
+          <h4>Khóa học</h4>
+          <ul>
+            <li><a href="khoahoc.html">Ngữ Pháp Trọng Tâm</a></li>
+            <li><a href="khoahoc.html">Luyện Đề THPTQG</a></li>
+            <li><a href="khoahoc.html">Từ Vựng Theo Chủ Đề</a></li>
+            <li><a href="khoahoc.html">Phát âm & Speaking</a></li>
+            <li><a href="khoahoc.html">Ôn Thi Cấp Tốc</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-3 col-md-12 footer-contact text-center text-md-start">
+          <h4>Liên Hệ</h4>
+          <p>182 Lương Thế Vinh, Thanh Xuân Bắc, Thanh Xuân, Hà Nội</p>
+          <p class="mt-4"><strong>Phone:</strong> <span>+1 34567892</span></p>
+          <p><strong>Email:</strong> <span>Nhom3@englishcenter.edu.vn</span></p>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="container copyright text-center mt-4">
+      <p>© <span>2026</span> <strong class="px-1 sitename">English Center</strong> <span>All Rights Reserved</span></p>
+      <div class="credits">
+        <!-- All the links in the footer should remain intact. -->
+        <!-- You can delete the links only if you've purchased the pro version. -->
+        <!-- Licensing information: https://bootstrapmade.com/license/ -->
+        <!-- Purchase the pro version with working PHP/AJAX contact form: [buy-url] -->
+      </div>
+    </div>
+
+  </footer>
+
+  <!-- Scroll Top -->
+  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Preloader -->
+  <div id="preloader"></div>
+
+  <!-- Vendor JS Files -->
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/vendor/php-email-form/validate.js"></script>
+  <script src="assets/vendor/aos/aos.js"></script>
+  <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
+
+  <!-- Main JS File -->
+  <script src="assets/js/main.js"></script>
+
+  <!-- Filter + Modal Script -->
+  <script>
+    var teacherData = {
+      1: {
+        name: 'Nguyễn Thị Lan Anh', specialty: 'NGỮ PHÁP TRỌNG TÂM',
+        img: 'assets/img/education/NGUYEN THI LAN ANH.png',
+        cred: ['Thạc sĩ Sư phạm', '8 năm kinh nghiệm', '2.1k Học sinh'],
+        rating: 4.8, ratingText: '4.8 từ 847 đánh giá',
+        students: '2,100', courses: '4', ratingVal: '4.8 ⭐', years: '8 năm',
+        email: 'lananh@englishcenter.edu.vn', hours: 'Thứ 2 & Thứ 4 — 8:00 SA đến 10:00 SA',
+        bio: 'Thạc sĩ Sư phạm Tiếng Anh tốt nghiệp ĐH Hà Nội. Với 8 năm kinh nghiệm chuyên luyện thi THPTQG, cô Lan Anh đã xây dựng hệ thống ngữ pháp trọng tâm độc quyền giúp hàng nghìn học sinh nắm chắc kiến thức và bứt phá điểm số.',
+        skills: [['bi-list-check','Mệnh đề quan hệ'],['bi-clock','Thì động từ'],['bi-shuffle','Câu điều kiện'],['bi-arrow-left-right','Câu bị động'],['bi-chat-quote','Câu gián tiếp'],['bi-bar-chart','So sánh']],
+        experience: [{year:'2020',title:'Giáo viên chủ lực',org:'English Center',desc:'Phụ trách chương trình Ngữ pháp Trọng Tâm, biên soạn tài liệu và đào tạo giáo viên mới.'},{year:'2016',title:'Giáo viên Tiếng Anh',org:'THPT Chuyên Hà Nội',desc:'Giảng dạy Tiếng Anh lớp 12, phụ trách đội tuyển thi học sinh giỏi cấp thành phố.'},{year:'2015',title:'Thạc sĩ Sư phạm',org:'Đại học Hà Nội',desc:'Tốt nghiệp loại Giỏi, luận văn về phương pháp dạy ngữ pháp tích cực.'}],
+        courses: [{title:'Ngữ pháp Trọng Tâm THPTQG',level:'Nâng cao',students:'1,234',rating:'4.9'},{title:'Ngữ pháp Cơ bản – Nâng cao',level:'Trung cấp',students:'856',rating:'4.8'},{title:'Luyện tập Ngữ pháp Toàn diện',level:'Tổng hợp',students:'423',rating:'4.7'}],
+        reviews: [{name:'Trần Minh Khoa',role:'Học sinh lớp 12',stars:5,text:'Cô giảng rất dễ hiểu, sau 2 tháng học ngữ pháp mình tăng từ 5 lên 8 điểm!'},{name:'Nguyễn Hà Linh',role:'Cựu học sinh',stars:5,text:'Hệ thống ngữ pháp của cô rất logic, mình áp dụng được ngay vào bài thi thử.'}],
+        achievements: ['Top 10 giáo viên được đánh giá cao nhất năm 2024','95% học sinh tăng ít nhất 1.5 điểm sau khóa học','Tác giả sách "Ngữ pháp Trọng Tâm THPTQG" 2023']
+      },
+      2: {
+        name: 'Trần Đức Minh', specialty: 'LUYỆN ĐỀ & CHIẾN LƯỢC THI',
+        img: 'assets/img/education/TRAN DUC MINH.jpg',
+        cred: ['IELTS 8.0', '10 năm kinh nghiệm', '3.5k Học sinh'],
+        rating: 4.9, ratingText: '4.9 từ 1,204 đánh giá',
+        students: '3,500', courses: '6', ratingVal: '4.9 ⭐', years: '10 năm',
+        email: 'ducminh@englishcenter.edu.vn', hours: 'Thứ 3 & Thứ 5 — 9:00 SA đến 11:00 SA',
+        bio: 'Cựu giảng viên ĐH Ngoại Thương, đạt IELTS 8.0. Thầy Đức Minh nổi tiếng với phương pháp phân tích cấu trúc đề thi chuyên sâu, giúp học sinh nhận dạng bẫy câu hỏi và tối ưu điểm số.',
+        skills: [['bi-file-text','Phân tích đề thi'],['bi-lightbulb','Chiến lược làm bài'],['bi-stopwatch','Quản lý thời gian'],['bi-exclamation-triangle','Nhận dạng bẫy'],['bi-journal-check','Luyện đề tổng hợp'],['bi-graph-up','Tăng điểm nhanh']],
+        experience: [{year:'2019',title:'Giảng viên chính',org:'English Center',desc:'Phụ trách toàn bộ chương trình Luyện Đề và xây dựng ngân hàng đề thi 2000+ câu.'},{year:'2014',title:'Giảng viên Tiếng Anh',org:'ĐH Ngoại Thương',desc:'Giảng dạy Tiếng Anh học thuật và thương mại cho sinh viên năm 1-2.'},{year:'2013',title:'IELTS 8.0',org:'British Council',desc:'Đạt IELTS Band 8.0, trong đó Reading và Listening đạt 9.0.'}],
+        courses: [{title:'Luyện Đề THPTQG Toàn diện',level:'Nâng cao',students:'1,890',rating:'4.9'},{title:'Chiến lược làm bài trắc nghiệm',level:'Trung cấp',students:'987',rating:'4.8'},{title:'Đề thi thử 20 bộ đề',level:'Luyện tập',students:'623',rating:'5.0'}],
+        reviews: [{name:'Lê Phương Anh',role:'Học sinh lớp 12',stars:5,text:'Thầy dạy chiến lược làm bài rất hay, mình không còn bị mất điểm oan nữa!'},{name:'Nguyễn Đức Trọng',role:'Cựu học sinh',stars:5,text:'Nhờ thầy mình từ 6.5 lên 9.0 điểm thi thật. Cảm ơn thầy rất nhiều!'}],
+        achievements: ['85% học sinh đạt từ 8 điểm trở lên','Tác giả bộ sách luyện đề bán chạy nhất trung tâm','Giải thưởng Giáo viên xuất sắc năm 2023']
+      },
+      3: {
+        name: 'Phạm Khánh Linh', specialty: 'TỪ VỰNG & PHÁT ÂM',
+        img: 'assets/img/education/NGUYEN KHANH LINH.jpg',
+        cred: ['Thạc sĩ Ngôn ngữ', '6 năm kinh nghiệm', '1.8k Học sinh'],
+        rating: 4.6, ratingText: '4.6 từ 623 đánh giá',
+        students: '1,800', courses: '5', ratingVal: '4.6 ⭐', years: '6 năm',
+        email: 'khanhlinh@englishcenter.edu.vn', hours: 'Thứ 2 & Thứ 6 — 14:00 CH đến 16:00 CH',
+        bio: 'Thạc sĩ Ngôn ngữ Anh tại ĐH KHXH&NV. Cô Khánh Linh tiên phong ứng dụng AI trong dạy phát âm, giúp học sinh xác định và sửa chính xác từng lỗi phát âm cá nhân.',
+        skills: [['bi-journal-text','Từ vựng chủ đề'],['bi-mic','Phân tích phát âm'],['bi-robot','AI học tập'],['bi-music-note','Ngữ điệu câu'],['bi-puzzle','Word formation'],['bi-bookmark','Ghi nhớ từ vựng']],
+        experience: [{year:'2021',title:'Chuyên gia phát âm',org:'English Center',desc:'Phát triển chương trình luyện phát âm chuẩn bản ngữ cho học sinh THPTQG.'},{year:'2018',title:'Giáo viên Ngôn ngữ',org:'Trung tâm ngoại ngữ ABC',desc:'Giảng dạy phát âm và từ vựng từ cơ bản đến nâng cao.'},{year:'2017',title:'Thạc sĩ Ngôn ngữ Anh',org:'ĐH KHXH&NV',desc:'Luận văn về phonology và lỗi phát âm phổ biến của người Việt.'}],
+        courses: [{title:'Từ vựng Theo Chủ đề THPTQG',level:'Cơ bản',students:'934',rating:'4.7'},{title:'Phát âm Chuẩn – Sửa lỗi AI',level:'Trung cấp',students:'612',rating:'4.6'},{title:'Word Formation & Collocations',level:'Nâng cao',students:'254',rating:'4.5'}],
+        reviews: [{name:'Vũ Thị Mai',role:'Học sinh lớp 12',stars:5,text:'Cô chữa phát âm rất chính xác, bây giờ mình tự tin hơn rất nhiều!'},{name:'Hoàng Nam Anh',role:'Cựu học sinh',stars:4,text:'Bộ từ vựng theo chủ đề của cô rất hữu ích, học thuộc rất nhanh.'}],
+        achievements: ['Phát triển ứng dụng luyện phát âm AI cho học sinh','90% học sinh cải thiện điểm đọc hiểu','Chứng chỉ giảng dạy phát âm Cambridge 2022']
+      },
+      4: {
+        name: 'Lê Hoàng Nam', specialty: 'ĐỌC HIỂU & ĐIỀN TỪ',
+        img: 'assets/img/education/LE HOANG NAM.webp',
+        cred: ['Cử nhân Ngôn ngữ Anh', '7 năm kinh nghiệm', '2.9k Học sinh'],
+        rating: 4.7, ratingText: '4.7 từ 981 đánh giá',
+        students: '2,900', courses: '4', ratingVal: '4.7 ⭐', years: '7 năm',
+        email: 'hoangnam@englishcenter.edu.vn', hours: 'Thứ 3 & Thứ 7 — 8:00 SA đến 10:00 SA',
+        bio: 'Tốt nghiệp xuất sắc chuyên ngành Ngôn ngữ Anh, thầy Hoàng Nam hệ thống hóa toàn bộ dạng bài đọc hiểu và điền từ trong 10 năm đề thi THPTQG. Phương pháp của thầy rút ngắn thời gian làm bài từ 30 phút xuống 18 phút.',
+        skills: [['bi-search','Kỹ năng skimming'],['bi-input-cursor','Điền từ văn cảnh'],['bi-link','Collocations'],['bi-arrow-right-circle','Phrasal verbs'],['bi-translate','Paraphrasing'],['bi-clock-history','Tốc độ đọc']],
+        experience: [{year:'2020',title:'Chuyên gia đọc hiểu',org:'English Center',desc:'Xây dựng bộ 500 câu đọc hiểu phân loại theo chủ đề và mức độ khó.'},{year:'2017',title:'Giáo viên Tiếng Anh',org:'THPT Nguyễn Huệ',desc:'Phụ trách bộ môn Tiếng Anh lớp 12, tỷ lệ học sinh đạt 7+ cao nhất trường.'},{year:'2016',title:'Cử nhân Ngôn ngữ Anh',org:'ĐH Ngoại ngữ – ĐHQG HN',desc:'Tốt nghiệp loại Giỏi chuyên ngành Ngôn ngữ học.'}],
+        courses: [{title:'Đọc Hiểu Toàn Diện THPTQG',level:'Nâng cao',students:'1,456',rating:'4.8'},{title:'Điền Từ & Từ đồng nghĩa',level:'Trung cấp',students:'876',rating:'4.7'},{title:'Tăng tốc đọc – 18 phút/bài',level:'Luyện tập',students:'568',rating:'4.6'}],
+        reviews: [{name:'Trần Thu Hương',role:'Học sinh lớp 12',stars:5,text:'Thầy dạy kỹ thuật đọc nhanh cực hay, mình không còn thiếu thời gian!'},{name:'Phạm Quốc Bảo',role:'Cựu học sinh',stars:5,text:'Bộ câu điền từ rất sát đề thật, mình gặp nhiều dạng tương tự trong kỳ thi.'}],
+        achievements: ['Biên soạn bộ 500 câu đọc hiểu phân loại theo mức độ','Học sinh tăng trung bình 2 điểm đọc sau 2 tháng','Giải nhì cuộc thi giáo viên giỏi cấp quận 2023']
+      },
+      5: {
+        name: 'Ngô Thị Bích Ngọc', specialty: 'ĐỀ THI & PHÂN TÍCH LỖI SAI',
+        img: 'assets/img/education/NGO THI NGOC BICH.jpg',
+        cred: ['Thạc sĩ Giáo dục', '6 năm kinh nghiệm', '980 Học sinh'],
+        rating: 5.0, ratingText: '5.0 từ 342 đánh giá',
+        students: '980', courses: '3', ratingVal: '5.0 ⭐', years: '6 năm',
+        email: 'bichngoc@englishcenter.edu.vn', hours: 'Thứ 4 & Thứ 6 — 15:00 CH đến 17:00 CH',
+        bio: 'Cô Bích Ngọc là chuyên gia phân tích lỗi sai với bộ dữ liệu hơn 50.000 bài làm học sinh. Từ đó xây dựng danh sách 200+ lỗi sai thường gặp nhất, giúp học sinh tránh mắc bẫy điểm nguy hiểm.',
+        skills: [['bi-bug','Phân tích lỗi sai'],['bi-pencil-square','Error correction'],['bi-shield-exclamation','Grammar traps'],['bi-check2-circle','Multiple choice'],['bi-spell-check','Proofreading'],['bi-clipboard-data','Thống kê lỗi']],
+        experience: [{year:'2021',title:'Chuyên gia phân tích đề thi',org:'English Center',desc:'Xây dựng hệ thống phân loại 200+ dạng lỗi sai phổ biến trong đề thi THPTQG.'},{year:'2018',title:'Giáo viên Tiếng Anh',org:'Trung tâm IEG',desc:'Giảng dạy và phân tích đề thi cho học sinh luyện thi đại học.'},{year:'2017',title:'Thạc sĩ Giáo dục',org:'ĐH Sư phạm Hà Nội',desc:'Luận văn về phân loại và sửa lỗi ngữ pháp trong bài thi trắc nghiệm.'}],
+        courses: [{title:'Nhận diện 200 Lỗi Sai Phổ Biến',level:'Nâng cao',students:'445',rating:'5.0'},{title:'Phân tích Đề Thi THPTQG 2020-2024',level:'Tổng hợp',students:'312',rating:'5.0'},{title:'Bẫy Điểm & Cách Tránh',level:'Trung cấp',students:'223',rating:'4.9'}],
+        reviews: [{name:'Đinh Thúy An',role:'Học sinh lớp 12',stars:5,text:'Cô phân tích lỗi sai cực kỳ chi tiết, mình không còn mắc lỗi cũ nữa!'},{name:'Lý Minh Tâm',role:'Cựu học sinh',stars:5,text:'Điểm 5/5 hoàn toàn xứng đáng. Cô là người dạy hay nhất mình từng gặp!'}],
+        achievements: ['Điểm đánh giá 5.0/5.0 – duy nhất tại trung tâm','Tỷ lệ học sinh đạt 9-10 điểm cao nhất trung tâm','Biên soạn "200 Lỗi Sai Không Được Mắc" – bestseller 2024']
+      },
+      6: {
+        name: 'Hoàng Thị Thu Hà', specialty: 'TIẾNG ANH NỀN TẢNG',
+        img: 'assets/img/education/HOANG THI THU HA.jpg',
+        cred: ['Cử nhân Sư phạm', '5 năm kinh nghiệm', '1.5k Học sinh'],
+        rating: 4.5, ratingText: '4.5 từ 519 đánh giá',
+        students: '1,500', courses: '3', ratingVal: '4.5 ⭐', years: '5 năm',
+        email: 'thuha@englishcenter.edu.vn', hours: 'Thứ 2 & Thứ 5 — 17:00 CH đến 19:00 CH',
+        bio: 'Cô Thu Hà chuyên giúp học sinh mất gốc xây dựng lại nền tảng tiếng Anh từ đầu. Với lộ trình cá nhân hóa, cô đã giúp hàng nghìn học sinh từ điểm dưới 3 lên đến 7-8 điểm chỉ trong một học kỳ.',
+        skills: [['bi-volume-up','Phát âm cơ bản'],['bi-book','Ngữ pháp nền tảng'],['bi-alphabet','Vocabulary core'],['bi-person-check','Lộ trình cá nhân'],['bi-heart','Học sinh mất gốc'],['bi-arrow-up-circle','Bứt phá nhanh']],
+        experience: [{year:'2022',title:'Giáo viên nền tảng',org:'English Center',desc:'Phát triển chương trình "Từ Zero đến Hero" dành cho học sinh mất gốc.'},{year:'2019',title:'Gia sư Tiếng Anh',org:'Tự do',desc:'Dạy kèm hơn 200 học sinh từ lớp 6-12, chuyên học sinh mất căn bản.'},{year:'2018',title:'Cử nhân Sư phạm',org:'ĐH Sư phạm Hà Nội',desc:'Tốt nghiệp chuyên ngành Sư phạm Tiếng Anh.'}],
+        courses: [{title:'Từ Zero – Nền tảng vững chắc',level:'Cơ bản',students:'756',rating:'4.6'},{title:'Tiếng Anh Căn bản Lớp 12',level:'Cơ bản',students:'489',rating:'4.5'},{title:'Lộ trình cá nhân hoá 3 tháng',level:'Cá nhân',students:'255',rating:'4.4'}],
+        reviews: [{name:'Ngô Bảo Châu',role:'Học sinh lớp 12',stars:5,text:'Mình học lại từ đầu với cô và điểm thi thử đã lên 7.5 rồi!'},{name:'Trần Quỳnh Anh',role:'Phụ huynh',stars:4,text:'Con tôi từ chỗ sợ Tiếng Anh giờ đã chủ động học mỗi ngày.'}],
+        achievements: ['80% học sinh mất gốc tăng 4+ điểm sau 1 học kỳ','500+ học sinh theo học chương trình Từ Zero đến Hero','Giải thưởng giáo viên tận tâm nhất năm 2023']
+      },
+      7: {
+        name: 'Vũ Đức Anh', specialty: 'ÔN THI CẤP TỐC',
+        img: 'assets/img/education/teacher-8.webp',
+        cred: ['IELTS 8.5', '9 năm kinh nghiệm', '2.1k Học sinh'],
+        rating: 4.8, ratingText: '4.8 từ 756 đánh giá',
+        students: '2,100', courses: '5', ratingVal: '4.8 ⭐', years: '9 năm',
+        email: 'ducanh@englishcenter.edu.vn', hours: 'Thứ 7 & Chủ nhật — 9:00 SA đến 12:00 SA',
+        bio: 'Đạt IELTS 8.5, thầy Đức Anh là chuyên gia số một về luyện thi cấp tốc. Phương pháp của thầy cho phép học sinh đạt điểm mục tiêu trong 4-6 tuần thay vì 3 tháng.',
+        skills: [['bi-lightning','Ôn thi cấp tốc'],['bi-map','Tối ưu lộ trình'],['bi-trophy','IELTS strategy'],['bi-journal-medical','Thi thử chuyên sâu'],['bi-emoji-smile','Quản lý áp lực'],['bi-bullseye','Đạt điểm mục tiêu']],
+        experience: [{year:'2019',title:'Chuyên gia ôn thi cấp tốc',org:'English Center',desc:'Phát triển phương pháp ôn thi 4 tuần độc quyền, giúp học sinh tăng 3-4 điểm.'},{year:'2015',title:'Giáo viên luyện thi',org:'Trung tâm Anh ngữ Quốc tế',desc:'Phụ trách lớp IELTS và THPTQG, tỷ lệ đạt mục tiêu 92%.'},{year:'2014',title:'IELTS 8.5',org:'IDP Australia',desc:'Đạt IELTS Overall 8.5 với Speaking và Listening đạt 9.0.'}],
+        courses: [{title:'Ôn Thi Cấp Tốc 4 Tuần',level:'Intensive',students:'987',rating:'4.9'},{title:'Chiến lược thi IELTS Band 7+',level:'Nâng cao',students:'654',rating:'4.8'},{title:'Thi thử + Phân tích 10 đề',level:'Luyện tập',students:'459',rating:'4.7'}],
+        reviews: [{name:'Lê Bảo Ngọc',role:'Học sinh lớp 12',stars:5,text:'Chỉ 5 tuần học với thầy mà điểm tăng từ 4.5 lên 8.0!'},{name:'Đặng Minh Quân',role:'Cựu học sinh',stars:5,text:'Thầy giúp mình quản lý stress trước kỳ thi rất tốt, vào phòng thi không còn run.'}],
+        achievements: ['Kỷ lục học sinh từ 4.5 lên 8.0 trong 5 tuần','Tư vấn lộ trình thành công cho 2.100+ học sinh','Top giáo viên được booking nhiều nhất mùa thi 2024']
+      },
+      8: {
+        name: 'Trần Thị Hương', specialty: 'NGỮ ÂM & GIAO TIẾP',
+        img: 'assets/img/education/TRAN THI HUONG.jpg',
+        cred: ['Thạc sĩ Ngôn ngữ học', '7 năm kinh nghiệm', '1.3k Học sinh'],
+        rating: 4.9, ratingText: '4.9 từ 448 đánh giá',
+        students: '1,300', courses: '4', ratingVal: '4.9 ⭐', years: '7 năm',
+        email: 'thihuong@englishcenter.edu.vn', hours: 'Thứ 2, 4, 6 — 16:00 CH đến 17:30 CH',
+        bio: 'Thạc sĩ Ngôn ngữ học tại ĐH Quốc gia Hà Nội, cô Thị Hương có năng khiếu truyền đạt ngữ âm và ngữ điệu. Học sinh không chỉ cải thiện điểm thi mà còn tự tin giao tiếp trong mọi tình huống.',
+        skills: [['bi-soundwave','IPA phonetics'],['bi-music-note-beamed','Ngữ điệu câu'],['bi-link-45deg','Connected speech'],['bi-headphones','Listening strategy'],['bi-mic-fill','Accent reduction'],['bi-chat-dots','Giao tiếp tự tin']],
+        experience: [{year:'2020',title:'Giảng viên Ngữ âm',org:'English Center',desc:'Xây dựng chương trình luyện ngữ âm kết hợp kỹ năng nghe và phát âm chuẩn.'},{year:'2017',title:'Giáo viên giao tiếp',org:'Language Link',desc:'Giảng dạy tiếng Anh giao tiếp cho học sinh THPT và người đi làm.'},{year:'2016',title:'Thạc sĩ Ngôn ngữ học',org:'ĐH Quốc gia Hà Nội',desc:'Luận văn về đặc điểm ngữ âm của người học tiếng Anh bản ngữ Việt.'}],
+        courses: [{title:'Ngữ âm Chuẩn & Phát âm Thi',level:'Cơ bản',students:'623',rating:'5.0'},{title:'Luyện nghe THPTQG Toàn diện',level:'Trung cấp',students:'445',rating:'4.9'},{title:'Giao tiếp Tiếng Anh Tự tin',level:'Nâng cao',students:'232',rating:'4.8'}],
+        reviews: [{name:'Nguyễn Lan Chi',role:'Học sinh lớp 12',stars:5,text:'Cô dạy phát âm rất bài bản, từ phát âm sai hầu hết giờ đã nói được chuẩn!'},{name:'Phạm Khánh Hà',role:'Cựu học sinh',stars:5,text:'Kỹ năng nghe của mình cải thiện hẳn, tăng 2 điểm sau 6 tuần.'}],
+        achievements: ['100% học sinh đánh giá tích cực kỹ năng nghe','Giải nhất hội thảo Ngữ âm học toàn quốc 2024','Nghiên cứu sinh tiến sĩ Ngôn ngữ học ĐH Quốc gia HN']
+      }
+    };
+
+    function renderStars(rating) {
+      var full = Math.floor(rating), half = (rating % 1) >= 0.5, s = '';
+      for (var i = 0; i < full; i++) s += '<i class="bi bi-star-fill" style="color:#ffc107;"></i>';
+      if (half) s += '<i class="bi bi-star-half" style="color:#ffc107;"></i>';
+      return s;
+    }
+
+    function openTeacherModal(id) {
+      var t = teacherData[id];
+      if (!t) return;
+      document.getElementById('m-avatar').src = t.img;
+      document.getElementById('m-name').textContent = t.name;
+      document.getElementById('m-specialty').textContent = t.specialty;
+      document.getElementById('m-cred1').textContent = t.cred[0];
+      document.getElementById('m-cred2').textContent = t.cred[1];
+      document.getElementById('m-cred3').textContent = t.cred[2];
+      document.getElementById('m-stars').innerHTML = renderStars(t.rating);
+      document.getElementById('m-rating-text').textContent = t.ratingText;
+      document.getElementById('m-s-students').textContent = t.students;
+      document.getElementById('m-s-courses').textContent = t.courses + ' khóa';
+      document.getElementById('m-s-rating').textContent = t.ratingVal;
+      document.getElementById('m-s-years').textContent = t.years;
+      document.getElementById('m-email').textContent = t.email;
+      document.getElementById('m-hours').textContent = t.hours;
+      document.getElementById('m-bio').textContent = t.bio;
+      document.getElementById('m-skills').innerHTML = t.skills.map(function(s) {
+        return '<div style="display:flex;align-items:center;gap:.5rem;background:#fff;border:1px solid #e4e8ef;border-radius:8px;padding:.55rem .8rem;font-size:.83rem;"><i class="bi ' + s[0] + '" style="color:var(--accent-color,#e84444);"></i><span>' + s[1] + '</span></div>';
+      }).join('');
+      document.getElementById('m-experience').innerHTML = t.experience.map(function(e) {
+        return '<div style="display:flex;gap:1rem;margin-bottom:1.2rem;padding-bottom:1.2rem;border-bottom:1px solid #eee;"><div style="flex-shrink:0;background:var(--accent-color,#e84444);color:#fff;border-radius:8px;padding:.3rem .6rem;font-size:.75rem;font-weight:700;height:fit-content;">' + e.year + '</div><div><h6 style="margin:0 0 .15rem;font-weight:700;">' + e.title + '</h6><p style="margin:0 0 .3rem;color:var(--accent-color,#e84444);font-size:.82rem;">' + e.org + '</p><p style="margin:0;color:#666;font-size:.83rem;">' + e.desc + '</p></div></div>';
+      }).join('');
+      document.getElementById('m-courses-list').innerHTML = t.courses.map(function(c) {
+        return '<div style="display:flex;gap:.8rem;margin-bottom:.9rem;padding:.8rem;background:#fff;border-radius:8px;border:1px solid #e4e8ef;"><div style="flex-shrink:0;width:70px;height:55px;background:#fef0f0;border-radius:6px;display:flex;align-items:center;justify-content:center;"><i class="bi bi-play-circle-fill" style="font-size:1.4rem;color:var(--accent-color,#e84444);"></i></div><div><h6 style="margin:0 0 .3rem;font-size:.87rem;font-weight:700;">' + c.title + '</h6><div style="display:flex;gap:.7rem;font-size:.77rem;color:#888;"><span><i class="bi bi-people"></i> ' + c.students + '</span><span><i class="bi bi-star-fill" style="color:#ffc107;"></i> ' + c.rating + '</span><span style="background:#f0f0f0;padding:.1rem .4rem;border-radius:4px;">' + c.level + '</span></div></div></div>';
+      }).join('');
+      document.getElementById('m-reviews-list').innerHTML = t.reviews.map(function(r) {
+        var stars = '';
+        for (var i = 0; i < r.stars; i++) stars += '<i class="bi bi-star-fill" style="color:#ffc107;font-size:.8rem;"></i>';
+        return '<div style="background:#fff;border-radius:8px;padding:1rem;margin-bottom:.9rem;border:1px solid #e4e8ef;"><div style="display:flex;align-items:center;gap:.7rem;margin-bottom:.6rem;"><div style="width:38px;height:38px;border-radius:50%;background:var(--accent-color,#e84444);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.9rem;flex-shrink:0;">' + r.name.charAt(0) + '</div><div><strong style="font-size:.88rem;display:block;">' + r.name + '</strong><small style="color:#888;">' + r.role + '</small></div><div style="margin-left:auto;">' + stars + '</div></div><p style="margin:0;color:#555;font-size:.85rem;font-style:italic;">' + r.text + '</p></div>';
+      }).join('');
+      document.getElementById('m-achievements-list').innerHTML = t.achievements.map(function(a) {
+        return '<div style="display:flex;gap:.6rem;align-items:flex-start;margin-bottom:.7rem;"><i class="bi bi-trophy-fill" style="color:var(--accent-color,#e84444);flex-shrink:0;margin-top:.1rem;"></i><span style="font-size:.83rem;color:#444;">' + a + '</span></div>';
+      }).join('');
+      document.querySelectorAll('#teacherModal .nav-link').forEach(function(b) { b.classList.remove('active'); });
+      document.querySelectorAll('#teacherModal .tab-pane').forEach(function(p) { p.classList.remove('show','active'); });
+      document.querySelector('#teacherModal [data-bs-target="#mt-about"]').classList.add('active');
+      document.getElementById('mt-about').classList.add('show','active');
+      new bootstrap.Modal(document.getElementById('teacherModal')).show();
+    }
+
+    function filterTeachers(tag, btn) {
+      document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('btn-primary'); b.classList.add('btn-outline-secondary'); });
+      btn.classList.remove('btn-outline-secondary');
+      btn.classList.add('btn-primary');
+      var items = document.querySelectorAll('.teacher-item'), count = 0;
+      items.forEach(function(item) {
+        if (tag === 'all' || item.getAttribute('data-filter') === tag) { item.style.display = ''; count++; }
+        else { item.style.display = 'none'; }
+      });
+      document.getElementById('teacher-count').textContent = count + ' giáo viên';
+    }
+
+  </script>
+
+</body>
+</html>

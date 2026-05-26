@@ -1,0 +1,1035 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>English Center - Nhóm 3</title>
+  <link href="assets/img/logo.1.jpg" rel="icon">
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+
+  <script>
+  const EC_COURSES = {
+    'tu-vung': {
+      name:'Từ Vựng Theo Chủ Đề THPTQG', teacher:'Hoàng Thị Thu Hà',
+      free:true, price:0, price_sale:0, hours:10, rating:4.6, students:789,
+      level:'Cơ bản', tags:['Miễn phí','Từ vựng'], tag_color:'#d1fae5', tag_text:'#065f46',
+    },
+    'nguphap': {
+      name:'Ngữ Pháp Trọng Tâm THPTQG', teacher:'Nguyễn Quốc Bảo',
+      free:false, price:500000, price_sale:499000, hours:20, rating:4.8, students:342,
+      level:'Trung bình', tags:['Ngữ pháp','Bán chạy'], tag_color:'#dbeafe', tag_text:'#1e40af',
+    },
+    'luyen-de': {
+      name:'Luyện Đề Tiếng Anh THPTQG', teacher:'Trần Đức Minh',
+      free:false, price:1200000, price_sale:1190000, hours:25, rating:5.0, students:156,
+      level:'Trung bình', tags:['Luyện đề','Hot 🔥'], tag_color:'#ffedd5', tag_text:'#9a3412',
+    },
+    'nang-cao': {
+      name:'Tiếng Anh Nâng Cao — Săn Điểm 9', teacher:'Ngô Thị Bích Ngọc',
+      free:false, price:1500000, price_sale:1490000, hours:30, rating:4.7, students:234,
+      level:'Khá — Giỏi', tags:['Nâng cao','Điểm 9+'], tag_color:'#ede9fe', tag_text:'#5b21b6',
+    },
+    'phat-am': {
+      name:'Phát Âm Chuẩn — Luyện Tập với AI', teacher:'Phạm Khánh Linh',
+      free:false, price:800000, price_sale:790000, hours:15, rating:4.5, students:467,
+      level:'Cơ bản', tags:['Phát âm','AI Speaking'], tag_color:'#fef3c7', tag_text:'#92400e',
+    },
+    'on-thi-cap-toc': {
+      name:'Ôn Thi Tiếng Anh Cấp Tốc 4 Tuần', teacher:'Lê Hoàng Nam',
+      free:false, price:1000000, price_sale:990000, hours:20, rating:4.9, students:298,
+      level:'Mọi trình độ', tags:['Cấp tốc','Gần thi'], tag_color:'#fee2e2', tag_text:'#991b1b',
+    },
+  };
+  function ecCurrentEmail() {
+    const u=JSON.parse(localStorage.getItem('ec_current_user')||'{}');
+    if(u.email) return u.email;
+    const a=JSON.parse(localStorage.getItem('ec_accounts')||'[]').filter(x=>!x.email.endsWith('@englishcenter.vn'));
+    return a.length?a.slice(-1)[0].email:'';
+  }
+  </script>
+
+  <style>
+    /* ── TOKENS ── */
+    :root {
+      --ink:      #0d1b2a;
+      --ink2:     #3d5166;
+      --ink3:     #7a8fa3;
+      --line:     #e4eaf0;
+      --bg:       #f4f7fb;
+      --surface:  #ffffff;
+      --blue:     #1558e8;
+      --blue2:    #0f46c9;
+      --blue-lt:  #eaf1ff;
+      --blue-mid: #b8d0ff;
+      --teal:     #0891b2;
+      --green:    #059669;
+      --green-lt: #ecfdf5;
+      --amber:    #d97706;
+      --amber-lt: #fffbeb;
+      --red:      #dc2626;
+      --red-lt:   #fef2f2;
+      --r:        14px;
+      --r-lg:     20px;
+      --sh:       0 1px 2px rgba(13,27,42,.06), 0 4px 16px rgba(13,27,42,.07);
+      --sh-up:    0 8px 32px rgba(21,88,232,.16);
+    }
+
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{-webkit-font-smoothing:antialiased}
+    body{
+      background:var(--bg);
+      font-family:'Sora',sans-serif;
+      color:var(--ink);
+      font-size:14px;
+      min-height:100vh;
+    }
+
+    /* ── TOPBAR ── */
+    .topbar{
+      position:sticky;top:0;z-index:300;
+      background:rgba(255,255,255,.92);
+      backdrop-filter:blur(12px);
+      -webkit-backdrop-filter:blur(12px);
+      border-bottom:1px solid var(--line);
+      padding:0 40px;
+      height:56px;
+      display:flex;align-items:center;justify-content:space-between;
+    }
+    .logo{
+      font-size:17px;font-weight:800;color:var(--blue);
+      text-decoration:none;letter-spacing:-.5px;
+      display:flex;align-items:center;gap:8px;
+    }
+    .logo-dot{
+      width:22px;height:22px;border-radius:6px;
+      background:var(--blue);
+      display:flex;align-items:center;justify-content:center;
+      flex-shrink:0;
+    }
+    .logo-dot svg{width:12px;height:12px;fill:#fff}
+    .top-right{display:flex;align-items:center;gap:10px;font-size:12.5px;color:var(--ink2)}
+    .avatar{
+      width:30px;height:30px;border-radius:50%;
+      background:linear-gradient(135deg,#3b82f6,#1558e8);
+      color:#fff;font-size:11px;font-weight:700;
+      display:flex;align-items:center;justify-content:center;flex-shrink:0;
+    }
+    .top-name{font-weight:600;color:var(--ink)}
+    .top-sep{color:var(--line)}
+    .top-logout{
+      font-size:12px;color:var(--ink3);text-decoration:none;
+      display:flex;align-items:center;gap:4px;
+      transition:color .15s;
+    }
+    .top-logout:hover{color:var(--red)}
+
+    /* ── STEP BAR ── */
+    .stepbar{
+      background:var(--surface);
+      border-bottom:1px solid var(--line);
+      padding:0 40px;
+    }
+    .steps{
+      max-width:560px;margin:0 auto;
+      display:flex;align-items:center;height:56px;
+    }
+    .step{display:flex;align-items:center;gap:8px;flex-shrink:0}
+    .step-icon{
+      width:28px;height:28px;border-radius:50%;
+      display:flex;align-items:center;justify-content:center;
+      font-size:11.5px;font-weight:700;transition:all .3s;flex-shrink:0;
+    }
+    .step.done   .step-icon{background:var(--green);color:#fff}
+    .step.active .step-icon{background:var(--blue);color:#fff;box-shadow:0 0 0 4px var(--blue-lt)}
+    .step.idle   .step-icon{background:var(--line);color:var(--ink3)}
+    .step-label{font-size:12px;font-weight:600;white-space:nowrap}
+    .step.done   .step-label{color:var(--green)}
+    .step.active .step-label{color:var(--blue);font-weight:700}
+    .step.idle   .step-label{color:var(--ink3)}
+    .step-track{flex:1;height:2px;background:var(--line);margin:0 10px;border-radius:99px}
+    .step-track.done{background:var(--green)}
+
+    /* ── LAYOUT ── */
+    .wrap{
+      max-width:1140px;margin:0 auto;
+      padding:36px 24px 80px;
+      display:grid;
+      grid-template-columns:1fr 368px;
+      gap:28px;align-items:start;
+    }
+    @media(max-width:940px){.wrap{grid-template-columns:1fr}}
+
+    /* ── BLOCK ── */
+    .block{
+      background:var(--surface);
+      border:1px solid var(--line);
+      border-radius:var(--r-lg);
+      overflow:hidden;
+      margin-bottom:20px;
+      box-shadow:var(--sh);
+      animation:slideUp .35s ease both;
+    }
+    .block:nth-child(1){animation-delay:.03s}
+    .block:nth-child(2){animation-delay:.09s}
+    .block:nth-child(3){animation-delay:.15s}
+    .block:nth-child(4){animation-delay:.21s}
+    @keyframes slideUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+
+    .block-head{
+      padding:18px 22px 16px;
+      border-bottom:1px solid var(--line);
+      display:flex;align-items:center;gap:12px;
+    }
+    .block-num{
+      width:30px;height:30px;border-radius:8px;
+      display:flex;align-items:center;justify-content:center;
+      font-size:13px;font-weight:800;flex-shrink:0;
+      background:var(--ink);color:#fff;
+    }
+    .block-num.blue{background:var(--blue)}
+    .block-num.amber{background:var(--amber)}
+    .block-title{font-size:14.5px;font-weight:700;color:var(--ink);letter-spacing:-.2px}
+    .block-sub{font-size:11.5px;color:var(--ink3);margin-top:2px;font-weight:400}
+    .block-body{padding:20px 22px}
+
+    /* ── COURSE GRID ── */
+    .cgrid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;margin-bottom:14px;
+    }
+    @media(max-width:600px){.cgrid{grid-template-columns:1fr}}
+
+    .cc{
+      position:relative;
+      border:1.5px solid var(--line);
+      border-radius:var(--r);
+      padding:0;
+      cursor:pointer;
+      overflow:hidden;
+      background:var(--surface);
+      transition:border-color .18s,box-shadow .18s,transform .18s;
+      box-shadow:var(--sh);
+      user-select:none;
+    }
+    /* colored left accent */
+    .cc::before{
+      content:'';
+      position:absolute;left:0;top:0;bottom:0;
+      width:3px;
+      background:var(--line);
+      transition:background .18s;
+    }
+    .cc:hover{border-color:var(--blue-mid);transform:translateY(-2px);box-shadow:var(--sh-up)}
+    .cc:hover::before{background:var(--blue-mid)}
+    .cc.selected{border-color:var(--blue);box-shadow:var(--sh-up)}
+    .cc.selected::before{background:var(--blue)}
+    .cc.free-card.selected{border-color:var(--blue);box-shadow:var(--sh-up)}
+    .cc.free-card.selected::before{background:var(--blue)}
+    .cc.dimmed{opacity:.35;cursor:not-allowed;transform:none!important;box-shadow:var(--sh)!important}
+
+    .cc-inner{padding:15px 15px 13px 18px}
+
+    /* top row: emoji + check */
+    .cc-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:11px}
+    .cc-emobox{
+      width:42px;height:42px;border-radius:10px;
+      background:var(--bg);
+      display:flex;align-items:center;justify-content:center;
+      font-size:20px;flex-shrink:0;
+      border:1px solid var(--line);
+    }
+    .cc-chk{
+      width:22px;height:22px;border-radius:50%;
+      border:1.5px solid var(--line);
+      background:var(--bg);
+      display:flex;align-items:center;justify-content:center;
+      transition:all .15s;flex-shrink:0;margin-top:2px;
+    }
+    .cc.selected     .cc-chk{background:var(--blue);border-color:var(--blue)}
+
+    .cc-name{font-size:12.5px;font-weight:700;color:var(--ink);line-height:1.4;margin-bottom:4px}
+    .cc-teacher{
+      font-size:11px;color:var(--ink3);margin-bottom:10px;
+      display:flex;align-items:center;gap:5px;
+    }
+    .cc-teacher span{
+      width:16px;height:16px;border-radius:50%;
+      background:linear-gradient(135deg,#93c5fd,#60a5fa);
+      flex-shrink:0;display:inline-block;
+    }
+
+    .cc-stats{display:flex;gap:12px;margin-bottom:11px}
+    .cc-stat{font-size:10.5px;color:var(--ink3);display:flex;align-items:center;gap:3px}
+    .cc-stat i{font-size:10px}
+
+    .cc-foot{display:flex;align-items:center;justify-content:space-between}
+    .cc-price-free{font-size:15px;font-weight:800;color:var(--green)}
+    .cc-sale{font-size:14.5px;font-weight:800;color:var(--blue)}
+    .cc-orig{font-size:10.5px;color:var(--ink3);text-decoration:line-through;margin-left:4px}
+    .cc-tag{
+      font-size:10px;font-weight:700;border-radius:6px;
+      padding:3px 9px;
+    }
+    /* free ribbon */
+    .cc-ribbon{
+      position:absolute;top:0;right:0;
+      background:var(--green);color:#fff;
+      font-size:9px;font-weight:800;letter-spacing:.8px;
+      padding:4px 11px 4px 14px;
+      border-radius:0 0 0 12px;
+    }
+
+    /* hint pill */
+    .hint{
+      display:flex;align-items:center;gap:8px;
+      padding:10px 14px;border-radius:var(--r);
+      font-size:12.5px;font-weight:500;
+      border:1.5px solid var(--blue-lt);
+      background:var(--blue-lt);
+      color:var(--blue2);
+      transition:all .25s;
+    }
+    .hint i{font-size:14px;flex-shrink:0}
+    .hint.ok{background:#ecfdf5;border-color:#a7f3d0;color:var(--green)}
+
+    /* ── PLAN CARDS ── */
+    .pgrid{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:10px;margin-bottom:12px;
+    }
+    @media(max-width:560px){.pgrid{grid-template-columns:1fr 1fr}}
+
+    .pc{
+      border:1.5px solid var(--line);
+      border-radius:var(--r);
+      padding:16px 10px;
+      text-align:center;
+      cursor:pointer;
+      background:var(--surface);
+      position:relative;
+      transition:all .18s;
+      box-shadow:var(--sh);
+    }
+    .pc:hover{border-color:var(--blue-mid);transform:translateY(-2px)}
+    .pc.sel{border-color:var(--blue);background:var(--blue-lt);box-shadow:var(--sh-up)}
+    .pc.highlight{border-color:var(--amber)}
+    .pc.highlight.sel{background:var(--amber-lt)}
+    .pc-badge{
+      position:absolute;top:-11px;left:50%;transform:translateX(-50%);
+      background:var(--amber);color:#fff;
+      font-size:9px;font-weight:800;padding:3px 12px;border-radius:99px;
+      white-space:nowrap;letter-spacing:.3px;
+    }
+    .pc-n{font-size:26px;font-weight:800;color:var(--ink);line-height:1}
+    .pc-n em{font-size:12px;font-weight:500;color:var(--ink3);font-style:normal}
+    .pc-per{font-size:10.5px;color:var(--ink3);margin:5px 0 2px}
+    .pc-total{font-size:13px;font-weight:700;color:var(--blue);font-family:'JetBrains Mono',monospace}
+    .pc-save{font-size:10.5px;font-weight:700;color:var(--green);margin-top:3px}
+
+    /* ── COUPON ── */
+    .coupon-row{display:flex;gap:10px;margin-bottom:8px}
+    .coupon-field{
+      flex:1;
+      border:1.5px solid var(--line);
+      border-radius:var(--r);
+      padding:11px 16px;
+      font-size:13px;
+      font-family:'JetBrains Mono',monospace;
+      font-weight:600;letter-spacing:1.5px;text-transform:uppercase;
+      outline:none;color:var(--ink);background:var(--surface);
+      transition:border-color .15s,background .15s;
+    }
+    .coupon-field:focus{border-color:var(--blue)}
+    .coupon-field.ok {border-color:var(--green);background:var(--green-lt)}
+    .coupon-field.err{border-color:var(--red);background:var(--red-lt)}
+    .btn-coupon{
+      background:var(--blue);color:#fff;border:none;
+      border-radius:var(--r);padding:11px 22px;
+      font-size:13px;font-weight:700;cursor:pointer;
+      font-family:'Sora',sans-serif;white-space:nowrap;
+      transition:background .15s,transform .15s;
+    }
+    .btn-coupon:hover{background:var(--blue2);transform:translateY(-1px)}
+    .coupon-feedback{font-size:12px;font-weight:600;min-height:20px}
+    .coupon-feedback.ok {color:var(--green)}
+    .coupon-feedback.err{color:var(--red)}
+    .coupon-tip{
+      margin-top:8px;font-size:11.5px;color:var(--ink3);
+      display:flex;align-items:center;gap:5px;
+    }
+    code{
+      background:var(--bg);border:1px solid var(--line);
+      border-radius:5px;padding:1px 7px;
+      font-family:'JetBrains Mono',monospace;
+      font-size:11px;font-weight:700;color:var(--blue2);
+    }
+
+    /* ── PAY METHOD ── */
+    .pay-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .pay-btn{
+      border:1.5px solid var(--line);
+      border-radius:var(--r);
+      padding:15px 8px;
+      text-align:center;cursor:pointer;
+      background:var(--surface);
+      display:flex;flex-direction:column;align-items:center;gap:6px;
+      font-size:12px;font-weight:600;color:var(--ink2);
+      transition:all .18s;box-shadow:var(--sh);
+    }
+    .pay-btn i{font-size:22px}
+    .pay-btn:hover{border-color:var(--blue-mid);color:var(--blue);transform:translateY(-1px)}
+    .pay-btn.sel{border-color:var(--blue);background:var(--blue-lt);color:var(--blue);box-shadow:var(--sh-up)}
+
+    /* ── ORDER CARD (right) ── */
+    .order-card{
+      background:var(--surface);
+      border:1px solid var(--line);
+      border-radius:var(--r-lg);
+      overflow:hidden;
+      position:sticky;top:76px;
+      box-shadow:var(--sh);
+      animation:slideUp .35s .06s ease both;
+    }
+    .order-hero{
+      background:linear-gradient(145deg,#1558e8 0%,#0f46c9 60%,#0a3db5 100%);
+      padding:20px 22px;
+      position:relative;overflow:hidden;
+    }
+    .order-hero::after{
+      content:'';
+      position:absolute;right:-20px;bottom:-20px;
+      width:100px;height:100px;
+      background:rgba(255,255,255,.06);
+      border-radius:50%;
+    }
+    .order-hero-title{font-size:15px;font-weight:800;color:#fff;letter-spacing:-.3px}
+    .order-hero-sub{font-size:11.5px;color:rgba(255,255,255,.65);margin-top:3px}
+
+    .order-body{padding:18px 20px}
+
+    .o-chips{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;min-height:48px}
+    .o-empty{
+      font-size:12.5px;color:var(--ink3);
+      text-align:center;padding:14px;
+      border:1.5px dashed var(--line);
+      border-radius:var(--r);
+    }
+    .o-chip{
+      display:flex;align-items:center;gap:8px;
+      padding:9px 12px;
+      background:var(--bg);
+      border:1px solid var(--line);
+      border-radius:var(--r);
+      animation:chipPop .2s ease;
+    }
+    @keyframes chipPop{from{opacity:0;transform:translateY(-6px) scale(.97)}to{opacity:1;transform:none;}}
+    .o-chip-icon{font-size:16px;flex-shrink:0}
+    .o-chip-name{font-size:12px;font-weight:600;color:var(--ink);flex:1;line-height:1.35}
+    .o-chip-free{font-size:10.5px;font-weight:700;color:var(--green)}
+    .o-chip-price{font-size:11.5px;font-weight:700;color:var(--blue);font-family:'JetBrains Mono',monospace}
+
+    .o-divider{height:1px;background:var(--line);margin:14px 0}
+
+    .o-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;font-size:13px}
+    .o-row-label{color:var(--ink2)}
+    .o-row-val{font-weight:700;color:var(--ink);font-family:'JetBrains Mono',monospace;font-size:12px}
+    .o-row-val.cut{color:var(--red)}
+    .o-badge{
+      display:inline-block;font-size:10px;font-weight:800;
+      border-radius:5px;padding:1px 7px;margin-left:5px;
+    }
+    .o-total-row{display:flex;justify-content:space-between;align-items:baseline;margin-top:4px}
+    .o-total-label{font-size:15px;font-weight:800;color:var(--ink)}
+    .o-total-val{
+      font-size:24px;font-weight:800;color:var(--blue);
+      font-family:'JetBrains Mono',monospace;
+      letter-spacing:-.5px;
+    }
+    .o-total-val.free-val{color:var(--green)}
+
+    .btn-pay{
+      width:100%;margin-top:18px;
+      padding:15px;border:none;
+      background:linear-gradient(135deg,var(--blue),var(--blue2));
+      color:#fff;border-radius:var(--r);
+      font-size:14.5px;font-weight:700;
+      cursor:pointer;font-family:'Sora',sans-serif;
+      display:flex;align-items:center;justify-content:center;gap:8px;
+      box-shadow:0 4px 18px rgba(21,88,232,.35);
+      transition:all .2s;letter-spacing:-.2px;
+    }
+    .btn-pay:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 30px rgba(21,88,232,.4)}
+    .btn-pay:disabled{background:var(--line);color:var(--ink3);box-shadow:none;cursor:not-allowed}
+
+    .trust{display:flex;justify-content:center;gap:14px;margin-top:14px;flex-wrap:wrap}
+    .trust-item{font-size:11px;color:var(--ink3);display:flex;align-items:center;gap:4px}
+    .trust-item i{color:var(--green);font-size:12px}
+
+    /* ── MODAL ── */
+    .modal-bg{
+      position:fixed;inset:0;
+      background:rgba(13,27,42,.55);
+      backdrop-filter:blur(6px);
+      -webkit-backdrop-filter:blur(6px);
+      z-index:9999;
+      display:none;align-items:center;justify-content:center;
+      opacity:0;transition:opacity .25s;
+    }
+    .modal-bg.show{display:flex}
+    .modal-bg.vis{opacity:1}
+    .modal-box{
+      background:var(--surface);
+      border-radius:22px;padding:36px 30px;
+      max-width:420px;width:92%;text-align:center;
+      transform:translateY(22px) scale(.96);
+      transition:transform .3s cubic-bezier(.34,1.56,.64,1);
+      box-shadow:0 28px 60px rgba(0,0,0,.18);
+    }
+    .modal-bg.vis .modal-box{transform:none}
+
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .spinner{
+      width:48px;height:48px;
+      border:4px solid var(--blue-lt);border-top-color:var(--blue);
+      border-radius:50%;animation:spin .75s linear infinite;
+      margin:0 auto 18px;
+    }
+    @keyframes bigPop{
+      0%{opacity:0;transform:scale(.5)}
+      70%{transform:scale(1.1)}
+      100%{opacity:1;transform:scale(1)}
+    }
+    .pop-anim{animation:bigPop .45s cubic-bezier(.34,1.56,.64,1) both}
+  </style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <a href="index.html" class="logo">
+    <div class="logo-dot">
+      <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+    </div>
+    English Center
+  </a>
+  <div class="top-right">
+    <div class="avatar" id="topAvatar">HS</div>
+    <span class="top-name" id="topName">Học sinh</span>
+    <span class="top-sep">|</span>
+    <a href="dangnhap.html" class="top-logout"><i class="bi bi-box-arrow-right"></i> Đăng xuất</a>
+  </div>
+</header>
+
+<!-- STEP BAR -->
+<div class="stepbar">
+  <div class="steps">
+    <div class="step done">
+      <div class="step-icon"><i class="bi bi-check"></i></div>
+      <span class="step-label">Tạo tài khoản</span>
+    </div>
+    <div class="step-track done"></div>
+    <div class="step active">
+      <div class="step-icon">2</div>
+      <span class="step-label">Chọn khóa học</span>
+    </div>
+    <div class="step-track"></div>
+    <div class="step idle">
+      <div class="step-icon">3</div>
+      <span class="step-label">Thanh toán</span>
+    </div>
+    <div class="step-track"></div>
+    <div class="step idle">
+      <div class="step-icon">4</div>
+      <span class="step-label">Bắt đầu học</span>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN GRID -->
+<div class="wrap">
+
+  <!-- LEFT -->
+  <div class="left-col">
+
+    <!-- BLOCK 1: Khóa học -->
+    <div class="block">
+      <div class="block-head">
+        <div class="block-num blue">1</div>
+        <div>
+          <div class="block-title">Chọn khóa học</div>
+          <div class="block-sub">Tối đa 2 khóa — 1 slot miễn phí cho tất cả học sinh mới</div>
+        </div>
+      </div>
+      <div class="block-body">
+        <div class="cgrid" id="courseGrid"></div>
+        <div class="hint" id="selectHint">
+          <i class="bi bi-lightbulb"></i>
+          <span>Chọn <strong>1 hoặc 2 khóa học</strong> để tiếp tục</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- BLOCK 2: Gói đăng ký -->
+    <div class="block">
+      <div class="block-head">
+        <div class="block-num blue">2</div>
+        <div>
+          <div class="block-title">Gói đăng ký</div>
+          <div class="block-sub">Gói càng dài, học phí mỗi tháng càng thấp</div>
+        </div>
+      </div>
+      <div class="block-body">
+        <div class="pgrid" id="planGrid"></div>
+        <div style="font-size:11.5px;color:var(--ink3);display:flex;align-items:center;gap:5px;margin-top:4px">
+          <i class="bi bi-info-circle"></i>
+          Gói đăng ký chỉ áp dụng cho khóa trả phí. Khóa miễn phí mở vĩnh viễn.
+        </div>
+      </div>
+    </div>
+
+    <!-- BLOCK 3: Mã giảm giá -->
+    <div class="block">
+      <div class="block-head">
+        <div class="block-num amber">3</div>
+        <div>
+          <div class="block-title">Mã giảm giá</div>
+          <div class="block-sub">Không bắt buộc</div>
+        </div>
+      </div>
+      <div class="block-body">
+        <div class="coupon-row">
+          <input class="coupon-field" id="couponInput" type="text" placeholder="NHẬP MÃ..." maxlength="20">
+          <button class="btn-coupon" onclick="applyCoupon()">Áp dụng</button>
+        </div>
+        <div class="coupon-feedback" id="couponMsg"></div>
+        <div class="coupon-tip">
+          <i class="bi bi-tag" style="color:var(--amber)"></i>
+          Thử ngay: <code>HOMNAY10</code> (−10%) &nbsp;·&nbsp; <code>HOCSINH20</code> (−20%)
+        </div>
+      </div>
+    </div>
+
+    <!-- BLOCK 4: Thanh toán -->
+    <div class="block">
+      <div class="block-head">
+        <div class="block-num">4</div>
+        <div>
+          <div class="block-title">Phương thức thanh toán</div>
+          <div class="block-sub">Giao dịch được mã hoá SSL 256-bit</div>
+        </div>
+      </div>
+      <div class="block-body">
+        <div class="pay-row">
+          <div class="pay-btn sel" id="pay-vnpay" onclick="selectPay('vnpay')">
+            <i class="bi bi-bank2" style="color:#0f46c9"></i>
+            <span>VNPay</span>
+          </div>
+          <div class="pay-btn" id="pay-momo" onclick="selectPay('momo')">
+            <i class="bi bi-phone-fill" style="color:#ae0070"></i>
+            <span>MoMo</span>
+          </div>
+          <div class="pay-btn" id="pay-zalopay" onclick="selectPay('zalopay')">
+            <i class="bi bi-wallet2" style="color:#0052cc"></i>
+            <span>ZaloPay</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /left -->
+
+  <!-- RIGHT: Order summary -->
+  <div class="order-card">
+    <div class="order-hero">
+      <div class="order-hero-title">Tóm tắt đơn hàng</div>
+      <div class="order-hero-sub">Kiểm tra lại trước khi thanh toán</div>
+    </div>
+    <div class="order-body">
+
+      <div class="o-chips" id="summaryCourses">
+        <div class="o-empty">Chưa chọn khóa học nào</div>
+      </div>
+
+      <div class="o-divider"></div>
+
+      <div class="o-row">
+        <span class="o-row-label">Gói đăng ký</span>
+        <span class="o-row-val" id="summaryPlan">—</span>
+      </div>
+      <div class="o-row">
+        <span class="o-row-label">Học phí gốc</span>
+        <span class="o-row-val" id="summaryOriginal">—</span>
+      </div>
+      <div class="o-row" id="rowDiscount" style="display:none">
+        <span class="o-row-label">
+          Ưu đãi gói
+          <span class="o-badge" id="discountLabel" style="background:var(--green-lt);color:var(--green)"></span>
+        </span>
+        <span class="o-row-val cut" id="summaryDiscount"></span>
+      </div>
+      <div class="o-row" id="rowCoupon" style="display:none">
+        <span class="o-row-label">
+          Mã giảm giá
+          <span class="o-badge" id="couponLabel" style="background:var(--amber-lt);color:var(--amber)"></span>
+        </span>
+        <span class="o-row-val cut" id="summaryCouponDiscount"></span>
+      </div>
+
+      <div class="o-divider"></div>
+      <div class="o-total-row">
+        <span class="o-total-label">Tổng thanh toán</span>
+        <span class="o-total-val" id="summaryTotal">—</span>
+      </div>
+
+      <button class="btn-pay" id="btnPay" onclick="handlePay()" disabled>
+        <i class="bi bi-lock-fill"></i> Hoàn tất thanh toán
+      </button>
+
+      <div class="trust">
+        <span class="trust-item"><i class="bi bi-shield-check-fill"></i>Bảo mật SSL</span>
+        <span class="trust-item"><i class="bi bi-arrow-counterclockwise"></i>Hoàn tiền 7 ngày</span>
+        <span class="trust-item"><i class="bi bi-headset"></i>24/7</span>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /wrap -->
+
+<!-- MODAL -->
+<div class="modal-bg" id="modalOverlay">
+  <div class="modal-box"><div id="modalContent"></div></div>
+</div>
+
+<script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script>
+/* ─── STATE ─── */
+let selected  = [];
+let planId    = '3m';
+let payMethod = 'vnpay';
+let couponCode= '';
+let couponPct = 0;
+
+const PLANS = [
+  {id:'1m', months:1,  pricePerMonth:m=>m,       save:0},
+  {id:'3m', months:3,  pricePerMonth:m=>m*.9,     save:10},
+  {id:'6m', months:6,  pricePerMonth:m=>m*.8,     save:20},
+  {id:'12m',months:12, pricePerMonth:m=>m*.65,    save:35},
+];
+const COUPONS = {
+  'HOMNAY10':{pct:10},'HOCSINH20':{pct:20},
+  'CHAO15':{pct:15},'WELCOME30':{pct:30},
+};
+const ICONS = {nguphap:'📖','tu-vung':'📚','luyen-de':'📝','nang-cao':'🏆','phat-am':'🎙️','on-thi-cap-toc':'⚡'};
+const ico = id => ICONS[id]||'📘';
+
+/* ─── RENDER COURSES ─── */
+function renderCourses(){
+  document.getElementById('courseGrid').innerHTML = Object.keys(EC_COURSES).map(id=>{
+    const c=EC_COURSES[id];
+    const isSel=selected.includes(id);
+    const isDim=!isSel && selected.length>=2 && !c.free;
+    return `<div class="cc ${isSel?'selected':''} ${isDim?'dimmed':''} ${c.free?'free-card':''}" id="cc-${id}" onclick="toggleCourse('${id}')">
+      <div class="cc-inner">
+        <div class="cc-top">
+          <div class="cc-emobox">${ico(id)}</div>
+          <div class="cc-chk">${isSel?'<i class="bi bi-check" style="color:#fff;font-size:11px"></i>':''}</div>
+        </div>
+        <div class="cc-name">${c.name}</div>
+        <div class="cc-teacher"><span></span>${c.teacher}</div>
+        <div class="cc-stats">
+          <span class="cc-stat"><i class="bi bi-clock"></i>${c.hours}h</span>
+          <span class="cc-stat"><i class="bi bi-star-fill" style="color:#f59e0b"></i>${c.rating}</span>
+          <span class="cc-stat"><i class="bi bi-people"></i>${c.students.toLocaleString()}</span>
+        </div>
+        <div class="cc-foot">
+          ${c.free
+            ?'<span class="cc-price-free">Miễn phí</span>'
+            :`<span><span class="cc-sale">${fmt(c.price_sale)}</span><span class="cc-orig">${fmt(c.price)}</span></span>`}
+          <span class="cc-tag" style="background:${c.tag_color};color:${c.tag_text}">${c.tags[0]}</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  const h=document.getElementById('selectHint');
+  if(selected.length===0){h.className='hint';h.innerHTML='<i class="bi bi-lightbulb"></i><span>Chọn <strong>1 hoặc 2 khóa học</strong> để tiếp tục</span>'}
+  else if(selected.length===1){h.className='hint';h.innerHTML='<i class="bi bi-check-circle-fill"></i><span>Đã chọn <strong>1/2 khóa</strong> — có thể chọn thêm 1</span>'}
+  else{h.className='hint ok';h.innerHTML='<i class="bi bi-check-circle-fill"></i><span>Đã chọn <strong>2/2 khóa</strong> — tối đa ✅</span>'}
+}
+
+function toggleCourse(id){
+  const el=document.getElementById('cc-'+id);
+  if(el.classList.contains('dimmed')){el.style.transform='scale(.97)';setTimeout(()=>el.style.transform='',160);return}
+  if(selected.includes(id)){selected=selected.filter(x=>x!==id)}
+  else{
+    if(!EC_COURSES[id].free && selected.filter(x=>!EC_COURSES[x].free).length>=2) return;
+    selected.push(id);
+  }
+  renderCourses(); updateSummary();
+}
+
+/* ─── RENDER PLANS ─── */
+function renderPlans(){
+  const base=paidTotal();
+  document.getElementById('planGrid').innerHTML=PLANS.map(p=>{
+    const total=Math.round(p.pricePerMonth(base)*p.months);
+    return `<div class="pc ${p.id===planId?'sel':''}" onclick="selectPlan('${p.id}')">
+      <div class="pc-n">${p.months}<em> tháng</em></div>
+      <div class="pc-per">${base>0?fmt(Math.round(p.pricePerMonth(base)))+'/tháng':'—'}</div>
+      <div class="pc-total">${base>0?fmt(total):'—'}</div>
+      ${p.save>0?`<div class="pc-save">−${p.save}% so với lẻ</div>`:'<div style="height:17px"></div>'}
+    </div>`;
+  }).join('');
+}
+function selectPlan(id){planId=id;renderPlans();updateSummary()}
+
+/* ─── COUPON ─── */
+function applyCoupon(){
+  const code=document.getElementById('couponInput').value.trim().toUpperCase();
+  const inp=document.getElementById('couponInput');
+  const msg=document.getElementById('couponMsg');
+  if(!code){inp.className='coupon-field';msg.textContent='';return}
+  if(COUPONS[code]){
+    couponCode=code;couponPct=COUPONS[code].pct;
+    inp.className='coupon-field ok';
+    msg.className='coupon-feedback ok';
+    msg.innerHTML=`<i class="bi bi-check-circle me-1"></i>Áp dụng thành công — giảm thêm ${couponPct}%!`;
+  } else {
+    couponCode='';couponPct=0;
+    inp.className='coupon-field err';
+    msg.className='coupon-feedback err';
+    msg.innerHTML=`<i class="bi bi-x-circle me-1"></i>Mã không hợp lệ hoặc đã hết hạn.`;
+  }
+  updateSummary();
+}
+
+/* ─── PAY METHOD ─── */
+function selectPay(m){
+  payMethod=m;
+  ['vnpay','momo','zalopay'].forEach(x=>document.getElementById('pay-'+x).classList.toggle('sel',x===m));
+}
+
+/* ─── CALC ─── */
+function paidTotal(){return selected.reduce((s,id)=>s+(EC_COURSES[id].free?0:EC_COURSES[id].price_sale),0)}
+function calcFinal(){
+  const base=paidTotal();
+  const plan=PLANS.find(p=>p.id===planId);
+  const withPlan=Math.round(plan.pricePerMonth(base)*plan.months);
+  const origTotal=base*plan.months;
+  const planDiscount=origTotal-withPlan;
+  const couponDiscount=Math.round(withPlan*couponPct/100);
+  const final=withPlan-couponDiscount;
+  return{base,origTotal,withPlan,planDiscount,couponDiscount,final,plan};
+}
+
+/* ─── UPDATE SUMMARY ─── */
+function updateSummary(){
+  const chips=document.getElementById('summaryCourses');
+  chips.innerHTML=selected.length===0
+    ?'<div class="o-empty">Chưa chọn khóa học nào</div>'
+    :selected.map(id=>{
+      const c=EC_COURSES[id];
+      return `<div class="o-chip">
+        <span class="o-chip-icon">${ico(id)}</span>
+        <span class="o-chip-name">${c.name}</span>
+        ${c.free?'<span class="o-chip-free">Miễn phí</span>':`<span class="o-chip-price">${fmt(c.price_sale)}</span>`}
+      </div>`;
+    }).join('');
+
+  const{base,origTotal,planDiscount,couponDiscount,final,plan}=calcFinal();
+  const allFree=selected.length>0&&selected.every(id=>EC_COURSES[id].free);
+  document.getElementById('summaryPlan').textContent=plan.months+' tháng'+(plan.save>0?` (−${plan.save}%)`:'');
+
+  const tv=document.getElementById('summaryTotal');
+  if(allFree){
+    document.getElementById('summaryOriginal').textContent='Miễn phí';
+    document.getElementById('rowDiscount').style.display='none';
+    document.getElementById('rowCoupon').style.display='none';
+    tv.textContent='Miễn phí';tv.className='o-total-val free-val';
+  } else if(base>0){
+    document.getElementById('summaryOriginal').textContent=fmt(origTotal);
+    if(planDiscount>0){
+      document.getElementById('rowDiscount').style.display='flex';
+      document.getElementById('discountLabel').textContent='−'+plan.save+'%';
+      document.getElementById('summaryDiscount').textContent='−'+fmt(planDiscount);
+    } else document.getElementById('rowDiscount').style.display='none';
+    if(couponDiscount>0){
+      document.getElementById('rowCoupon').style.display='flex';
+      document.getElementById('couponLabel').textContent=couponCode;
+      document.getElementById('summaryCouponDiscount').textContent='−'+fmt(couponDiscount);
+    } else document.getElementById('rowCoupon').style.display='none';
+    tv.textContent=fmt(final);tv.className='o-total-val';
+  } else {
+    document.getElementById('summaryOriginal').textContent='—';
+    document.getElementById('rowDiscount').style.display='none';
+    document.getElementById('rowCoupon').style.display='none';
+    tv.textContent='—';tv.className='o-total-val';
+  }
+  renderPlans();
+  document.getElementById('btnPay').disabled=selected.length===0;
+}
+
+/* ─── LƯU ENROLLMENT ─── */
+function saveEnrollment(){
+  const user=JSON.parse(localStorage.getItem('ec_current_user')||'{}');
+  const email=user.email||ecCurrentEmail();
+  if(email){
+    const existing=JSON.parse(localStorage.getItem('ec_enrolled_'+email)||'[]');
+    const merged=[...new Set([...existing,...selected])];
+    localStorage.setItem('ec_enrolled_'+email,JSON.stringify(merged));
+    const accounts=JSON.parse(localStorage.getItem('ec_accounts')||'[]');
+    const acc=accounts.find(a=>a.email===email);
+    if(acc){acc.enrolled=merged;localStorage.setItem('ec_accounts',JSON.stringify(accounts))}
+    if(user.email){user.enrolled=merged;localStorage.setItem('ec_current_user',JSON.stringify(user))}
+  }
+  // update steps bar
+  const st=document.querySelectorAll('.step');
+  if(st[1]) st[1].className='step done';
+  if(st[2]) st[2].className='step active';
+  const tr=document.querySelectorAll('.step-track');
+  if(tr[1]) tr[1].classList.add('done');
+}
+
+/* ─── THANH TOÁN ─── */
+function handlePay(){
+  if(!selected.length) return;
+  const{final}=calcFinal();
+  const allFree=selected.every(id=>EC_COURSES[id].free);
+
+  if(allFree){
+    /* ── Khóa free: kích hoạt ngay, chuyển sang dashboard_new ── */
+    showModal(`<div class="spinner"></div>
+      <div style="font-size:15px;font-weight:700;color:var(--ink);margin-bottom:5px">Đang kích hoạt khóa học...</div>
+      <div style="font-size:13px;color:var(--ink3)">Vui lòng chờ giây lát</div>`);
+    setTimeout(()=>{
+      saveEnrollment();
+      const names=selected.map(id=>EC_COURSES[id].name).join('<br>• ');
+      showModal(`
+        <div class="pop-anim">
+          <div style="width:74px;height:74px;background:var(--green-lt);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;border:3px solid #6ee7b7">
+            <i class="bi bi-check-lg" style="font-size:36px;color:var(--green)"></i>
+          </div>
+        </div>
+        <div style="font-size:22px;font-weight:800;color:var(--ink);margin-bottom:4px">Đã mở khóa! 🎉</div>
+        <div style="font-size:13px;color:var(--ink3);margin-bottom:16px">Khóa học miễn phí đã được kích hoạt</div>
+        <div style="background:var(--bg);border-radius:var(--r);padding:12px 16px;text-align:left;margin-bottom:16px;border:1px solid var(--line)">
+          <div style="font-size:10px;font-weight:800;letter-spacing:.8px;color:var(--ink3);text-transform:uppercase;margin-bottom:6px">Khóa đã đăng ký</div>
+          <div style="font-size:12.5px;font-weight:600;color:var(--ink);line-height:1.7">• ${names}</div>
+        </div>
+        <div style="font-size:13px;color:var(--ink3);margin-bottom:14px">Chuyển trang trong <strong id="goCountdown">3</strong> giây...</div>
+        <button onclick="location.href='dashboard_hocsinh_new.html'"
+          style="width:100%;background:linear-gradient(135deg,var(--green),#059669);color:#fff;border:none;border-radius:var(--r);padding:13px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;box-shadow:0 4px 18px rgba(5,150,105,.3)">
+          Vào học ngay <i class="bi bi-arrow-right"></i>
+        </button>`);
+      let t=3;
+      const cd=setInterval(()=>{t--;const el=document.getElementById('goCountdown');if(el)el.textContent=t;if(t<=0){clearInterval(cd);location.href='dashboard_hocsinh_new.html'}},1000);
+    },1800);
+
+  } else {
+    /* ── Có khóa trả phí: hiện QR thanh toán ── */
+    const METHOD_INFO = {
+      vnpay:   { label:'VNPay',   color:'#0f46c9', icon:'bi-bank2',      acct:'ENGLISH CENTER',    bank:'Vietcombank — 1234567890' },
+      momo:    { label:'MoMo',    color:'#ae0070', icon:'bi-phone-fill',  acct:'ENGLISH CENTER',    bank:'Số điện thoại: 0901 234 567' },
+      zalopay: { label:'ZaloPay', color:'#0052cc', icon:'bi-wallet2',     acct:'ENGLISH CENTER',    bank:'Số ZaloPay: 0901 234 567' },
+    };
+    const m=METHOD_INFO[payMethod];
+    const qrUrl=`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(`ENGLISH CENTER - THANH TOAN HOC PHI - ${fmt(final)} - ${payMethod.toUpperCase()}`)}`;
+    const names=selected.filter(id=>!EC_COURSES[id].selected).map(id=>EC_COURSES[id].name);
+    const paidNames=selected.filter(id=>!EC_COURSES[id].free).map(id=>EC_COURSES[id].name).join(', ');
+
+    showModal(`
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;justify-content:center">
+        <i class="bi ${m.icon}" style="font-size:22px;color:${m.color}"></i>
+        <div style="font-size:17px;font-weight:800;color:var(--ink)">Quét mã thanh toán</div>
+      </div>
+
+      <div style="background:var(--bg);border:1px solid var(--line);border-radius:var(--r);padding:14px;margin-bottom:14px">
+        <div style="display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px;margin-bottom:10px">
+          <img src="${qrUrl}" width="160" height="160" style="display:block;border-radius:6px" alt="QR">
+        </div>
+        <div style="font-size:11.5px;color:var(--ink3);margin-bottom:6px">${m.bank}</div>
+        <div style="font-size:13px;font-weight:700;color:var(--ink)">Tên: ${m.acct}</div>
+        <div style="margin-top:6px;padding:8px 12px;background:#fff;border-radius:8px;border:1px solid var(--line)">
+          <span style="font-size:11px;color:var(--ink3)">Số tiền</span>
+          <div style="font-size:20px;font-weight:800;color:var(--blue);font-family:'JetBrains Mono',monospace">${fmt(final)}</div>
+        </div>
+        <div style="margin-top:8px;font-size:11.5px;color:var(--ink3)">
+          Nội dung: <strong style="color:var(--ink);font-family:'JetBrains Mono',monospace;font-size:11px">HOCPHI ${paidNames.substring(0,30)}</strong>
+        </div>
+      </div>
+
+      <div style="font-size:11.5px;color:var(--ink3);background:var(--amber-lt);border:1px solid #fde68a;border-radius:8px;padding:9px 12px;margin-bottom:14px;text-align:left">
+        <i class="bi bi-info-circle" style="color:var(--amber)"></i>
+        Sau khi chuyển khoản, nhấn <strong>"Xác nhận đã thanh toán"</strong> để kích hoạt khóa học.
+      </div>
+
+      <button onclick="confirmPayment()"
+        style="width:100%;background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;border:none;border-radius:var(--r);padding:13px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;box-shadow:0 4px 18px rgba(21,88,232,.3);margin-bottom:8px">
+        <i class="bi bi-check2-circle"></i> Xác nhận đã thanh toán
+      </button>
+      <button onclick="document.getElementById('modalOverlay').classList.remove('show','vis')"
+        style="width:100%;background:none;border:1.5px solid var(--line);border-radius:var(--r);padding:11px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Sora',sans-serif;color:var(--ink2)">
+        Quay lại
+      </button>`);
+  }
+}
+
+/* ─── XÁC NHẬN THANH TOÁN (sau QR) ─── */
+function confirmPayment(){
+  const{final}=calcFinal();
+  showModal(`<div class="spinner"></div>
+    <div style="font-size:15px;font-weight:700;color:var(--ink);margin-bottom:5px">Đang xác nhận thanh toán...</div>
+    <div style="font-size:13px;color:var(--ink3)">${payMethod.toUpperCase()} · ${fmt(final)}</div>`);
+  setTimeout(()=>{
+    saveEnrollment();
+    const names=selected.map(id=>EC_COURSES[id].name).join('<br>• ');
+    showModal(`
+      <div class="pop-anim">
+        <div style="width:74px;height:74px;background:var(--green-lt);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;border:3px solid #6ee7b7">
+          <i class="bi bi-check-lg" style="font-size:36px;color:var(--green)"></i>
+        </div>
+      </div>
+      <div style="font-size:22px;font-weight:800;color:var(--ink);margin-bottom:4px">Thanh toán thành công! 🎉</div>
+      <div style="font-size:13px;color:var(--ink3);margin-bottom:16px">${payMethod.toUpperCase()} · ${fmt(final)}</div>
+      <div style="background:var(--bg);border-radius:var(--r);padding:12px 16px;text-align:left;margin-bottom:16px;border:1px solid var(--line)">
+        <div style="font-size:10px;font-weight:800;letter-spacing:.8px;color:var(--ink3);text-transform:uppercase;margin-bottom:6px">Khóa đã đăng ký</div>
+        <div style="font-size:12.5px;font-weight:600;color:var(--ink);line-height:1.7">• ${names}</div>
+      </div>
+      <div style="font-size:13px;color:var(--ink3);margin-bottom:14px">Chuyển trang trong <strong id="goCountdown">3</strong> giây...</div>
+      <button onclick="location.href='dashboard_hocsinh_new.html'"
+        style="width:100%;background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;border:none;border-radius:var(--r);padding:13px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Sora',sans-serif;box-shadow:0 4px 18px rgba(21,88,232,.3)">
+        Vào học ngay <i class="bi bi-arrow-right"></i>
+      </button>`);
+    let t=3;
+    const cd=setInterval(()=>{t--;const el=document.getElementById('goCountdown');if(el)el.textContent=t;if(t<=0){clearInterval(cd);location.href='dashboard_hocsinh_new.html'}},1000);
+  },2000);
+}
+
+function showModal(html){
+  const ov=document.getElementById('modalOverlay');
+  document.getElementById('modalContent').innerHTML=html;
+  ov.classList.add('show');
+  requestAnimationFrame(()=>ov.classList.add('vis'));
+}
+
+function fmt(n){if(n===0)return'Miễn phí';return n.toLocaleString('vi-VN')+'đ'}
+
+/* ─── INIT ─── */
+document.addEventListener('DOMContentLoaded',()=>{
+  const user=JSON.parse(localStorage.getItem('ec_current_user')||'{}');
+  if(user.name){
+    document.getElementById('topName').textContent=user.name;
+    document.getElementById('topAvatar').textContent=user.name.split(' ').map(w=>w[0]).slice(-2).join('').toUpperCase();
+  }
+  // không chọn sẵn — người học tự chọn
+  renderCourses(); renderPlans(); updateSummary();
+  const saved=sessionStorage.getItem('ec_coupon');
+  if(saved){document.getElementById('couponInput').value=saved;applyCoupon()}
+});
+</script>
+</body>
+</html>

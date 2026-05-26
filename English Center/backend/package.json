@@ -1,0 +1,26 @@
+{
+  "name": "english-center",
+  "version": "1.0.0",
+  "description": "Full-stack demo for English Center with a Node.js backend and static frontend.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "db:setup": "node setup-db.js",
+    "seed": "node seed.js",
+    "check": "node --check server.js && node --check db.js && node --check seed.js && node --check setup-db.js && node --check ../frontend/assets/js/api.js && node --check ../frontend/assets/js/main.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "english-center",
+    "nodejs",
+    "static-site"
+  ],
+  "author": "English Center",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "mysql2": "^3.22.3"
+  }
+}

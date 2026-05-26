@@ -1,0 +1,1171 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>English Center - Nhóm 3</title>
+  <meta name="description" content="Danh sách khóa học Tiếng Anh THPTQG từ nền tảng, ngữ pháp, từ vựng đến luyện đề chuyên sâu.">
+  <meta name="keywords" content="">
+
+  <link href="assets/img/logo.1.jpg" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Raleway:wght@400;600;700;800;900&family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  <link href="assets/css/main.css" rel="stylesheet">
+
+  <style>
+  /* ═══════════════════════════════════════════
+     COURSE DETAIL MODAL
+  ═══════════════════════════════════════════ */
+  .kh-overlay {
+    display:none; position:fixed; inset:0;
+    background:rgba(0,0,0,.65); z-index:99999;
+    overflow-y:auto; padding:24px 12px;
+    backdrop-filter:blur(4px);
+  }
+  .kh-overlay.open { display:block; animation:khFadeIn .2s ease; }
+  @keyframes khFadeIn { from{opacity:0} to{opacity:1} }
+
+  .kh-box {
+    background:#fff; max-width:1020px; margin:0 auto;
+    border-radius:18px; overflow:hidden;
+    box-shadow:0 32px 100px rgba(0,0,0,.35);
+    position:relative;
+    animation:khSlideUp .3s cubic-bezier(.4,0,.2,1);
+  }
+  @keyframes khSlideUp {
+    from{transform:translateY(28px);opacity:0}
+    to{transform:translateY(0);opacity:1}
+  }
+
+  /* Close button */
+  .kh-close {
+    position:absolute; top:14px; right:14px; z-index:20;
+    background:rgba(0,0,0,.08); border:none;
+    width:34px; height:34px; border-radius:50%;
+    cursor:pointer; font-size:14px;
+    display:flex; align-items:center; justify-content:center;
+    transition:background .2s; color:#333;
+  }
+  .kh-close:hover { background:rgba(0,0,0,.18); }
+
+  /* Two-column grid */
+  .kh-grid { display:grid; grid-template-columns:1fr 300px; min-height:520px; }
+
+  /* ── LEFT COLUMN ── */
+  .kh-left { padding:28px 28px 28px 28px; overflow-y:auto; max-height:88vh; }
+
+  /* Hero area: image + title side-by-side */
+  .kh-hero { display:grid; grid-template-columns:200px 1fr; gap:18px; margin-bottom:20px; }
+  .kh-hero-img { position:relative; border-radius:12px; overflow:hidden; box-shadow:0 4px 16px rgba(0,0,0,.15); }
+  .kh-hero-img img { width:100%; height:130px; object-fit:cover; display:block; }
+  .kh-hero-play {
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    background:rgba(0,0,0,.28); cursor:pointer; transition:background .2s;
+  }
+  .kh-hero-play:hover { background:rgba(0,0,0,.42); }
+  .kh-hero-play i { color:#fff; font-size:36px; }
+
+  .kh-hero-info { display:flex; flex-direction:column; justify-content:center; }
+  .kh-tags { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px; }
+  .kh-tag-cat { background:#e8f0fe; color:#1a56db; padding:4px 12px; border-radius:20px; font-size:11px; font-weight:700; }
+  .kh-tag-lvl { background:#fef3c7; color:#92400e; padding:4px 12px; border-radius:20px; font-size:11px; font-weight:700; }
+  .kh-title  { font-size:20px; font-weight:800; color:#1a1a2e; margin:0 0 10px; line-height:1.3; }
+  .kh-short-desc { font-size:13px; color:#666; line-height:1.6; margin:0 0 12px; }
+
+  /* Instructor row */
+  .kh-inst-row { display:flex; align-items:center; gap:10px; padding:10px 14px; background:#f8f9ff; border-radius:10px; }
+  .kh-inst-av  { width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid #d0d8f8; flex-shrink:0; }
+  .kh-inst-lbl { font-size:10px; color:#999; text-transform:uppercase; letter-spacing:.5px; }
+  .kh-inst-name{ font-size:14px; font-weight:700; color:#1a1a2e; }
+  .kh-inst-role{ font-size:11px; color:#1a56db; }
+  .kh-rating-row { display:flex; align-items:center; gap:6px; margin-top:6px; }
+  .kh-rating-row .stars { color:#f59e0b; font-size:13px; }
+  .kh-rating-row .num   { font-weight:700; color:#1a1a2e; font-size:13px; }
+  .kh-rating-row .cnt   { color:#888; font-size:12px; }
+
+  /* TABS */
+  .kh-tabs { display:flex; gap:2px; border-bottom:2px solid #f0f0f0; margin:18px 0 18px; }
+  .kh-tab  {
+    background:none; border:none; padding:9px 20px;
+    font-size:13.5px; font-weight:600; cursor:pointer;
+    color:#888; border-bottom:2px solid transparent;
+    margin-bottom:-2px; transition:all .2s;
+    display:flex; align-items:center; gap:6px;
+  }
+  .kh-tab.active { color:#1a56db; border-bottom-color:#1a56db; }
+  .kh-tab i { font-size:13px; }
+
+  /* Tab panes */
+  .kh-pane { display:none; }
+  .kh-pane.active { display:block; animation:khTab .2s ease; }
+  @keyframes khTab { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
+  .kh-pane h4 { font-size:14px; font-weight:700; margin:16px 0 10px; color:#1a1a2e; }
+  .kh-pane .kh-desc { font-size:13.5px; color:#555; line-height:1.8; margin-bottom:4px; }
+
+  /* Skills grid */
+  .kh-skills { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .kh-skill  { display:flex; align-items:center; gap:10px; background:#f8f9ff; border-radius:10px; padding:10px 12px; }
+  .kh-skill-icon { width:34px; height:34px; border-radius:8px; background:#1a56db; color:#fff; display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; }
+  .kh-skill-name { font-size:12px; font-weight:700; color:#1a1a2e; }
+  .kh-skill-sub  { font-size:11px; color:#888; margin-top:1px; }
+
+  /* Requirements */
+  .kh-reqs { list-style:none; padding:0; margin:0; }
+  .kh-reqs li { display:flex; gap:8px; font-size:13px; color:#444; margin-bottom:8px; align-items:flex-start; }
+  .kh-reqs li::before { content:"✓"; color:#1a56db; font-weight:800; flex-shrink:0; margin-top:1px; }
+
+  /* Curriculum */
+  .kh-chapter     { border:1px solid #e8e8e8; border-radius:10px; overflow:hidden; margin-bottom:8px; }
+  .kh-chapter-hd  { background:#f8f9ff; padding:12px 16px; display:flex; justify-content:space-between; align-items:center; font-weight:700; font-size:13.5px; color:#1a1a2e; cursor:pointer; }
+  .kh-chapter-hd span { font-size:12px; color:#888; font-weight:400; }
+  .kh-chapter-body{ padding:4px 16px 10px; }
+  .kh-lesson { display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid #f5f5f5; font-size:13px; color:#555; }
+  .kh-lesson:last-child { border-bottom:none; }
+  .kh-lesson i { color:#1a56db; font-size:13px; }
+
+  /* Reviews */
+  .kh-rev-summary { display:flex; align-items:center; gap:20px; background:#f8f9ff; border-radius:12px; padding:18px 20px; margin-bottom:18px; }
+  .kh-rating-big  { font-size:54px; font-weight:900; color:#1a1a2e; line-height:1; }
+  .kh-stars-big   { color:#f59e0b; font-size:20px; margin-bottom:4px; }
+  .kh-rev-count   { font-size:13px; color:#888; }
+  .kh-rev-item    { border-bottom:1px solid #f0f0f0; padding-bottom:14px; margin-bottom:14px; }
+  .kh-rev-item:last-child { border-bottom:none; }
+  .kh-rev-header  { display:flex; align-items:center; gap:10px; margin-bottom:6px; }
+  .kh-rev-av      { width:36px; height:36px; border-radius:50%; background:#1a56db; color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; flex-shrink:0; }
+  .kh-rev-name    { font-weight:700; font-size:13.5px; color:#222; }
+  .kh-rev-stars   { color:#f59e0b; font-size:12px; }
+  .kh-rev-text    { font-size:13px; color:#555; line-height:1.65; }
+
+  /* ── RIGHT COLUMN ── */
+  .kh-right { background:#fafbfc; border-left:1px solid #eaeaea; padding:20px 18px; display:flex; flex-direction:column; gap:14px; overflow-y:auto; max-height:88vh; }
+
+  /* Price box */
+  .kh-price-box  { background:#fff; border-radius:12px; padding:18px; box-shadow:0 2px 12px rgba(0,0,0,.07); }
+  .kh-price-row  { display:flex; align-items:center; gap:10px; margin-bottom:14px; }
+  .kh-price      { font-size:24px; font-weight:900; color:#1a1a2e; }
+  .kh-price-orig { font-size:14px; color:#aaa; text-decoration:line-through; }
+  .kh-badge-sale { background:#fee2e2; color:#dc2626; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:700; }
+  .kh-enrolled   { font-size:12px; color:#888; margin-bottom:12px; display:flex; align-items:center; gap:5px; }
+  .kh-enrolled i { color:#1a56db; }
+
+  /* Include icons */
+  .kh-includes { list-style:none; padding:0; margin:0 0 14px; border-top:1px solid #f0f0f0; padding-top:12px; }
+  .kh-includes li { display:flex; align-items:center; gap:8px; font-size:12.5px; color:#555; padding:4px 0; }
+  .kh-includes li i { color:#1a56db; font-size:13px; width:16px; }
+
+  .kh-btn-enroll {
+    display:block; text-align:center;
+    background:#1a56db; color:#fff;
+    padding:13px; border-radius:10px;
+    font-weight:700; font-size:15px; text-decoration:none;
+    margin-bottom:8px; transition:background .2s;
+  }
+  .kh-btn-enroll:hover { background:#1446b8; color:#fff; }
+  .kh-btn-wish {
+    width:100%; background:#fff; border:2px solid #1a56db;
+    color:#1a56db; padding:9px; border-radius:10px;
+    font-weight:700; font-size:13px; cursor:pointer;
+    margin-bottom:8px; transition:all .2s;
+  }
+  .kh-btn-wish:hover { background:#e8f0fe; }
+  .kh-guarantee { font-size:12px; color:#888; text-align:center; margin:0; }
+  .kh-guarantee i { color:#16a34a; }
+
+  /* Course details */
+  .kh-detail-box { background:#fff; border-radius:12px; padding:15px; box-shadow:0 2px 12px rgba(0,0,0,.07); }
+  .kh-detail-box h5 { font-size:12px; font-weight:800; margin:0 0 10px; color:#1a1a2e; text-transform:uppercase; letter-spacing:.6px; }
+  .kh-detail-row { display:flex; justify-content:space-between; align-items:center; padding:7px 0; border-bottom:1px solid #f5f5f5; font-size:12.5px; }
+  .kh-detail-row:last-child { border-bottom:none; }
+  .kh-detail-row .kh-lbl { color:#888; display:flex; align-items:center; gap:5px; }
+  .kh-detail-row .kh-lbl i { color:#1a56db; }
+  .kh-detail-row .kh-val { font-weight:600; color:#333; }
+
+  /* Share */
+  .kh-share-box { background:#fff; border-radius:12px; padding:15px; box-shadow:0 2px 12px rgba(0,0,0,.07); }
+  .kh-share-box h5 { font-size:12px; font-weight:800; margin:0 0 10px; text-transform:uppercase; letter-spacing:.6px; }
+  .kh-share-icons { display:flex; gap:8px; }
+  .kh-share-btn { width:36px; height:36px; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#fff; text-decoration:none; font-size:15px; transition:opacity .2s; }
+  .kh-share-btn:hover { opacity:.8; color:#fff; }
+  .kh-fb{background:#1877f2}.kh-tw{background:#1a1a1a}.kh-li{background:#0a66c2}.kh-em{background:#ea4335}
+
+  /* Responsive */
+  @media (max-width:860px) {
+    .kh-grid { grid-template-columns:1fr; }
+    .kh-right { border-left:none; border-top:1px solid #eaeaea; max-height:none; }
+    .kh-left  { max-height:none; }
+    .kh-skills { grid-template-columns:1fr; }
+    .kh-hero  { grid-template-columns:1fr; }
+    .kh-hero-img img { height:180px; }
+  }
+
+  /* Clickable cards */
+  .course-card { cursor:pointer; transition:transform .2s, box-shadow .2s; }
+  .course-card:hover { transform:translateY(-3px); box-shadow:0 12px 32px rgba(0,0,0,.12) !important; }
+  </style>
+</head>
+
+<body class="courses-page">
+
+  <!-- HEADER -->
+  <header id="header" class="header d-flex align-items-center sticky-top">
+    <div class="container-fluid container-xl position-relative d-flex align-items-center">
+      <a href="index.html" class="logo d-flex align-items-center me-auto">
+        <h1 class="sitename">English Center</h1>
+      </a>
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li><a href="index.html">Trang chủ</a></li>
+          <li><a href="gioithieu.html">Giới thiệu</a></li>
+          <li><a href="khoahoc.html" class="active">Khóa học</a></li>
+          <li><a href="giaovien.html">Giáo viên</a></li>
+          <li><a href="hocphi.html">Học Phí</a></li>
+          <li><a href="blog.html">Blog</a></li>
+          <li class="dropdown">
+            <a href="#"><span>Tài nguyên</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+            <ul>
+              <li><a href="dethithu.html">Đề thi thử</a></li>
+              <li><a href="tailieuonthi.html">Tài liệu ôn thi</a></li>
+              <li><a href="sukien.html">Sự kiện</a></li>
+              <li><a href="404.html">Cộng đồng</a></li>
+            </ul>
+          </li>
+          <li><a href="lienhe.html">Liên hệ</a></li>
+        </ul>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
+      <div class="header-actions d-flex align-items-center">
+        <a class="btn-dangnhap" href="dangnhap.html"><i class="bi bi-person me-1"></i>Đăng Nhập</a>
+        <a class="btn-getstarted" href="dangky.html"><i class="bi bi-pencil-square me-1"></i>Đăng Ký</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+
+    <!-- Page Title -->
+    <div class="page-title light-background">
+      <div class="container d-lg-flex justify-content-between align-items-center">
+        <h1 class="mb-2 mb-lg-0">Khóa Học</h1>
+        <nav class="breadcrumbs">
+          <ol>
+            <li><a href="index.html">Trang chủ</a></li>
+            <li class="current">Khóa học</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+
+    <!-- Courses Section -->
+    <section id="courses-2" class="courses-2 section">
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+        <div class="row">
+
+          <!-- Sidebar filters -->
+          <div class="col-lg-3">
+            <div class="course-filters" data-aos="fade-right" data-aos-delay="100">
+              <h4 class="filter-title">Lọc Khóa Học</h4>
+
+              <div class="filter-group">
+                <h5>Danh Mục</h5>
+                <div class="filter-options">
+                  <label class="filter-checkbox"><input type="checkbox" checked><span class="checkmark"></span>Tất cả</label>
+                  <label class="filter-checkbox"><input type="checkbox"><span class="checkmark"></span>Ngữ pháp trọng tâm</label>
+                  <label class="filter-checkbox"><input type="checkbox"><span class="checkmark"></span>Từ vựng theo chủ đề</label>
+                  <label class="filter-checkbox"><input type="checkbox"><span class="checkmark"></span>Luyện đề THPTQG</label>
+                  <label class="filter-checkbox"><input type="checkbox"><span class="checkmark"></span>Phát âm &amp; AI</label>
+                  <label class="filter-checkbox"><input type="checkbox"><span class="checkmark"></span>Đề thi thử</label>
+                </div>
+              </div>
+
+              <div class="filter-group">
+                <h5>Trình Độ</h5>
+                <div class="filter-options">
+                  <label class="filter-checkbox"><input type="checkbox" checked><span class="checkmark"></span>Tất cả</label>
+                  <label class="filter-checkbox"><input type="checkbox"><span class="checkmark"></span>Mất gốc</label>
+                  <label class="filter-checkbox"><input type="checkbox"><span class="checkmark"></span>Trung bình</label>
+                  <label class="filter-checkbox"><input type="checkbox"><span class="checkmark"></span>Khá</label>
+                  <label class="filter-checkbox"><input type="checkbox"><span class="checkmark"></span>Nâng cao</label>
+                </div>
+              </div>
+
+              <div class="filter-group">
+                <h5>Thời Lượng</h5>
+                <div class="filter-options">
+                  <label class="filter-checkbox"><input type="checkbox"><span class="checkmark"></span>Dưới 5 giờ</label>
+                  <label class="filter-checkbox"><input type="checkbox"><span class="checkmark"></span>5–20 giờ</label>
+                  <label class="filter-checkbox"><input type="checkbox"><span class="checkmark"></span>Trên 20 giờ</label>
+                </div>
+              </div>
+
+              <div class="filter-group">
+                <h5>Học Phí</h5>
+                <div class="filter-options">
+                  <label class="filter-checkbox"><input type="checkbox"><span class="checkmark"></span>Miễn phí</label>
+                  <label class="filter-checkbox"><input type="checkbox"><span class="checkmark"></span>Có phí</label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Course grid -->
+          <div class="col-lg-9">
+            <div class="courses-header" data-aos="fade-left" data-aos-delay="100">
+              <div class="search-box">
+                <i class="bi bi-search"></i>
+                <input type="text" id="searchInput" placeholder="Tìm kiếm khóa học....">
+              </div>
+              <div class="sort-dropdown">
+                <select id="sortSelect">
+                  <option value="popular">Sắp xếp: Phổ biến nhất</option>
+                  <option value="newest">Mới nhất</option>
+                  <option value="price-asc">Học phí: Thấp đến Cao</option>
+                  <option value="price-desc">Học phí: Cao đến Thấp</option>
+                  <option value="duration-asc">Thời lượng: Ngắn đến Dài</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="courses-grid" data-aos="fade-up" data-aos-delay="200">
+              <div class="row">
+
+                <!-- Card 1 -->
+                <div class="col-lg-6 col-md-6 course-col" data-category="ngu-phap" data-level="trung-binh" data-hours="20" data-price="500000" data-free="0" data-rating="4.8" data-students="342" data-title="Ngữ Pháp Trọng Tâm THPTQG">
+                  <div class="course-card" onclick="khOpen(0)">
+                    <div class="course-image">
+                      <img src="assets/img/education/courses-3.webp" alt="Course" class="img-fluid">
+                      <div class="course-badge">NỔI BẬT</div>
+                      <div class="course-price">500.000vnđ</div>
+                    </div>
+                    <div class="course-content">
+                      <div class="course-meta"><span class="category">NGỮ PHÁP</span><span class="level">TRUNG BÌNH</span></div>
+                      <h3>Ngữ Pháp Trọng Tâm THPTQG</h3>
+                      <p>Hệ thống toàn bộ 15 chuyên đề ngữ pháp thường gặp nhất trong đề thi — học nhanh, nhớ lâu và áp dụng làm bài ngay lập tức.</p>
+                      <div class="course-stats">
+                        <div class="stat"><i class="bi bi-clock"></i><span>20 giờ</span></div>
+                        <div class="stat"><i class="bi bi-people"></i><span>342 học sinh</span></div>
+                        <div class="rating"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-half"></i><span>4.8 (89 đánh giá)</span></div>
+                      </div>
+                      <div class="instructor-info">
+                        <img src="assets/img/person/Nguyen-Quoc-Bao.png" alt="" class="instructor-avatar">
+                        <span class="instructor-name">Nguyễn Quốc Bảo</span>
+                      </div>
+                      <a href="dangky.html" class="btn-course" onclick="event.stopPropagation()">Đăng Ký Ngay</a>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="col-lg-6 col-md-6 course-col" data-category="tu-vung" data-level="co-ban" data-hours="10" data-price="0" data-free="1" data-rating="4.6" data-students="789" data-title="Từ Vựng Theo Chủ Đề THPTQG">
+                  <div class="course-card" onclick="khOpen(1)">
+                    <div class="course-image">
+                      <img src="assets/img/education/courses-7.webp" alt="Course" class="img-fluid">
+                      <div class="course-badge badge-free">MIỄN PHÍ</div>
+                    </div>
+                    <div class="course-content">
+                      <div class="course-meta"><span class="category">TỪ VỰNG</span><span class="level">CƠ BẢN</span></div>
+                      <h3>Từ Vựng Theo Chủ Đề THPTQG</h3>
+                      <p>Hệ thống 2.000 từ vựng thường gặp nhất trong đề thi theo từng chủ đề — kết hợp spaced repetition giúp bạn nhớ lâu và dùng được ngay.</p>
+                      <div class="course-stats">
+                        <div class="stat"><i class="bi bi-clock"></i><span>10 giờ</span></div>
+                        <div class="stat"><i class="bi bi-people"></i><span>789 học sinh</span></div>
+                        <div class="rating"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star"></i><span>4.6 (156 đánh giá)</span></div>
+                      </div>
+                      <div class="instructor-info">
+                        <img src="assets/img/person/HOANG THI THU HA.jpg" alt="" class="instructor-avatar">
+                        <span class="instructor-name">Hoàng Thị Thu Hà</span>
+                      </div>
+                      <a href="dangky.html" class="btn-course" onclick="event.stopPropagation()">Học Miễn Phí Ngay</a>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="col-lg-6 col-md-6 course-col" data-category="luyen-de" data-level="trung-binh" data-hours="25" data-price="1200000" data-free="0" data-rating="5.0" data-students="156" data-title="Luyện Đề Tiếng Anh THPTQG">
+                  <div class="course-card" onclick="khOpen(2)">
+                    <div class="course-image">
+                      <img src="assets/img/education/courses-12.webp" alt="Course" class="img-fluid">
+                      <div class="course-badge badge-new">MỚI</div>
+                      <div class="course-price">1.200.000vnđ</div>
+                    </div>
+                    <div class="course-content">
+                      <div class="course-meta"><span class="category">LUYỆN ĐỀ</span><span class="level">TRUNG BÌNH</span></div>
+                      <h3>Luyện Đề Tiếng Anh THPTQG</h3>
+                      <p>Luyện tập chuyên sâu theo từng dạng đề, phân tích lỗi sai và chiến lược phân bổ thời gian — dành cho học sinh muốn đột phá điểm số.</p>
+                      <div class="course-stats">
+                        <div class="stat"><i class="bi bi-clock"></i><span>25 giờ</span></div>
+                        <div class="stat"><i class="bi bi-people"></i><span>156 học sinh</span></div>
+                        <div class="rating"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><span>5.0 (42 đánh giá)</span></div>
+                      </div>
+                      <div class="instructor-info">
+                        <img src="assets/img/person/TRAN DUC MINH.jpg" alt="" class="instructor-avatar">
+                        <span class="instructor-name">Trần Đức Minh</span>
+                      </div>
+                      <a href="dangky.html" class="btn-course" onclick="event.stopPropagation()">Đăng Ký Ngay</a>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="col-lg-6 col-md-6 course-col" data-category="nang-cao" data-level="kha" data-hours="30" data-price="1500000" data-free="0" data-rating="4.7" data-students="234" data-title="Tiếng Anh Nâng Cao Săn Điểm 9">
+                  <div class="course-card" onclick="khOpen(3)">
+                    <div class="course-image">
+                      <img src="assets/img/education/courses-5.webp" alt="Course" class="img-fluid">
+                      <div class="course-price">1.500.000vnđ</div>
+                    </div>
+                    <div class="course-content">
+                      <div class="course-meta"><span class="category">NÂNG CAO</span><span class="level">KHÁ</span></div>
+                      <h3>Tiếng Anh Nâng Cao — Săn Điểm 9</h3>
+                      <p>Chinh phục những câu hỏi khó nhất trong đề thi, đọc hiểu nâng cao, điền từ phức tạp và các bẫy ngữ pháp thường gặp.</p>
+                      <div class="course-stats">
+                        <div class="stat"><i class="bi bi-clock"></i><span>30 giờ</span></div>
+                        <div class="stat"><i class="bi bi-people"></i><span>234 học sinh</span></div>
+                        <div class="rating"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-half"></i><span>4.7 (73 đánh giá)</span></div>
+                      </div>
+                      <div class="instructor-info">
+                        <img src="assets/img/person/NGO THI NGOC BICH.jpg" alt="" class="instructor-avatar">
+                        <span class="instructor-name">Ngô Thị Bích Ngọc</span>
+                      </div>
+                      <a href="dangky.html" class="btn-course" onclick="event.stopPropagation()">Đăng Ký Ngay</a>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Card 5 -->
+                <div class="col-lg-6 col-md-6 course-col" data-category="phat-am" data-level="co-ban" data-hours="15" data-price="800000" data-free="0" data-rating="4.5" data-students="467" data-title="Phát Âm Chuẩn Luyện Tập với AI">
+                  <div class="course-card" onclick="khOpen(4)">
+                    <div class="course-image">
+                      <img src="assets/img/education/courses-9.webp" alt="Course" class="img-fluid">
+                      <div class="course-badge">Phổ Biến</div>
+                      <div class="course-price">800.000vnđ</div>
+                    </div>
+                    <div class="course-content">
+                      <div class="course-meta"><span class="category">PHÁT ÂM</span><span class="level">CƠ BẢN</span></div>
+                      <h3>Phát Âm Chuẩn &amp; Luyện Tập với AI</h3>
+                      <p>AI phân tích phát âm từng âm tiết, chỉ ra chính xác lỗi sai và hướng dẫn sửa — tiến bộ rõ rệt chỉ sau vài buổi luyện.</p>
+                      <div class="course-stats">
+                        <div class="stat"><i class="bi bi-clock"></i><span>15 giờ</span></div>
+                        <div class="stat"><i class="bi bi-people"></i><span>467 học sinh</span></div>
+                        <div class="rating"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star"></i><span>4.5 (234 đánh giá)</span></div>
+                      </div>
+                      <div class="instructor-info">
+                        <img src="assets/img/person/NGUYEN KHANH LINH.jpg" alt="" class="instructor-avatar">
+                        <span class="instructor-name">Phạm Khánh Linh</span>
+                      </div>
+                      <a href="dangky.html" class="btn-course" onclick="event.stopPropagation()">Đăng Ký Ngay</a>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Card 6 -->
+                <div class="col-lg-6 col-md-6 course-col" data-category="on-thi" data-level="moi-trinh-do" data-hours="20" data-price="1000000" data-free="0" data-rating="4.9" data-students="298" data-title="Ôn Thi Tiếng Anh Cấp Tốc 4 Tuần">
+                  <div class="course-card" onclick="khOpen(5)">
+                    <div class="course-image">
+                      <img src="assets/img/education/courses-14.webp" alt="Course" class="img-fluid">
+                      <div class="course-badge badge-certificate">SẮP KHAI GIẢNG</div>
+                      <div class="course-price">1.000.000vnđ</div>
+                    </div>
+                    <div class="course-content">
+                      <div class="course-meta"><span class="category">ÔN THI CẤP TỐC</span><span class="level">MỌI TRÌNH ĐỘ</span></div>
+                      <h3>Ôn Thi Tiếng Anh Cấp Tốc 4 Tuần</h3>
+                      <p>Lộ trình ôn thi dồn dập 4 tuần trước kỳ thi — tập trung tối đa vào các dạng bài trọng tâm và chiến lược làm bài nhanh.</p>
+                      <div class="course-stats">
+                        <div class="stat"><i class="bi bi-clock"></i><span>20 giờ</span></div>
+                        <div class="stat"><i class="bi bi-people"></i><span>298 học sinh</span></div>
+                        <div class="rating"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-half"></i><span>4.9 (127 đánh giá)</span></div>
+                      </div>
+                      <div class="instructor-info">
+                        <img src="assets/img/person/LE HOANG NAM.webp" alt="" class="instructor-avatar">
+                        <span class="instructor-name">Lê Hoàng Nam</span>
+                      </div>
+                      <a href="dangky.html" class="btn-course" onclick="event.stopPropagation()">Đăng Ký Ngay</a>
+                    </div>
+                  </div>
+                </div>
+
+              </div><!-- .row -->
+            </div><!-- .courses-grid -->
+
+            <div class="pagination-wrapper" data-aos="fade-up" data-aos-delay="300">
+              <nav aria-label="Courses pagination">
+                <ul class="pagination justify-content-center">
+                  <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1"><i class="bi bi-chevron-left"></i></a></li>
+                  <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                  <li class="page-item"><a class="page-link" href="#">2</a></li>
+                  <li class="page-item"><a class="page-link" href="#">3</a></li>
+                  <li class="page-item"><a class="page-link" href="#"><i class="bi bi-chevron-right"></i></a></li>
+                </ul>
+              </nav>
+            </div>
+
+          </div><!-- .col-lg-9 -->
+        </div><!-- .row -->
+      </div><!-- .container -->
+    </section>
+
+  </main>
+
+  <!-- ════════════════════════════════════════════
+       COURSE DETAIL MODAL
+  ════════════════════════════════════════════ -->
+  <div class="kh-overlay" id="khModal" onclick="khCloseOverlay(event)">
+    <div class="kh-box">
+      <button class="kh-close" onclick="khClose()" aria-label="Đóng"><i class="bi bi-x-lg"></i></button>
+      <div class="kh-grid">
+
+        <!-- LEFT -->
+        <div class="kh-left">
+          <!-- Hero: image + title -->
+          <div class="kh-hero">
+            <div class="kh-hero-img">
+              <img id="kh-img" src="" alt="">
+              <div class="kh-hero-play"><i class="bi bi-play-circle-fill"></i></div>
+            </div>
+            <div class="kh-hero-info">
+              <div class="kh-tags">
+                <span class="kh-tag-cat" id="kh-cat"></span>
+                <span class="kh-tag-lvl" id="kh-lvl"></span>
+              </div>
+              <h2 class="kh-title" id="kh-title"></h2>
+              <p class="kh-short-desc" id="kh-short"></p>
+              <div class="kh-inst-row">
+                <img id="kh-inst-img" class="kh-inst-av" src="" alt="">
+                <div>
+                  <div class="kh-inst-lbl">Giảng Viên</div>
+                  <div class="kh-inst-name" id="kh-inst-name"></div>
+                  <div class="kh-inst-role">Senior Instructor</div>
+                </div>
+                <div class="ms-auto text-end">
+                  <div class="kh-rating-row justify-content-end">
+                    <span class="stars" id="kh-stars-sm"></span>
+                    <span class="num" id="kh-rating-sm"></span>
+                    <span class="cnt" id="kh-rcount-sm"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tabs -->
+          <div class="kh-tabs">
+            <button class="kh-tab active" onclick="khTab('overview',this)"><i class="bi bi-list-ul"></i>Tổng Quan</button>
+            <button class="kh-tab" onclick="khTab('curriculum',this)"><i class="bi bi-journals"></i>Chương Trình</button>
+            <button class="kh-tab" onclick="khTab('reviews',this)"><i class="bi bi-star"></i>Đánh Giá</button>
+          </div>
+
+          <!-- Pane: Overview -->
+          <div id="kh-tab-overview" class="kh-pane active">
+            <h4>Mô Tả Khóa Học</h4>
+            <p class="kh-desc" id="kh-desc"></p>
+            <h4>Kỹ Năng Sẽ Đạt Được</h4>
+            <div class="kh-skills" id="kh-skills"></div>
+            <h4>Yêu Cầu Đầu Vào</h4>
+            <ul class="kh-reqs" id="kh-reqs"></ul>
+          </div>
+
+          <!-- Pane: Curriculum -->
+          <div id="kh-tab-curriculum" class="kh-pane">
+            <div id="kh-curriculum"></div>
+          </div>
+
+          <!-- Pane: Reviews -->
+          <div id="kh-tab-reviews" class="kh-pane">
+            <div class="kh-rev-summary">
+              <div class="kh-rating-big" id="kh-rating"></div>
+              <div>
+                <div class="kh-stars-big" id="kh-stars"></div>
+                <div class="kh-rev-count" id="kh-rcount"></div>
+                <div style="font-size:12px;color:#aaa;margin-top:2px;">Dựa trên đánh giá của học viên</div>
+              </div>
+            </div>
+            <div id="kh-reviews"></div>
+          </div>
+        </div><!-- .kh-left -->
+
+        <!-- RIGHT -->
+        <div class="kh-right">
+
+          <!-- Price & enroll -->
+          <div class="kh-price-box">
+            <div class="kh-price-row">
+              <span class="kh-price" id="kh-price"></span>
+              <span class="kh-badge-sale" id="kh-badge"></span>
+            </div>
+            <div class="kh-enrolled" id="kh-enrolled"></div>
+
+            <!-- Includes -->
+            <ul class="kh-includes">
+              <li><i class="bi bi-camera-video"></i>Video bài giảng HD</li>
+              <li><i class="bi bi-infinity"></i>Truy cập trọn đời</li>
+              <li><i class="bi bi-download"></i>Tài liệu tải về</li>
+              <li><i class="bi bi-patch-check"></i>Chứng chỉ hoàn thành</li>
+              <li><i class="bi bi-phone"></i>Học trên mobile</li>
+            </ul>
+
+            <a href="dangky.html" class="kh-btn-enroll">Đăng Ký Ngay</a>
+            <p class="kh-guarantee"><i class="bi bi-shield-check"></i> Hoàn tiền trong 30 ngày</p>
+          </div>
+
+          <!-- Course details -->
+          <div class="kh-detail-box">
+            <h5>Chi Tiết Khóa Học</h5>
+            <div class="kh-detail-row"><span class="kh-lbl"><i class="bi bi-clock"></i>Thời lượng</span><span class="kh-val" id="kh-dur"></span></div>
+            <div class="kh-detail-row"><span class="kh-lbl"><i class="bi bi-bar-chart"></i>Trình độ</span><span class="kh-val" id="kh-lvl2"></span></div>
+            <div class="kh-detail-row"><span class="kh-lbl"><i class="bi bi-translate"></i>Ngôn ngữ</span><span class="kh-val">Tiếng Việt</span></div>
+            <div class="kh-detail-row"><span class="kh-lbl"><i class="bi bi-patch-question"></i>Bài kiểm tra</span><span class="kh-val" id="kh-quiz"></span></div>
+            <div class="kh-detail-row"><span class="kh-lbl"><i class="bi bi-pencil-square"></i>Bài tập</span><span class="kh-val" id="kh-assign"></span></div>
+            <div class="kh-detail-row"><span class="kh-lbl"><i class="bi bi-calendar3"></i>Cập nhật</span><span class="kh-val" id="kh-updated"></span></div>
+          </div>
+
+          <!-- Share -->
+          <div class="kh-share-box">
+            <h5>Chia Sẻ Khóa Học</h5>
+            <div class="kh-share-icons">
+              <a href="#" class="kh-share-btn kh-fb"><i class="bi bi-facebook"></i></a>
+              <a href="#" class="kh-share-btn kh-tw"><i class="bi bi-twitter-x"></i></a>
+              <a href="#" class="kh-share-btn kh-li"><i class="bi bi-linkedin"></i></a>
+              <a href="#" class="kh-share-btn kh-em"><i class="bi bi-envelope-fill"></i></a>
+            </div>
+          </div>
+
+        </div><!-- .kh-right -->
+      </div><!-- .kh-grid -->
+    </div><!-- .kh-box -->
+  </div><!-- .kh-overlay -->
+
+  <!-- FOOTER -->
+  <footer id="footer" class="footer accent-background">
+    <div class="container footer-top">
+      <div class="row gy-4">
+        <div class="col-lg-5 col-md-12 footer-about">
+          <a href="index.html" class="logo d-flex align-items-center">
+            <span class="sitename">English Center</span>
+          </a>
+          <p>Nền tảng ôn thi Tiếng Anh THPTQG chuyên biệt, đồng hành cùng học sinh lớp 12 trên hành trình chinh phục kỳ thi quan trọng nhất.</p>
+          <div class="social-links d-flex mt-4">
+            <a href=""><i class="bi bi-twitter-x"></i></a>
+            <a href=""><i class="bi bi-facebook"></i></a>
+            <a href=""><i class="bi bi-instagram"></i></a>
+            <a href=""><i class="bi bi-linkedin"></i></a>
+          </div>
+        </div>
+        <div class="col-lg-2 col-6 footer-links">
+          <h4>Thông tin</h4>
+          <ul>
+            <li><a href="index.html">Trang chủ</a></li>
+            <li><a href="gioithieu.html">Về chúng tôi</a></li>
+            <li><a href="khoahoc.html">Khóa học</a></li>
+            <li><a href="giaovien.html">Giáo viên</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="dieukhoan.html">Điều khoản dịch vụ</a></li>
+            <li><a href="quyenriengtu.html">Chính sách bảo mật</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-2 col-6 footer-links">
+          <h4>Khóa học</h4>
+          <ul>
+            <li><a href="khoahoc.html">Ngữ Pháp Trọng Tâm</a></li>
+            <li><a href="khoahoc.html">Luyện Đề THPTQG</a></li>
+            <li><a href="khoahoc.html">Từ Vựng Theo Chủ Đề</a></li>
+            <li><a href="khoahoc.html">Phát âm & Speaking</a></li>
+            <li><a href="khoahoc.html">Ôn Thi Cấp Tốc</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-3 col-md-12 footer-contact text-center text-md-start">
+          <h4>Liên Hệ</h4>
+          <p>182 Lương Thế Vinh, Thanh Xuân Bắc, Thanh Xuân, Hà Nội</p>
+          <p class="mt-4"><strong>Phone:</strong> <span>+1 34567892</span></p>
+          <p><strong>Email:</strong> <span>Nhom3@englishcenter.edu.vn</span></p>
+        </div>
+      </div>
+    </div>
+    <div class="container copyright text-center mt-4">
+      <p>&copy; <span>2026</span> <strong class="px-1 sitename">English Center</strong> <span>All Rights Reserved</span></p>
+    </div>
+  </footer>
+
+  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+  <div id="preloader"></div>
+
+  <!-- Vendor JS -->
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/vendor/php-email-form/validate.js"></script>
+  <script src="assets/vendor/aos/aos.js"></script>
+  <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="assets/js/main.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
+  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      if(typeof AOS!=='undefined') AOS.init({duration:600,easing:'ease-in-out',once:true});
+    });
+    setTimeout(function(){
+      var p=document.getElementById('preloader');
+      if(p) p.style.display='none';
+    }, 800);
+  </script>
+
+  <!-- ════════════════════════════════════════════
+       MODAL DATA & LOGIC
+  ════════════════════════════════════════════ -->
+  <script>
+  var khData = [
+    /* 0 ── Ngữ Pháp ── */
+    {
+      title: 'Ng\u1eef Ph\u00e1p Tr\u1ecdng T\u00e2m THPTQG',
+      cat:   'NG\u1eee PH\u00c1P', lvl: 'TRUNG B\u00ccNH',
+      price: '500.000\u0111', badge: 'NỔI BẬT', enrolled: '342 h\u1ecdc sinh \u0111\u00e3 \u0111\u0103ng k\u00fd',
+      img:      'assets/img/education/courses-3.webp',
+      instImg:  'assets/img/person/NGUYEN-QUOC-BAO.png',
+      instName: 'Nguy\u1ec5n Qu\u1ed1c B\u1ea3o',
+      dur: '20 gi\u1edd', quiz: '15 b\u00e0i ki\u1ec3m tra', assign: '6 b\u00e0i t\u1eadp',
+      updated: 'Th\u00e1ng 12/2024', rating: '4.8', rcount: '89 \u0111\u00e1nh gi\u00e1',
+      short: 'H\u1ec7 th\u1ed1ng 15 chuy\u00ean \u0111\u1ec1 ng\u1eef ph\u00e1p tr\u1ecdng t\u00e2m, ph\u00f9 h\u1ee3p h\u1ecdc sinh mu\u1ed1n \u0111\u1ea1t \u0111i\u1ec3m cao.',
+      desc:  'H\u1ec7 th\u1ed1ng to\u00e0n b\u1ed9 15 chuy\u00ean \u0111\u1ec1 ng\u1eef ph\u00e1p th\u01b0\u1eddng g\u1eb7p nh\u1ea5t trong \u0111\u1ec1 thi \u2014 h\u1ecdc nhanh, nh\u1edb l\u00e2u v\u00e0 \u00e1p d\u1ee5ng l\u00e0m b\u00e0i ngay l\u1eadp t\u1ee9c. Ph\u00f9 h\u1ee3p h\u1ecdc sinh mu\u1ed1n c\u1ee7ng c\u1ed1 n\u1ec1n t\u1ea3ng v\u00e0 \u0111\u1ea1t \u0111i\u1ec3m cao.',
+      skills: [
+        {ic:'bi-journal-code',  n:'Ng\u1eef ph\u00e1p c\u01a1 b\u1ea3n', s:'Th\u00ec, m\u1ec7nh \u0111\u1ec1, c\u1ea5u tr\u00fac'},
+        {ic:'bi-lightbulb',     n:'Ng\u1eef ph\u00e1p n\u00e2ng cao',  s:'\u0110\u1ea3o ng\u1eef, r\u00fat g\u1ecdn'},
+        {ic:'bi-pencil',        n:'Luy\u1ec7n \u0111\u1ec1 ng\u1eef ph\u00e1p', s:'50+ d\u1ea1ng b\u00e0i t\u1eadp'},
+        {ic:'bi-trophy',        n:'Chi\u1ebfn l\u01b0\u1ee3c l\u00e0m b\u00e0i', s:'Lo\u1ea1i tr\u1eeb, nh\u1eadn d\u1ea1ng b\u1eaby'}
+      ],
+      reqs: ['Ki\u1ebfn th\u1ee9c ng\u1eef ph\u00e1p ti\u1ebfng Anh c\u01a1 b\u1ea3n','H\u1ecdc sinh l\u1edbp 10\u201312','C\u00f3 k\u1ebft n\u1ed1i internet'],
+      chaps: [
+        {t:'Ch\u01b0\u01a1ng 1: C\u00e1c th\u00ec trong ti\u1ebfng Anh', tm:'3 b\u00e0i \u00b7 1.5h',
+         l:['Th\u00ec hi\u1ec7n t\u1ea1i \u0111\u01a1n & ti\u1ebfp di\u1ec5n','Th\u00ec qu\u00e1 kh\u1ee9 \u0111\u01a1n & ti\u1ebfp di\u1ec5n','Th\u00ec t\u01b0\u01a1ng lai']},
+        {t:'Ch\u01b0\u01a1ng 2: M\u1ec7nh \u0111\u1ec1 quan h\u1ec7', tm:'3 b\u00e0i \u00b7 2h',
+         l:['M\u1ec7nh \u0111\u1ec1 x\u00e1c \u0111\u1ecbnh','M\u1ec7nh \u0111\u1ec1 kh\u00f4ng x\u00e1c \u0111\u1ecbnh','R\u00fat g\u1ecdn m\u1ec7nh \u0111\u1ec1']},
+        {t:'Ch\u01b0\u01a1ng 3: C\u00e2u \u0111i\u1ec1u ki\u1ec7n', tm:'3 b\u00e0i \u00b7 1.5h',
+         l:['Lo\u1ea1i 0, 1, 2, 3','C\u00e2u \u0111i\u1ec1u ki\u1ec7n h\u1ed7n h\u1ee3p','B\u00e0i t\u1eadp t\u1ed5ng h\u1ee3p']}
+      ],
+      revs: [
+        {n:'Minh Tu\u1ea5n', s:5, t:'Kh\u00f3a h\u1ecdc r\u1ea5t hay, th\u1ea7y gi\u1ea3i th\u00edch d\u1ec5 hi\u1ec3u. \u0110i\u1ec3m ng\u1eef ph\u00e1p t\u0103ng h\u1eb3n!'},
+        {n:'H\u01b0\u01a1ng Giang', s:4, t:'N\u1ed9i dung \u0111\u1ea7y \u0111\u1ee7, tr\u00ecnh b\u00e0y logic. Ch\u1ec9 \u01b0\u1edbc c\u00f3 th\u00eam video ph\u00e2n t\u00edch \u0111\u1ec1 thi.'}
+      ]
+    },
+
+    /* 1 ── Từ Vựng ── */
+    {
+      title: 'T\u1eeb V\u1ef1ng Theo Ch\u1ee7 \u0110\u1ec1 THPTQG',
+      cat:   'T\u1eea V\u1ef0NG', lvl: 'C\u01a0 B\u1ea2N',
+      price: 'MI\u1ec4N PH\u00cd', enrolled: '789 h\u1ecdc sinh \u0111\u00e3 \u0111\u0103ng k\u00fd',
+      img:      'assets/img/education/courses-7.webp',
+      instImg:  'assets/img/person/HOANG THI THU HA.jpg',
+      instName: 'Ho\u00e0ng Th\u1ecb Thu H\u00e0',
+      dur: '10 gi\u1edd', quiz: '20 b\u00e0i ki\u1ec3m tra', assign: '4 b\u00e0i t\u1eadp',
+      updated: 'Th\u00e1ng 11/2024', rating: '4.6', rcount: '156 \u0111\u00e1nh gi\u00e1',
+      short: 'H\u1ec7 th\u1ed1ng 2.000 t\u1eeb v\u1ef1ng th\u01b0\u1eddng g\u1eb7p nh\u1ea5t trong \u0111\u1ec1 thi, ph\u00e2n lo\u1ea1i theo ch\u1ee7 \u0111\u1ec1.',
+      desc:  'H\u1ec7 th\u1ed1ng 2.000 t\u1eeb v\u1ef1ng th\u01b0\u1eddng g\u1eb7p nh\u1ea5t trong \u0111\u1ec1 thi theo t\u1eebng ch\u1ee7 \u0111\u1ec1 \u2014 k\u1ebft h\u1ee3p spaced repetition gi\u00fap b\u1ea1n nh\u1edb l\u00e2u v\u00e0 d\u00f9ng \u0111\u01b0\u1ee3c ngay.',
+      skills: [
+        {ic:'bi-book',       n:'2000+ t\u1eeb v\u1ef1ng', s:'Ph\u00e2n lo\u1ea1i theo ch\u1ee7 \u0111\u1ec1'},
+        {ic:'bi-diagram-3',  n:'Spaced Repetition', s:'\u00d4n t\u1eadp th\u00f4ng minh'},
+        {ic:'bi-chat-dots',  n:'Collocation', s:'C\u1ee5m t\u1eeb & th\u00e0nh ng\u1eef'},
+        {ic:'bi-puzzle',     n:'Word Forms', s:'Bi\u1ebfn \u0111\u1ed5i t\u1eeb lo\u1ea1i'}
+      ],
+      reqs: ['Bi\u1ebft b\u1ea3ng ch\u1eef c\u00e1i ti\u1ebfng Anh','Ph\u00f9 h\u1ee3p m\u1ecdi tr\u00ecnh \u0111\u1ed9','M\u00e1y t\u00ednh ho\u1eb7c \u0111i\u1ec7n tho\u1ea1i'],
+      chaps: [
+        {t:'Ch\u1ee7 \u0111\u1ec1 1: M\u00f4i tr\u01b0\u1eddng & Thi\u00ean nhi\u00ean', tm:'3 b\u00e0i \u00b7 1h',
+         l:['T\u1eeb v\u1ef1ng m\u00f4i tr\u01b0\u1eddng','T\u1eeb v\u1ef1ng thi\u00ean tai','B\u00e0i t\u1eadp th\u1ef1c h\u00e0nh']},
+        {t:'Ch\u1ee7 \u0111\u1ec1 2: C\u00f4ng ngh\u1ec7 & X\u00e3 h\u1ed9i', tm:'3 b\u00e0i \u00b7 1h',
+         l:['T\u1eeb v\u1ef1ng c\u00f4ng ngh\u1ec7','T\u1eeb v\u1ef1ng truy\u1ec1n th\u00f4ng','B\u00e0i t\u1eadp th\u1ef1c h\u00e0nh']},
+        {t:'Ch\u1ee7 \u0111\u1ec1 3: Gi\u00e1o d\u1ee5c & Ngh\u1ec1 nghi\u1ec7p', tm:'3 b\u00e0i \u00b7 1h',
+         l:['T\u1eeb v\u1ef1ng gi\u00e1o d\u1ee5c','T\u1eeb v\u1ef1ng ngh\u1ec1 nghi\u1ec7p','B\u00e0i t\u1eadp t\u1ed5ng h\u1ee3p']}
+      ],
+      revs: [
+        {n:'Lan Anh', s:5, t:'Kh\u00f3a mi\u1ec5n ph\u00ed m\u00e0 ch\u1ea5t l\u01b0\u1ee3ng kh\u00f4ng k\u00e9m tr\u1ea3 ph\u00ed. R\u1ea5t c\u1ea3m \u01a1n c\u00f4 Thu H\u00e0!'},
+        {n:'\u0110\u1ee9c Khoa', s:4, t:'T\u1eeb v\u1ef1ng ph\u00e2n lo\u1ea1i r\u00f5 r\u00e0ng. M\u00ecnh nh\u1edb h\u01a1n 500 t\u1eeb sau 2 tu\u1ea7n.'}
+      ]
+    },
+
+    /* 2 ── Luyện Đề ── */
+    {
+      title: 'Luy\u1ec7n \u0110\u1ec1 Ti\u1ebfng Anh THPTQG',
+      cat:   'LUY\u1ec6N \u0110\u1ec0', lvl: 'TRUNG B\u00ccNH',
+      price: '1.200.000\u0111', badge: 'M\u1edaI', enrolled: '156 h\u1ecdc sinh \u0111\u00e3 \u0111\u0103ng k\u00fd',
+      img:      'assets/img/education/courses-12.webp',
+      instImg:  'assets/img/person/TRAN DUC MINH.jpg',
+      instName: 'Tr\u1ea7n \u0110\u1ee9c Minh',
+      dur: '25 gi\u1edd', quiz: '30 \u0111\u1ec1 thi', assign: '8 b\u00e0i t\u1eadp',
+      updated: 'Th\u00e1ng 12/2024', rating: '5.0', rcount: '42 \u0111\u00e1nh gi\u00e1',
+      short: 'Luy\u1ec7n t\u1eadp chuy\u00ean s\u00e2u, ph\u00e2n t\u00edch l\u1ed7i sai v\u00e0 chi\u1ebfn l\u01b0\u1ee3c l\u00e0m b\u00e0i \u0111\u1ec3 \u0111\u1ed9t ph\u00e1 \u0111i\u1ec3m s\u1ed1.',
+      desc:  'Luy\u1ec7n t\u1eadp chuy\u00ean s\u00e2u theo t\u1eebng d\u1ea1ng \u0111\u1ec1, ph\u00e2n t\u00edch l\u1ed7i sai v\u00e0 chi\u1ebfn l\u01b0\u1ee3c ph\u00e2n b\u1ed5 th\u1eddi gian \u2014 d\u00e0nh cho h\u1ecdc sinh mu\u1ed1n \u0111\u1ed9t ph\u00e1 \u0111i\u1ec3m s\u1ed1.',
+      skills: [
+        {ic:'bi-clipboard-check', n:'Ph\u00e2n t\u00edch \u0111\u1ec1 thi', s:'30 \u0111\u1ec1 thi th\u1ef1c t\u1ebf'},
+        {ic:'bi-graph-up-arrow',  n:'Chi\u1ebfn l\u01b0\u1ee3c l\u00e0m b\u00e0i', s:'Qu\u1ea3n l\u00fd th\u1eddi gian'},
+        {ic:'bi-search',          n:'Nh\u1eadn d\u1ea1ng b\u1eaby', s:'C\u00e1c l\u1ed7i th\u01b0\u1eddng g\u1eb7p'},
+        {ic:'bi-award',           n:'K\u1ef9 n\u0103ng \u0111\u1ecdc hi\u1ec3u', s:'\u0110\u1ecdc nhanh hi\u1ec3u s\u00e2u'}
+      ],
+      reqs: ['\u0110\u00e3 h\u1ecdc xong ng\u1eef ph\u00e1p c\u01a1 b\u1ea3n','M\u1ee5c ti\u00eau t\u1eeb 7 \u0111i\u1ec3m tr\u1edf l\u00ean','C\u00f3 th\u1ec3 h\u1ecdc 2h/ng\u00e0y'],
+      chaps: [
+        {t:'Module 1: Ph\u00e2n t\u00edch c\u1ea5u tr\u00fac \u0111\u1ec1 thi', tm:'3 b\u00e0i \u00b7 2h',
+         l:['T\u1ed5ng quan c\u1ea5u tr\u00fac \u0111\u1ec1','Ph\u00e2n t\u00edch t\u1eebng ph\u1ea7n','Chi\u1ebfn l\u01b0\u1ee3c t\u1ed5ng th\u1ec3']},
+        {t:'Module 2: Luy\u1ec7n \u0111\u1ec1 theo d\u1ea1ng b\u00e0i', tm:'3 b\u00e0i \u00b7 3h',
+         l:['Pronunciation & Stress','Grammar & Vocabulary','Reading Comprehension']},
+        {t:'Module 3: \u0110\u1ec1 thi th\u1eed ho\u00e0n ch\u1ec9nh', tm:'3 b\u00e0i \u00b7 4h',
+         l:['\u0110\u1ec1 s\u1ed1 1 + ch\u1eefa b\u00e0i','\u0110\u1ec1 s\u1ed1 2 + ch\u1eefa b\u00e0i','\u0110\u1ec1 s\u1ed1 3 + ch\u1eefa b\u00e0i']}
+      ],
+      revs: [
+        {n:'B\u1ea3o Ch\u00e2u', s:5, t:'Th\u1ea7y Minh ch\u1eefa \u0111\u1ec1 r\u1ea5t chi ti\u1ebft. M\u00ecnh t\u0103ng t\u1eeb 6.5 l\u00ean 8.0!'},
+        {n:'Quang Huy', s:5, t:'X\u1ee9ng \u0111\u00e1ng 5 sao! L\u1ed9 tr\u00ecnh r\u00f5 r\u00e0ng, b\u00e0i t\u1eadp v\u1eeba \u0111\u1ee7 th\u00e1ch th\u1ee9c.'}
+      ]
+    },
+
+    /* 3 ── Nâng Cao ── */
+    {
+      title: 'Ti\u1ebfng Anh N\u00e2ng Cao \u2014 S\u0103n \u0110i\u1ec3m 9',
+      cat:   'N\u00c2NG CAO', lvl: 'KH\u00c1',
+      price: '1.500.000\u0111', badge: '', enrolled: '234 h\u1ecdc sinh \u0111\u00e3 \u0111\u0103ng k\u00fd',
+      img:      'assets/img/education/courses-5.webp',
+      instImg:  'assets/img/person/NGO THI NGOC BICH.jpg',
+      instName: 'Ng\u00f4 Th\u1ecb B\u00edch Ng\u1ecdc',
+      dur: '30 gi\u1edd', quiz: '24 b\u00e0i ki\u1ec3m tra', assign: '6 d\u1ef1 \u00e1n',
+      updated: 'Th\u00e1ng 12/2024', rating: '4.7', rcount: '73 \u0111\u00e1nh gi\u00e1',
+      short: 'Chinh ph\u1ee5c c\u00e2u kh\u00f3, \u0111\u1ecdc hi\u1ec3u n\u00e2ng cao v\u00e0 b\u1eady ng\u1eef ph\u00e1p \u0111\u1ec3 \u0111\u1ea1t \u0111i\u1ec3m 9+.',
+      desc:  'Chinh ph\u1ee5c nh\u1eefng c\u00e2u h\u1ecfi kh\u00f3 nh\u1ea5t trong \u0111\u1ec1 thi, \u0111\u1ecdc hi\u1ec3u n\u00e2ng cao, \u0111i\u1ec1n t\u1eeb ph\u1ee9c t\u1ea1p v\u00e0 c\u00e1c b\u1eaby ng\u1eef ph\u00e1p th\u01b0\u1eddng g\u1eb7p. D\u00e0nh cho h\u1ecdc sinh c\u00f3 n\u1ec1n t\u1ea3ng t\u1ed1t, mu\u1ed1n \u0111\u1ea1t \u0111i\u1ec3m 9+.',
+      skills: [
+        {ic:'bi-star',          n:'\u0110\u1ecdc hi\u1ec3u n\u00e2ng cao', s:'V\u0103n b\u1ea3n ph\u1ee9c t\u1ea1p'},
+        {ic:'bi-cpu',           n:'Ng\u1eef ph\u00e1p kh\u00f3', s:'\u0110\u1ea3o ng\u1eef, nh\u1ea5n m\u1ea1nh'},
+        {ic:'bi-lightbulb-fill',n:'\u0110i\u1ec1n t\u1eeb ph\u1ee9c t\u1ea1p', s:'Collocations & idioms'},
+        {ic:'bi-shield-check',  n:'T\u01b0 duy ph\u1ea3n bi\u1ec7n', s:'Suy lu\u1eadn & suy \u0111o\u00e1n'}
+      ],
+      reqs: ['T\u1eeb 7.0 \u0111i\u1ec3m tr\u1edf l\u00ean','\u0110\u00e3 ho\u00e0n th\u00e0nh ng\u1eef ph\u00e1p c\u01a1 b\u1ea3n','Cam k\u1ebft h\u1ecdc nghi\u00eam t\u00fac'],
+      chaps: [
+        {t:'Ph\u1ea7n 1: \u0110\u1ecdc hi\u1ec3u n\u00e2ng cao', tm:'3 b\u00e0i \u00b7 3h',
+         l:['K\u1ef9 thu\u1eadt skimming & scanning','C\u00e2u h\u1ecfi suy lu\u1eadn','B\u00e0i t\u1eadp th\u1ef1c h\u00e0nh']},
+        {t:'Ph\u1ea7n 2: Ng\u1eef ph\u00e1p kh\u00f3', tm:'3 b\u00e0i \u00b7 3h',
+         l:['\u0110\u1ea3o ng\u1eef & nh\u1ea5n m\u1ea1nh','M\u1ec7nh \u0111\u1ec1 ph\u1ee9c t\u1ea1p','R\u00fat g\u1ecdn n\u00e2ng cao']},
+        {t:'Ph\u1ea7n 3: T\u1eeb v\u1ef1ng h\u1ecdc thu\u1eadt', tm:'3 b\u00e0i \u00b7 2.5h',
+         l:['Academic vocabulary','Collocations n\u00e2ng cao','Thi th\u1eed t\u1ed5ng h\u1ee3p']}
+      ],
+      revs: [
+        {n:'Thu Th\u1ea3o', s:5, t:'C\u00f4 Ng\u1ecdc gi\u1ea3i th\u00edch r\u1ea5t hay. \u0110i\u1ec3m t\u0103ng l\u00ean 9.0!'},
+        {n:'V\u0103n H\u00f9ng', s:4, t:'N\u1ed9i dung ch\u1ea5t l\u01b0\u1ee3ng cao. C\u1ea7n n\u1ec1n t\u1ea3ng t\u1ed1t m\u1edbi theo k\u1ecbp.'}
+      ]
+    },
+
+    /* 4 ── Phát Âm ── */
+    {
+      title: 'Ph\u00e1t \u00c2m Chu\u1ea9n &amp; Luy\u1ec7n T\u1eadp v\u1edbi AI',
+      cat:   'PH\u00c1T \u00c2M', lvl: 'C\u01a0 B\u1ea2N',
+      price: '800.000\u0111', badge: 'PH\u1ed4 BI\u1ebeN', enrolled: '467 h\u1ecdc sinh \u0111\u00e3 \u0111\u0103ng k\u00fd',
+      img:      'assets/img/education/courses-9.webp',
+      instImg:  'assets/img/education/NGUYEN KHANH LINH.jpg',
+      instName: 'Ph\u1ea1m Kh\u00e1nh Linh',
+      dur: '15 gi\u1edd', quiz: '20 b\u00e0i ki\u1ec3m tra', assign: '5 b\u00e0i t\u1eadp',
+      updated: 'Th\u00e1ng 11/2024', rating: '4.5', rcount: '234 \u0111\u00e1nh gi\u00e1',
+      short: 'AI ph\u00e2n t\u00edch ph\u00e1t \u00e2m t\u1eebng \u00e2m ti\u1ebft v\u00e0 h\u01b0\u1edbng d\u1eabn s\u1eeda l\u1ed7i c\u1ef1c k\u1ef3 ch\u00ednh x\u00e1c.',
+      desc:  'AI ph\u00e2n t\u00edch ph\u00e1t \u00e2m t\u1eebng \u00e2m ti\u1ebft, ch\u1ec9 ra ch\u00ednh x\u00e1c l\u1ed7i sai v\u00e0 h\u01b0\u1edbng d\u1eabn s\u1eeda \u2014 ti\u1ebfn b\u1ed9 r\u00f5 r\u1ec7t ch\u1ec9 sau v\u00e0i bu\u1ed5i luy\u1ec7n.',
+      skills: [
+        {ic:'bi-mic',              n:'Ph\u00e1t \u00e2m chu\u1ea9n IPA', s:'44 \u00e2m v\u1ecb ti\u1ebfng Anh'},
+        {ic:'bi-robot',            n:'AI Feedback', s:'Nh\u1eadn x\u00e9t t\u1ee9c th\u00ec'},
+        {ic:'bi-music-note-beamed',n:'Intonation', s:'Ng\u1eef \u0111i\u1ec7u & tr\u1ecdng \u00e2m'},
+        {ic:'bi-person-check',     n:'Connected Speech', s:'N\u00f3i t\u1ef1 nhi\u00ean h\u01a1n'}
+      ],
+      reqs: ['Microphone (tai nghe c\u00f3 mic)','Ph\u00f9 h\u1ee3p m\u1ecdi tr\u00ecnh \u0111\u1ed9','K\u1ebft n\u1ed1i internet \u1ed5n \u0111\u1ecbnh'],
+      chaps: [
+        {t:'Ph\u1ea7n 1: Nguy\u00ean \u00e2m & Ph\u1ee5 \u00e2m', tm:'3 b\u00e0i \u00b7 2h',
+         l:['B\u1ea3ng phi\u00ean \u00e2m IPA','Nguy\u00ean \u00e2m \u0111\u01a1n & \u0111\u00f4i','Ph\u1ee5 \u00e2m kh\u00f3 ph\u00e1t \u00e2m']},
+        {t:'Ph\u1ea7n 2: Tr\u1ecdng \u00e2m & Ng\u1eef \u0111i\u1ec7u', tm:'3 b\u00e0i \u00b7 2.5h',
+         l:['Tr\u1ecdng \u00e2m t\u1eeb','Tr\u1ecdng \u00e2m c\u00e2u','Ng\u1eef \u0111i\u1ec7u h\u1ecfi & kh\u1eb3ng \u0111\u1ecbnh']},
+        {t:'Ph\u1ea7n 3: Luy\u1ec7n t\u1eadp v\u1edbi AI', tm:'3 b\u00e0i \u00b7 2h',
+         l:['Shadowing technique','AI pronunciation check','B\u00e0i ki\u1ec3m tra cu\u1ed1i kh\u00f3a']}
+      ],
+      revs: [
+        {n:'Ng\u1ecdc Mai', s:5, t:'AI ph\u00e2n t\u00edch ph\u00e1t \u00e2m c\u1ef1c k\u1ef3 ch\u00ednh x\u00e1c. Sau 2 tu\u1ea7n c\u1ea3i thi\u1ec7n r\u00f5 r\u1ec7t!'},
+        {n:'Tr\u1ecdng Ngh\u0129a', s:4, t:'C\u00f4ng ngh\u1ec7 AI th\u1ef1c s\u1ef1 h\u1eefu \u00edch. Th\u1ea7y Linh d\u1ea1y r\u1ea5t t\u1eadn t\u00e2m.'}
+      ]
+    },
+
+    /* 5 ── Cấp Tốc ── */
+    {
+      title: '\u00d4n Thi Ti\u1ebfng Anh C\u1ea5p T\u1ed1c 4 Tu\u1ea7n',
+      cat:   '\u00d4N THI C\u1ea4P T\u1ed0C', lvl: 'M\u1eccI TR\u00ccNH \u0110\u1ed8',
+      price: '1.000.000\u0111', badge: 'S\u1eaeP KHAI GI\u1ea2NG', enrolled: '298 h\u1ecdc sinh \u0111\u00e3 \u0111\u0103ng k\u00fd',
+      img:      'assets/img/education/courses-14.webp',
+      instImg:  'assets/img/person/LE HOANG NAM.webp',
+      instName: 'L\u00ea Ho\u00e0ng Nam',
+      dur: '20 gi\u1edd', quiz: '20 b\u00e0i ki\u1ec3m tra', assign: '4 b\u00e0i t\u1eadp',
+      updated: 'Th\u00e1ng 1/2025', rating: '4.9', rcount: '127 \u0111\u00e1nh gi\u00e1',
+      short: 'L\u1ed9 tr\u00ecnh \u00f4n thi d\u1ed3n d\u1eadp 4 tu\u1ea7n, t\u1eadp trung v\u00e0o tr\u1ecdng t\u00e2m v\u00e0 chi\u1ebfn l\u01b0\u1ee3c l\u00e0m b\u00e0i nhanh.',
+      desc:  'L\u1ed9 tr\u00ecnh \u00f4n thi d\u1ed3n d\u1eadp 4 tu\u1ea7n tr\u01b0\u1edbc k\u1ef3 thi \u2014 t\u1eadp trung t\u1ed1i \u0111a v\u00e0o c\u00e1c d\u1ea1ng b\u00e0i tr\u1ecdng t\u00e2m v\u00e0 chi\u1ebfn l\u01b0\u1ee3c l\u00e0m b\u00e0i nhanh.',
+      skills: [
+        {ic:'bi-lightning',      n:'\u00d4n t\u1eadp nhanh', s:'Tr\u1ecdng t\u00e2m trong 4 tu\u1ea7n'},
+        {ic:'bi-clock-history',  n:'Qu\u1ea3n l\u00fd th\u1eddi gian', s:'L\u00e0m 50 c\u00e2u/45 ph\u00fat'},
+        {ic:'bi-patch-check',    n:'T\u1ea5t c\u1ea3 k\u1ef9 n\u0103ng', s:'Ng\u1eef ph\u00e1p, t\u1eeb v\u1ef1ng, \u0111\u1ecdc'},
+        {ic:'bi-bullseye',       n:'Chi\u1ebfn l\u01b0\u1ee3c thi', s:'K\u1ef9 thu\u1eadt l\u00e0m b\u00e0i chu\u1ea9n'}
+      ],
+      reqs: ['Ph\u00f9 h\u1ee3p m\u1ecdi tr\u00ecnh \u0111\u1ed9','C\u1ea7n h\u1ecdc 3\u20134h/ng\u00e0y','K\u1ef3 thi c\u00e1ch t\u1ed1i \u0111a 5 tu\u1ea7n'],
+      chaps: [
+        {t:'Tu\u1ea7n 1: Ng\u1eef ph\u00e1p & T\u1eeb v\u1ef1ng tr\u1ecdng t\u00e2m', tm:'3 b\u00e0i \u00b7 4h',
+         l:['Ng\u1eef ph\u00e1p c\u1ea7n nh\u1edb nh\u1ea5t','1000 t\u1eeb v\u1ef1ng thi','B\u00e0i ki\u1ec3m tra tu\u1ea7n 1']},
+        {t:'Tu\u1ea7n 2: \u0110\u1ecdc hi\u1ec3u & \u0110i\u1ec1n t\u1eeb', tm:'3 b\u00e0i \u00b7 4h',
+         l:['K\u1ef9 thu\u1eadt \u0111\u1ecdc nhanh','\u0110i\u1ec1n t\u1eeb & ho\u00e0n th\u00e0nh c\u00e2u','B\u00e0i ki\u1ec3m tra tu\u1ea7n 2']},
+        {t:'Tu\u1ea7n 3\u20134: Luy\u1ec7n \u0111\u1ec1 t\u1ed5ng h\u1ee3p', tm:'3 b\u00e0i \u00b7 6h',
+         l:['\u0110\u1ec1 thi th\u1eed 1 + ch\u1eefa','\u0110\u1ec1 thi th\u1eed 2 + ch\u1eefa','\u0110\u1ec1 thi th\u1eed 3 + ch\u1eefa']}
+      ],
+      revs: [
+        {n:'Kim Ng\u00e2n', s:5, t:'M\u00ecnh t\u0103ng t\u1eeb 6.0 l\u00ean 8.25 sau 4 tu\u1ea7n h\u1ecdc!'},
+        {n:'Ho\u00e0i Phong', s:5, t:'L\u1ed9 tr\u00ecnh r\u00f5 r\u00e0ng, th\u1ea7y Nam d\u1ea1y d\u1ec5 hi\u1ec3u v\u00e0 nhi\u1ec7t t\u00ecnh.'}
+      ]
+    }
+  ];
+
+  /* ── helpers ── */
+  function khStars(r) {
+    var s='', n=parseFloat(r);
+    for(var i=1;i<=5;i++){
+      if(n>=i)     s+='<i class="bi bi-star-fill"></i>';
+      else if(n>=i-.5) s+='<i class="bi bi-star-half"></i>';
+      else         s+='<i class="bi bi-star"></i>';
+    }
+    return s;
+  }
+
+  /* ── open modal ── */
+  function khOpen(idx) {
+    var d = khData[idx];
+
+    /* Left hero */
+    document.getElementById('kh-img').src            = d.img;
+    document.getElementById('kh-cat').textContent    = d.cat;
+    document.getElementById('kh-lvl').textContent    = d.lvl;
+    document.getElementById('kh-title').textContent  = d.title;
+    document.getElementById('kh-short').textContent  = d.short;
+    document.getElementById('kh-inst-img').src       = d.instImg;
+    document.getElementById('kh-inst-name').textContent = d.instName;
+    document.getElementById('kh-stars-sm').innerHTML = khStars(d.rating);
+    document.getElementById('kh-rating-sm').textContent = d.rating;
+    document.getElementById('kh-rcount-sm').textContent = '(' + d.rcount + ')';
+
+    /* Overview pane */
+    document.getElementById('kh-desc').textContent   = d.desc;
+    var sk='';
+    d.skills.forEach(function(s){
+      sk+='<div class="kh-skill"><div class="kh-skill-icon"><i class="bi '+s.ic+'"></i></div>'
+        +'<div><div class="kh-skill-name">'+s.n+'</div><div class="kh-skill-sub">'+s.s+'</div></div></div>';
+    });
+    document.getElementById('kh-skills').innerHTML = sk;
+    var rq=''; d.reqs.forEach(function(r){ rq+='<li>'+r+'</li>'; });
+    document.getElementById('kh-reqs').innerHTML = rq;
+
+    /* Curriculum pane */
+    var ch='';
+    d.chaps.forEach(function(c){
+      ch+='<div class="kh-chapter">'
+        +'<div class="kh-chapter-hd">'+c.t+'<span>'+c.tm+'</span></div>'
+        +'<div class="kh-chapter-body">';
+      c.l.forEach(function(l){ ch+='<div class="kh-lesson"><i class="bi bi-play-circle-fill"></i>'+l+'</div>'; });
+      ch+='</div></div>';
+    });
+    document.getElementById('kh-curriculum').innerHTML = ch;
+
+    /* Reviews pane */
+    document.getElementById('kh-rating').textContent  = d.rating;
+    document.getElementById('kh-stars').innerHTML     = khStars(d.rating);
+    document.getElementById('kh-rcount').textContent  = d.rcount;
+    var rv='';
+    d.revs.forEach(function(r){
+      rv+='<div class="kh-rev-item">'
+        +'<div class="kh-rev-header">'
+          +'<div class="kh-rev-av">'+r.n.charAt(0)+'</div>'
+          +'<div><div class="kh-rev-name">'+r.n+'</div>'
+          +'<div class="kh-rev-stars">'+khStars(r.s)+'</div></div>'
+        +'</div>'
+        +'<p class="kh-rev-text">'+r.t+'</p>'
+      +'</div>';
+    });
+    document.getElementById('kh-reviews').innerHTML = rv;
+
+    /* Right column */
+    document.getElementById('kh-price').textContent   = d.price;
+    var b = document.getElementById('kh-badge');
+    b.textContent = d.badge; b.style.display = d.badge ? '' : 'none';
+    document.getElementById('kh-enrolled').innerHTML  =
+      '<i class="bi bi-people-fill"></i>' + d.enrolled;
+    document.getElementById('kh-dur').textContent     = d.dur;
+    document.getElementById('kh-lvl2').textContent    = d.lvl;
+    document.getElementById('kh-quiz').textContent    = d.quiz;
+    document.getElementById('kh-assign').textContent  = d.assign;
+    document.getElementById('kh-updated').textContent = d.updated;
+
+    /* Reset to Overview tab */
+    khTab('overview', document.querySelector('.kh-tab'));
+
+    document.getElementById('khModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function khClose() {
+    document.getElementById('khModal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function khCloseOverlay(e) {
+    if(e.target === document.getElementById('khModal')) khClose();
+  }
+
+  function khTab(name, btn) {
+    document.querySelectorAll('.kh-pane').forEach(function(p){ p.classList.remove('active'); });
+    document.querySelectorAll('.kh-tab').forEach(function(t){ t.classList.remove('active'); });
+    document.getElementById('kh-tab-'+name).classList.add('active');
+    if(btn) btn.classList.add('active');
+  }
+
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') khClose(); });
+
+  /* ════════════════════════════════════════════
+     FILTER / SORT LOGIC
+  ════════════════════════════════════════════ */
+  (function(){
+    var categoryMap = {
+      'Ngữ pháp trọng tâm': 'ngu-phap',
+      'Từ vựng theo chủ đề': 'tu-vung',
+      'Luyện đề THPTQG':     'luyen-de',
+      'Phát âm & AI':        'phat-am',
+      'Đề thi thử':          'on-thi'
+    };
+    var levelMap = {
+      'Mất gốc':   'mat-goc',
+      'Trung bình':'trung-binh',
+      'Khá':       'kha',
+      'Nâng cao':  'nang-cao'
+    };
+
+    function getChecked(groupEl){
+      var checked=[];
+      groupEl.querySelectorAll('.filter-checkbox').forEach(function(lbl){
+        var cb=lbl.querySelector('input[type=checkbox]');
+        if(!cb||!cb.checked) return;
+        var text=lbl.textContent.trim();
+        if(text==='Tất cả') return;
+        checked.push(text);
+      });
+      return checked;
+    }
+
+    function isTatCa(groupEl){
+      var first=groupEl.querySelector('.filter-checkbox input[type=checkbox]');
+      return first&&first.checked;
+    }
+
+    function applyFilters(){
+      var groups=document.querySelectorAll('.filter-group');
+      var catGroup=groups[0], lvlGroup=groups[1], durGroup=groups[2], feeGroup=groups[3];
+      var catAll=isTatCa(catGroup), lvlAll=isTatCa(lvlGroup);
+      var checkedCats=getChecked(catGroup), checkedLvls=getChecked(lvlGroup);
+      var durLabels=durGroup.querySelectorAll('.filter-checkbox');
+      var durUnder5=durLabels[0]&&durLabels[0].querySelector('input').checked;
+      var dur5to20 =durLabels[1]&&durLabels[1].querySelector('input').checked;
+      var durOver20=durLabels[2]&&durLabels[2].querySelector('input').checked;
+      var durNone=!durUnder5&&!dur5to20&&!durOver20;
+      var feeLabels=feeGroup.querySelectorAll('.filter-checkbox');
+      var feeFree=feeLabels[0]&&feeLabels[0].querySelector('input').checked;
+      var feePaid=feeLabels[1]&&feeLabels[1].querySelector('input').checked;
+      var feeNone=!feeFree&&!feePaid;
+      var searchVal=(document.getElementById('searchInput').value||'').toLowerCase().trim();
+
+      var cols=document.querySelectorAll('.course-col');
+      cols.forEach(function(col){
+        var cat=col.getAttribute('data-category')||'';
+        var lvl=col.getAttribute('data-level')||'';
+        var hours=parseInt(col.getAttribute('data-hours'))||0;
+        var isFree=col.getAttribute('data-free')==='1';
+        var title=(col.getAttribute('data-title')||'').toLowerCase();
+
+        var passcat=catAll;
+        if(!passcat&&checkedCats.length>0) checkedCats.forEach(function(c){ if(categoryMap[c]===cat) passcat=true; });
+        if(!passcat&&checkedCats.length===0&&!catAll) passcat=true;
+
+        var passlvl=lvlAll;
+        if(!passlvl&&checkedLvls.length>0) checkedLvls.forEach(function(l){ if(levelMap[l]===lvl) passlvl=true; });
+        if(!passlvl&&checkedLvls.length===0&&!lvlAll) passlvl=true;
+
+        var passdur=durNone;
+        if(!passdur){
+          if(durUnder5&&hours<5)               passdur=true;
+          if(dur5to20 &&hours>=5&&hours<=20)   passdur=true;
+          if(durOver20&&hours>20)              passdur=true;
+        }
+
+        var passfee=feeNone;
+        if(!passfee){
+          if(feeFree&&isFree)  passfee=true;
+          if(feePaid&&!isFree) passfee=true;
+        }
+
+        var passsearch=!searchVal||title.indexOf(searchVal)!==-1;
+        col.style.display=(passcat&&passlvl&&passdur&&passfee&&passsearch)?'':'none';
+      });
+
+      var visible=Array.from(cols).filter(function(c){ return c.style.display!=='none'; });
+      var noResult=document.getElementById('no-result-msg');
+      if(!noResult){
+        noResult=document.createElement('div');
+        noResult.id='no-result-msg';
+        noResult.style.cssText='text-align:center;padding:40px;color:#888;font-size:15px;width:100%';
+        noResult.innerHTML='<i class="bi bi-search" style="font-size:32px;display:block;margin-bottom:10px;color:#ccc"></i>Không tìm thấy khóa học phù hợp.';
+        var grid=document.querySelector('.courses-grid .row');
+        if(grid) grid.appendChild(noResult);
+      }
+      noResult.style.display=visible.length===0?'block':'none';
+      sortCourses();
+    }
+
+    function sortCourses(){
+      var val=(document.getElementById('sortSelect')||{}).value;
+      var row=document.querySelector('.courses-grid .row');
+      if(!row) return;
+      var cols=Array.from(row.querySelectorAll('.course-col'));
+      cols.sort(function(a,b){
+        if(val==='price-asc')    return parseInt(a.dataset.price)-parseInt(b.dataset.price);
+        if(val==='price-desc')   return parseInt(b.dataset.price)-parseInt(a.dataset.price);
+        if(val==='duration-asc') return parseInt(a.dataset.hours)-parseInt(b.dataset.hours);
+        if(val==='popular')      return parseInt(b.dataset.students)-parseInt(a.dataset.students);
+        return 0;
+      });
+      var nr=document.getElementById('no-result-msg');
+      cols.forEach(function(col){ row.appendChild(col); });
+      if(nr) row.appendChild(nr);
+    }
+
+    function setupTatCa(groupEl){
+      var cbs=groupEl.querySelectorAll('.filter-checkbox input[type=checkbox]');
+      var tatCa=cbs[0];
+      if(!tatCa) return;
+      tatCa.addEventListener('change',function(){
+        if(tatCa.checked) for(var i=1;i<cbs.length;i++) cbs[i].checked=false;
+        applyFilters();
+      });
+      for(var i=1;i<cbs.length;i++){
+        cbs[i].addEventListener('change',function(){ tatCa.checked=false; applyFilters(); });
+      }
+    }
+
+    function init(){
+      var groups=document.querySelectorAll('.filter-group');
+      if(groups[0]) setupTatCa(groups[0]);
+      if(groups[1]) setupTatCa(groups[1]);
+      if(groups[2]) groups[2].querySelectorAll('input[type=checkbox]').forEach(function(cb){ cb.addEventListener('change',applyFilters); });
+      if(groups[3]) groups[3].querySelectorAll('input[type=checkbox]').forEach(function(cb){ cb.addEventListener('change',applyFilters); });
+      var si=document.getElementById('searchInput');
+      if(si) si.addEventListener('input',applyFilters);
+      var ss=document.getElementById('sortSelect');
+      if(ss) ss.addEventListener('change',applyFilters);
+    }
+
+    if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init);
+    else init();
+  })();
+  </script>
+
+</body>
+</html>

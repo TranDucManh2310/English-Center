@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>English Center - Nhóm 3</title>
+  <link href="assets/img/favicon.png" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Raleway:wght@400;600;700;800;900&family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="assets/css/main.css" rel="stylesheet">
+
+  <style>
+  /* ══════════════════════════════════════════
+     CHUNG
+  ══════════════════════════════════════════ */
+  :root { --accent: var(--accent-color, #2d6ef5); }
+
+  /* ══════════════════════════════════════════
+     TRANG DANH SÁCH
+  ══════════════════════════════════════════ */
+  #page-list { display:block; }
+  #page-exam { display:none; }
+  #page-result { display:none; }
+
+  /* Banner stats */
+  .dt-banner {
+    background:linear-gradient(90deg,#1a3fbf 0%,#4a2da8 40%,#8b1a4a 70%,#c0392b 100%);
+    border-radius:16px; padding:1.2rem 2rem; color:#fff;
+    display:flex; gap:2.5rem; flex-wrap:wrap; align-items:center;
+  }
+  .dt-banner .si .n { font-size:1.55rem; font-weight:900; display:block; line-height:1.1; }
+  .dt-banner .si .l { font-size:.73rem; opacity:.85; }
+
+  /* Filter bar */
+  .dt-filterbar { display:flex; gap:.5rem; flex-wrap:wrap; align-items:center; margin-bottom:1.5rem; }
+  .dt-filter-btn {
+    background:#f5f6f8; border:1.5px solid #e8ecf0; border-radius:22px;
+    padding:5px 16px; font-size:.82rem; font-weight:600; cursor:pointer;
+    transition:all .2s; color:#555; white-space:nowrap;
+  }
+  .dt-filter-btn.active, .dt-filter-btn:hover {
+    background:#2d6ef5; color:#fff; border-color:#2d6ef5;
+  }
+  .dt-search { position:relative; }
+  .dt-search i { position:absolute; left:.8rem; top:50%; transform:translateY(-50%); color:#aaa; pointer-events:none; font-size:.85rem; }
+  .dt-search input {
+    padding:.38rem .75rem .38rem 2.1rem; border:1.5px solid #e0e4ea;
+    border-radius:22px; font-size:.84rem; height:36px; width:220px; transition:border-color .2s;
+  }
+  .dt-search input:focus { outline:none; border-color:#2d6ef5; box-shadow:none; }
+
+  /* Exam card */
+  .exam-card {
+    background:#fff; border:1.5px solid #e8ecf0; border-radius:14px;
+    overflow:hidden; transition:transform .2s,box-shadow .2s,border-color .2s;
+    height:100%; display:flex; flex-direction:column;
+  }
+  .exam-card:hover { transform:translateY(-4px); box-shadow:0 10px 30px rgba(232,68,68,.12); border-color:#2d6ef5; }
+  .exam-thumb { position:relative; height:130px; background:#1a1a2e; overflow:hidden; }
+  .exam-thumb img { width:100%; height:100%; object-fit:cover; opacity:.75; transition:opacity .2s; }
+  .exam-card:hover .exam-thumb img { opacity:.5; }
+  .ex-year { position:absolute; top:9px; left:9px; background:rgba(0,0,0,.6); color:#fff; font-size:.67rem; font-weight:700; padding:.18rem .5rem; border-radius:5px; letter-spacing:.4px; }
+  .ex-level { position:absolute; top:9px; right:9px; font-size:.67rem; font-weight:700; padding:.18rem .5rem; border-radius:5px; }
+  .lvl-easy   { background:#d1fae5; color:#065f46; }
+  .lvl-medium { background:#fef3c7; color:#92400e; }
+  .lvl-hard   { background:#fee2e2; color:#991b1b; }
+
+  .exam-body { padding:.9rem 1rem 1rem; flex:1; display:flex; flex-direction:column; }
+  .exam-body h5 { font-size:.93rem; font-weight:800; color:#1a1a2e; margin:0 0 .3rem; line-height:1.35; }
+  .exam-source { font-size:.73rem; color:#999; margin-bottom:.65rem; }
+  .exam-meta { display:flex; gap:.4rem; flex-wrap:wrap; margin-bottom:.8rem; }
+  .exam-meta span { font-size:.73rem; color:#666; background:#f5f6f8; padding:.18rem .5rem; border-radius:20px; display:flex; align-items:center; gap:.28rem; }
+  .exam-meta span i { color:#2d6ef5; font-size:.68rem; }
+  .exam-footer { display:flex; align-items:center; justify-content:space-between; padding-top:.7rem; border-top:1px solid #f0f0f0; margin-top:auto; }
+  .exam-attempts { font-size:.73rem; color:#aaa; display:flex; align-items:center; gap:.3rem; }
+  .exam-attempts i { color:#2d6ef5; }
+  .tag-free { background:#d1fae5; color:#065f46; font-size:.66rem; font-weight:700; padding:.1rem .42rem; border-radius:4px; }
+  .tag-pro  { background:#ede9fe; color:#5b21b6; font-size:.66rem; font-weight:700; padding:.1rem .42rem; border-radius:4px; }
+  .btn-start {
+    background:#2d6ef5; color:#fff; border:none; border-radius:8px;
+    padding:.32rem .85rem; font-size:.78rem; font-weight:700; cursor:pointer;
+    transition:background .2s; display:inline-flex; align-items:center; gap:.3rem;
+  }
+  .btn-start:hover { background:#c0392b; }
+
+  /* ══ PAYWALL ══ */
+  .exam-card.locked { position:relative; overflow:hidden; }
+  .exam-card.locked .exam-body  { filter:blur(4px); user-select:none; pointer-events:none; }
+  .exam-card.locked .exam-thumb { filter:blur(2px); }
+  .lock-overlay {
+    position:absolute; inset:0; z-index:10; cursor:pointer;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    background:rgba(255,255,255,.62); backdrop-filter:blur(2px); border-radius:14px;
+    transition:background .2s;
+  }
+  .lock-overlay:hover { background:rgba(255,255,255,.80); }
+  .lock-icon { width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#1a3fbf,#4a2da8);display:flex;align-items:center;justify-content:center;margin-bottom:.55rem;box-shadow:0 4px 18px rgba(45,110,245,.35); }
+  .lock-icon i { color:#fff;font-size:1.2rem; }
+  .lock-label { font-size:.82rem;font-weight:800;color:#1a1a2e; }
+  .lock-sub   { font-size:.71rem;color:#666;margin-top:.15rem; }
+
+
+  .section-label { font-size:.68rem; font-weight:800; letter-spacing:1.5px; text-transform:uppercase; color:#2d6ef5; margin-bottom:1rem; display:flex; align-items:center; gap:.55rem; }
+  .section-label::after { content:''; flex:1; height:1px; background:#e8ecf0; }
+
+  /* ══════════════════════════════════════════
+     TRANG LÀM BÀI
+  ══════════════════════════════════════════ */
+  #page-exam { background:#f4f6f9; min-height:100vh; }
+
+  /* Top bar */
+  .exam-topbar {
+    background:#fff; border-bottom:2px solid #e8ecf0;
+    padding:.7rem 1.5rem; display:flex; align-items:center;
+    gap:1rem; position:sticky; top:0; z-index:500;
+    box-shadow:0 2px 8px rgba(0,0,0,.06);
+  }
+  .exam-topbar-title { font-size:.92rem; font-weight:800; color:#1a1a2e; flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+  /* Timer */
+  .timer-box {
+    display:flex; align-items:center; gap:.5rem;
+    background:#fff3f3; border:1.5px solid #fca5a5;
+    border-radius:10px; padding:.35rem .85rem;
+  }
+  .timer-box i { color:#2d6ef5; font-size:1rem; }
+  .timer-val { font-size:1rem; font-weight:800; color:#2d6ef5; font-family:monospace; min-width:58px; }
+  .timer-box.warning { background:#fff3f3; border-color: #2d6ef5; animation:timerPulse 1s infinite; }
+  @keyframes timerPulse { 0%,100%{opacity:1} 50%{opacity:.65} }
+
+  /* Progress */
+  .progress-info { font-size:.8rem; color:#888; white-space:nowrap; }
+  .exam-progress-bar { height:4px; background:#e8ecf0; border-radius:2px; }
+  .exam-progress-bar .bar { height:100%; background:#2d6ef5; border-radius:2px; transition:width .3s; }
+
+  /* Two-column layout */
+  .exam-layout { display:grid; grid-template-columns:1fr 240px; gap:1.2rem; padding:1.2rem; max-width:1100px; margin:0 auto; }
+
+  /* Question panel */
+  .q-panel { background:#fff; border-radius:14px; box-shadow:0 2px 12px rgba(0,0,0,.06); overflow:hidden; }
+  .q-header { background:linear-gradient(135deg,#2d6ef5 0%,#c0392b 100%); padding:1rem 1.4rem; color:#fff; display:flex; align-items:center; gap:1rem; }
+  .q-num-badge { background:rgba(255,255,255,.25); border-radius:8px; padding:.3rem .75rem; font-size:.8rem; font-weight:700; white-space:nowrap; }
+  .q-part-label { font-size:.75rem; opacity:.85; }
+  .q-body { padding:1.4rem; }
+  .q-text { font-size:.97rem; color:#1a1a2e; line-height:1.75; margin-bottom:1.2rem; font-weight:500; }
+  .q-text .blank { display:inline-block; min-width:80px; border-bottom:2px solid #2d6ef5; text-align:center; margin:0 4px; color:#2d6ef5; font-weight:700; }
+
+  /* Options */
+  .option-list { list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:.55rem; }
+  .option-item { display:flex; align-items:center; gap:.85rem; padding:.75rem 1rem; border:1.5px solid #e8ecf0; border-radius:10px; cursor:pointer; transition:all .18s; }
+  .option-item:hover { border-color:#2d6ef5; background:#fff5f5; }
+  .option-item.selected { border-color:#2d6ef5; background:#fff0f0; }
+  .option-item.correct  { border-color:#16a34a; background:#f0fdf4; }
+  .option-item.wrong    { border-color:#dc2626; background:#fef2f2; }
+  .option-label {
+    width:28px; height:28px; border-radius:50%; border:1.5px solid #ddd;
+    display:flex; align-items:center; justify-content:center;
+    font-size:.8rem; font-weight:700; flex-shrink:0;
+    transition:all .18s; color:#888;
+  }
+  .option-item:hover    .option-label { border-color:#2d6ef5; color: #2d6ef5; }
+  .option-item.selected .option-label { background:#2d6ef5; border-color:#2d6ef5; color:#fff; }
+  .option-item.correct  .option-label { background:#16a34a; border-color:#16a34a; color:#fff; }
+  .option-item.wrong    .option-label { background:#dc2626; border-color:#dc2626; color:#fff; }
+  .option-text { font-size:.9rem; color:#333; line-height:1.4; }
+  .option-item.correct .option-text { color:#166534; font-weight:600; }
+  .option-item.wrong   .option-text { color:#991b1b; }
+
+  /* Explanation */
+  .q-explain {
+    display:none; margin-top:1rem; padding:.9rem 1rem;
+    background:#f0fdf4; border-left:3px solid #16a34a; border-radius:8px;
+    font-size:.85rem; color:#166534; line-height:1.65;
+  }
+  .q-explain.show { display:block; animation:fadeIn .3s ease; }
+  .q-explain strong { display:block; margin-bottom:.3rem; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
+
+  /* Bottom nav */
+  .q-nav { display:flex; justify-content:space-between; align-items:center; padding:.9rem 1.4rem; border-top:1px solid #f0f0f0; }
+  .btn-nav {
+    background:#f5f6f8; border:1.5px solid #e8ecf0; border-radius:9px;
+    padding:.42rem 1.1rem; font-size:.83rem; font-weight:600; cursor:pointer;
+    transition:all .2s; display:flex; align-items:center; gap:.4rem;
+  }
+  .btn-nav:hover { background:#2d6ef5; color:#fff; border-color:#2d6ef5; }
+  .btn-submit { background:#2d6ef5; color:#fff; border:none; border-radius:9px; padding:.42rem 1.4rem; font-size:.83rem; font-weight:700; cursor:pointer; transition:background .2s; }
+  .btn-submit:hover { background:#c0392b; }
+
+  /* ── Right sidebar: question navigator ── */
+  .q-sidebar { display:flex; flex-direction:column; gap:1rem; }
+  .sidebar-box { background:#fff; border-radius:14px; box-shadow:0 2px 12px rgba(0,0,0,.06); padding:1rem 1rem 1.1rem; }
+  .sidebar-box h6 { font-size:.72rem; font-weight:800; text-transform:uppercase; letter-spacing:1px; color:#aaa; margin:0 0 .75rem; }
+  .q-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:.35rem; }
+  .q-dot {
+    aspect-ratio:1; border-radius:7px; border:1.5px solid #e8ecf0;
+    display:flex; align-items:center; justify-content:center;
+    font-size:.72rem; font-weight:700; cursor:pointer; transition:all .2s; color:#888;
+    background:#f9f9f9;
+  }
+  .q-dot:hover   { border-color:#2d6ef5; color:#2d6ef5; }
+  .q-dot.current { background:#2d6ef5; border-color:#2d6ef5; color:#fff; }
+  .q-dot.answered{ background:#fff0f0; border-color:#2d6ef5; color:#2d6ef5; }
+  .q-dot.correct { background:#d1fae5; border-color:#16a34a; color:#166534; }
+  .q-dot.wrong   { background:#fee2e2; border-color:#dc2626; color:#dc2626; }
+
+  /* Legend */
+  .legend { display:flex; flex-wrap:wrap; gap:.5rem .8rem; margin-top:.5rem; }
+  .legend-item { display:flex; align-items:center; gap:.3rem; font-size:.7rem; color:#666; }
+  .legend-dot { width:10px; height:10px; border-radius:3px; flex-shrink:0; }
+
+  /* ══════════════════════════════════════════
+     TRANG KẾT QUẢ
+  ══════════════════════════════════════════ */
+  .result-hero {
+    background:linear-gradient(135deg,#2d6ef5 0%,#c0392b 100%);
+    color:#fff; border-radius:20px; padding:2.5rem 2rem; text-align:center;
+    margin-bottom:2rem; position:relative; overflow:hidden;
+  }
+  .result-hero::before {
+    content:''; position:absolute; top:-40px; right:-40px;
+    width:200px; height:200px; background:rgba(255,255,255,.06); border-radius:50%;
+  }
+  .result-hero::after {
+    content:''; position:absolute; bottom:-60px; left:-30px;
+    width:160px; height:160px; background:rgba(255,255,255,.04); border-radius:50%;
+  }
+  .result-score-ring {
+    width:130px; height:130px; border-radius:50%;
+    background:rgba(255,255,255,.18); border:4px solid rgba(255,255,255,.5);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    margin:0 auto 1.2rem;
+  }
+  .result-score-ring .score-num { font-size:2.4rem; font-weight:900; line-height:1; }
+  .result-score-ring .score-max { font-size:.85rem; opacity:.8; }
+  .result-grade { font-size:2rem; font-weight:900; margin-bottom:.3rem; }
+  .result-msg   { font-size:1rem; opacity:.9; margin-bottom:1.5rem; }
+  .result-time-spent { background:rgba(255,255,255,.15); border-radius:10px; padding:.5rem 1.2rem; display:inline-block; font-size:.88rem; }
+
+  .result-stats { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-bottom:2rem; }
+  .rs-card { background:#fff; border-radius:14px; padding:1.2rem 1rem; text-align:center; box-shadow:0 2px 12px rgba(0,0,0,.06); }
+  .rs-card .rs-num { font-size:1.8rem; font-weight:900; color:#1a1a2e; display:block; }
+  .rs-card .rs-lbl { font-size:.75rem; color:#888; margin-top:.2rem; }
+  .rs-card.correct .rs-num { color:#16a34a; }
+  .rs-card.wrong   .rs-num { color:#dc2626; }
+  .rs-card.skip    .rs-num { color:#f59e0b; }
+
+  /* Review table */
+  .review-row { padding:.8rem 1rem; border-bottom:1px solid #f0f0f0; display:flex; align-items:flex-start; gap:1rem; }
+  .review-row:last-child { border-bottom:none; }
+  .review-qnum { font-size:.8rem; font-weight:700; color:#888; min-width:32px; }
+  .review-content { flex:1; }
+  .review-q { font-size:.87rem; color:#333; margin-bottom:.3rem; line-height:1.5; }
+  .review-answer { font-size:.8rem; }
+  .review-answer .your-ans   { color:#dc2626; font-weight:600; }
+  .review-answer .your-ans.ok{ color:#16a34a; }
+  .review-answer .correct-ans{ color:#16a34a; font-weight:600; }
+  .review-status { flex-shrink:0; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:.85rem; }
+  .rs-ok   { background:#d1fae5; color:#16a34a; }
+  .rs-fail { background:#fee2e2; color:#dc2626; }
+  .rs-skip { background:#fef3c7; color:#92400e; }
+
+  .btn-retake { background:#2d6ef5; color:#fff; border:none; border-radius:10px; padding:.6rem 1.6rem; font-size:.92rem; font-weight:700; cursor:pointer; transition:background .2s; }
+  .btn-retake:hover { background:#c0392b; }
+  .btn-back-list { background:#fff; color:#2d6ef5; border:2px solid #2d6ef5; border-radius:10px; padding:.6rem 1.6rem; font-size:.92rem; font-weight:700; cursor:pointer; transition:all .2s; }
+  .btn-back-list:hover { background:#2d6ef5; color:#fff; }
+
+  /* Responsive */
+  @media (max-width:768px) {
+    .exam-layout { grid-template-columns:1fr; }
+    .q-sidebar { order:-1; }
+    .result-stats { grid-template-columns:repeat(2,1fr); }
+  }
+  </style>
+</head>
+
+<body class="courses-page">
+
+  <!-- ═══ HEADER ═══ -->
+  <header id="header" class="header d-flex align-items-center sticky-top">
+    <div class="container-fluid container-xl position-relative d-flex align-items-center">
+      <a href="index.html" class="logo d-flex align-items-center me-auto">
+        <h1 class="sitename">English Center</h1>
+      </a>
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li><a href="index.html">Trang chủ</a></li>
+          <li><a href="gioithieu.html">Giới thiệu</a></li>
+          <li><a href="khoahoc.html">Khóa học</a></li>
+          <li><a href="giaovien.html">Giáo viên</a></li>
+          <li><a href="hocphi.html">Học Phí</a></li>
+          <li><a href="blog.html">Blog</a></li>
+          <li class="dropdown">
+            <a href="#"><span>Tài nguyên</span><i class="bi bi-chevron-down toggle-dropdown"></i></a>
+            <ul>
+              <li><a href="dethithu.html" class="active">Đề thi thử</a></li>
+              <li><a href="tailieuonthi.html">Tài liệu ôn thi</a></li>
+              <li><a href="sukien.html">Sự kiện</a></li>
+              <li><a href="404.html">Cộng đồng</a></li>
+            </ul>
+          </li>
+          <li><a href="lienhe.html">Liên hệ</a></li>
+        </ul>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
+      <div class="header-actions d-flex align-items-center">
+        <a class="btn-dangnhap" href="dangnhap.html"><i class="bi bi-person me-1"></i>Đăng Nhập</a>
+        <a class="btn-getstarted" href="dangky.html"><i class="bi bi-pencil-square me-1"></i>Đăng Ký</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+
+  <!-- ╔══════════════════════════════════════╗
+       ║  TRANG 1: DANH SÁCH ĐỀ THI          ║
+       ╚══════════════════════════════════════╝ -->
+  <div id="page-list">
+
+    <div class="page-title light-background">
+      <div class="container d-lg-flex justify-content-between align-items-center">
+        <h1 class="mb-2 mb-lg-0">Đề Thi Thử THPTQG</h1>
+        <nav class="breadcrumbs">
+          <ol>
+            <li><a href="index.html">Trang chủ</a></li>
+            <li class="current">Đề thi thử</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+
+    <section class="section">
+      <div class="container">
+
+        <!-- Banner stats -->
+        <div class="dt-banner mb-4" data-aos="fade-up">
+          <div class="si"><span class="n">12</span><span class="l">Đề thi có sẵn</span></div>
+          <div class="si"><span class="n">50</span><span class="l">Câu hỏi mỗi đề</span></div>
+          <div class="si"><span class="n">60'</span><span class="l">Thời gian làm bài</span></div>
+          <div class="si"><span class="n">2.400+</span><span class="l">Lượt làm bài</span></div>
+          <div class="ms-auto">
+            <span style="font-size:.82rem;opacity:.8;">Bám sát cấu trúc đề thi THPTQG mới nhất</span>
+          </div>
+        </div>
+
+        <!-- Filter + Search -->
+        <div class="dt-filterbar" data-aos="fade-up">
+          <button class="dt-filter-btn active" onclick="filterExam('all',this)">Tất cả</button>
+          <button class="dt-filter-btn" onclick="filterExam('2024',this)">THPTQG 2024</button>
+          <button class="dt-filter-btn" onclick="filterExam('2023',this)">THPTQG 2023</button>
+          <button class="dt-filter-btn" onclick="filterExam('2022',this)">THPTQG 2022</button>
+          <button class="dt-filter-btn" onclick="filterExam('thu',this)">Đề thi thử</button>
+          <button class="dt-filter-btn" onclick="filterExam('easy',this)">Cơ bản</button>
+          <button class="dt-filter-btn" onclick="filterExam('medium',this)">Trung bình</button>
+          <button class="dt-filter-btn" onclick="filterExam('hard',this)">Nâng cao</button>
+          <div class="dt-search ms-auto">
+            <i class="bi bi-search"></i>
+            <input type="text" id="examSearch" placeholder="Tìm đề thi..." oninput="searchExam()">
+          </div>
+        </div>
+
+        <!-- Section: Đề THPTQG chính thức -->
+        <div class="section-label" data-aos="fade-up"><i class="bi bi-award"></i>Đề thi THPTQG chính thức</div>
+        <div class="row g-3 mb-4" id="exam-grid-official" data-aos="fade-up">
+          <!-- rendered by JS -->
+        </div>
+
+        <!-- Section: Đề thi thử -->
+        <div class="section-label" data-aos="fade-up"><i class="bi bi-journal-text"></i>Đề thi thử tổng hợp</div>
+        <div class="row g-3" id="exam-grid-practice" data-aos="fade-up">
+          <!-- rendered by JS -->
+        </div>
+
+      </div>
+    </section>
+  </div><!-- /#page-list -->
+
+
+  <!-- ╔══════════════════════════════════════╗
+       ║  TRANG 2: LÀM BÀI THI               ║
+       ╚══════════════════════════════════════╝ -->
+  <div id="page-exam">
+
+    <!-- Top bar -->
+    <div class="exam-topbar">
+      <button onclick="confirmExit()" style="background:none;border:none;cursor:pointer;color:#888;font-size:1.1rem;" title="Thoát">
+        <i class="bi bi-arrow-left-circle"></i>
+      </button>
+      <span class="exam-topbar-title" id="exam-topbar-title"></span>
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <div class="progress-info" id="exam-progress-text"></div>
+        <div class="timer-box" id="timerBox">
+          <i class="bi bi-clock-fill"></i>
+          <span class="timer-val" id="timerVal">60:00</span>
+        </div>
+        <button class="btn-submit" onclick="confirmSubmit()">Nộp bài <i class="bi bi-send ms-1"></i></button>
+      </div>
+    </div>
+
+    <!-- Progress bar -->
+    <div class="exam-progress-bar mx-3 mt-1">
+      <div class="bar" id="examProgressBar" style="width:0%"></div>
+    </div>
+
+    <!-- Exam body -->
+    <div class="exam-layout">
+
+      <!-- Left: question -->
+      <div class="q-panel">
+        <div class="q-header">
+          <div>
+            <div class="q-part-label" id="q-part-label"></div>
+          </div>
+          <div class="ms-auto q-num-badge" id="q-num-badge">Câu 1 / 50</div>
+        </div>
+        <div class="q-body" id="q-body">
+          <!-- rendered by JS -->
+        </div>
+        <div class="q-nav">
+          <button class="btn-nav" id="btn-prev" onclick="prevQuestion()"><i class="bi bi-chevron-left"></i> Câu trước</button>
+          <button class="btn-nav" id="btn-skip" onclick="skipQuestion()"><i class="bi bi-skip-forward"></i> Bỏ qua</button>
+          <button class="btn-nav" id="btn-next" onclick="nextQuestion()">Câu tiếp <i class="bi bi-chevron-right"></i></button>
+        </div>
+      </div>
+
+      <!-- Right: navigator -->
+      <div class="q-sidebar">
+        <div class="sidebar-box">
+          <h6>Bảng câu hỏi</h6>
+          <div class="q-grid" id="q-grid"></div>
+          <div class="legend mt-2">
+            <div class="legend-item"><div class="legend-dot" style="background:#f9f9f9;border:1.5px solid #ddd;"></div>Chưa làm</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#fff0f0;border:1.5px solid #2d6ef5;"></div>Đã chọn</div>
+            <div class="legend-item"><div class="legend-dot" style="background:#f5f6f8;border:1.5px solid #aaa;"></div>Bỏ qua</div>
+          </div>
+        </div>
+        <div class="sidebar-box">
+          <h6>Tiến độ</h6>
+          <div style="font-size:.82rem;color:#555;line-height:1.8;">
+            <div>✅ Đã trả lời: <strong id="sb-answered">0</strong></div>
+            <div>⏭️ Bỏ qua: <strong id="sb-skipped">0</strong></div>
+            <div>⬜ Chưa làm: <strong id="sb-unanswered">50</strong></div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /.exam-layout -->
+  </div><!-- /#page-exam -->
+
+
+  <!-- ╔══════════════════════════════════════╗
+       ║  TRANG 3: KẾT QUẢ                   ║
+       ╚══════════════════════════════════════╝ -->
+  <div id="page-result">
+    <div class="container py-4">
+
+      <!-- Score hero -->
+      <div class="result-hero" data-aos="zoom-in">
+        <div class="result-score-ring">
+          <span class="score-num" id="res-score">8.0</span>
+          <span class="score-max">/ 10.0</span>
+        </div>
+        <div class="result-grade" id="res-grade">Giỏi 🎉</div>
+        <div class="result-msg" id="res-msg">Xuất sắc! Bạn đã làm rất tốt!</div>
+        <div class="result-time-spent"><i class="bi bi-clock me-1"></i>Thời gian hoàn thành: <strong id="res-time">45:20</strong></div>
+      </div>
+
+      <!-- Stats -->
+      <div class="result-stats" data-aos="fade-up">
+        <div class="rs-card correct">
+          <span class="rs-num" id="res-correct">0</span>
+          <span class="rs-lbl">Câu đúng ✅</span>
+        </div>
+        <div class="rs-card wrong">
+          <span class="rs-num" id="res-wrong">0</span>
+          <span class="rs-lbl">Câu sai ❌</span>
+        </div>
+        <div class="rs-card skip">
+          <span class="rs-num" id="res-skip">0</span>
+          <span class="rs-lbl">Bỏ qua ⏭️</span>
+        </div>
+        <div class="rs-card">
+          <span class="rs-num" id="res-pct">0%</span>
+          <span class="rs-lbl">Tỉ lệ đúng</span>
+        </div>
+      </div>
+
+      <!-- Action buttons -->
+      <div class="d-flex gap-3 justify-content-center mb-4" data-aos="fade-up">
+        <button class="btn-back-list" onclick="goToList()"><i class="bi bi-list-ul me-1"></i>Danh sách đề</button>
+        <button class="btn-retake" onclick="retakeExam()"><i class="bi bi-arrow-clockwise me-1"></i>Làm lại</button>
+      </div>
+
+      <!-- Review -->
+      <div class="bg-white rounded-3 shadow-sm overflow-hidden" data-aos="fade-up">
+        <div style="background:#1a1a2e;color:#fff;padding:.9rem 1.2rem;display:flex;align-items:center;gap:.6rem;">
+          <i class="bi bi-card-checklist"></i>
+          <strong style="font-size:.9rem;">Xem lại đáp án chi tiết</strong>
+        </div>
+        <div id="review-list"></div>
+      </div>
+
+    </div>
+  </div><!-- /#page-result -->
+
+  </main><!-- /.main -->
+
+  <!-- FOOTER -->
+  <footer id="footer" class="footer accent-background" id="list-footer">
+    <div class="container footer-top">
+      <div class="row gy-4">
+        <div class="col-lg-5 col-md-12 footer-about">
+          <a href="index.html" class="logo d-flex align-items-center">
+            <span class="sitename">English Center</span>
+          </a>
+          <p>Nền tảng ôn thi Tiếng Anh THPTQG chuyên biệt, đồng hành cùng học sinh lớp 12 trên hành trình chinh phục kỳ thi quan trọng nhất.</p>
+          <div class="social-links d-flex mt-4">
+            <a href=""><i class="bi bi-twitter-x"></i></a>
+            <a href=""><i class="bi bi-facebook"></i></a>
+            <a href=""><i class="bi bi-instagram"></i></a>
+            <a href=""><i class="bi bi-linkedin"></i></a>
+          </div>
+        </div>
+        <div class="col-lg-2 col-6 footer-links">
+          <h4>Thông tin</h4>
+          <ul>
+            <li><a href="index.html">Trang chủ</a></li>
+            <li><a href="gioithieu.html">Về chúng tôi</a></li>
+            <li><a href="khoahoc.html">Khóa học</a></li>
+            <li><a href="giaovien.html">Giáo viên</a></li>
+            <li><a href="blog.html">Blog</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-2 col-6 footer-links">
+          <h4>Tài nguyên</h4>
+          <ul>
+            <li><a href="dethithu.html">Đề thi thử</a></li>
+            <li><a href="tailieuonthi.html">Tài liệu ôn thi</a></li>
+            <li><a href="sukien.html">Sự kiện</a></li>
+          </ul>
+        </div>
+        <div class="col-lg-3 col-md-12 footer-contact text-center text-md-start">
+          <h4>Liên Hệ</h4>
+          <p>182 Lương Thế Vinh, Thanh Xuân Bắc, Thanh Xuân, Hà Nội</p>
+          <p class="mt-4"><strong>Phone:</strong> <span>+1 34567892</span></p>
+          <p><strong>Email:</strong> <span>Nhom3@englishcenter.edu.vn</span></p>
+        </div>
+      </div>
+    </div>
+    <div class="container copyright text-center mt-4">
+      <p>&copy; <span>2026</span> <strong class="px-1 sitename">English Center</strong> <span>All Rights Reserved</span></p>
+    </div>
+  </footer>
+
+  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+  <div id="preloader"></div>
+
+  <!-- Vendor JS -->
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/vendor/aos/aos.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
+  <script>
+    document.addEventListener('DOMContentLoaded',function(){
+      if(typeof AOS!=='undefined') AOS.init({duration:600,easing:'ease-in-out',once:true});
+    });
+    setTimeout(function(){ var p=document.getElementById('preloader'); if(p) p.style.display='none'; },800);
+  </script>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       DỮ LIỆU ĐỀ THI
+  ═══════════════════════════════════════════════════════════════ -->
+  <script>
+  /* ── Danh sách đề ── */
+  var examList = [
+    /* OFFICIAL */
+    { id:1, type:'official', year:'2024', title:'Đề thi THPTQG Tiếng Anh 2024 – Mã đề 401', source:'Bộ GD&ĐT – Kỳ thi chính thức 2024', level:'hard', levelLbl:'Nâng cao', attempts:412, free:true,  thumb:'assets/img/education/courses-1.webp', time:60 },
+    { id:2, type:'official', year:'2024', title:'Đề thi THPTQG Tiếng Anh 2024 – Mã đề 402', source:'Bộ GD&ĐT – Kỳ thi chính thức 2024', level:'hard', levelLbl:'Nâng cao', attempts:388, free:false, thumb:'assets/img/education/courses-2.webp', time:60 },
+    { id:3, type:'official', year:'2023', title:'Đề thi THPTQG Tiếng Anh 2023 – Mã đề 401', source:'Bộ GD&ĐT – Kỳ thi chính thức 2023', level:'hard', levelLbl:'Nâng cao', attempts:534, free:true,  thumb:'assets/img/education/courses-3.webp', time:60 },
+    { id:4, type:'official', year:'2023', title:'Đề thi THPTQG Tiếng Anh 2023 – Mã đề 403', source:'Bộ GD&ĐT – Kỳ thi chính thức 2023', level:'hard', levelLbl:'Nâng cao', attempts:297, free:false, thumb:'assets/img/education/courses-4.webp', time:60 },
+    { id:5, type:'official', year:'2022', title:'Đề thi THPTQG Tiếng Anh 2022 – Mã đề 401', source:'Bộ GD&ĐT – Kỳ thi chính thức 2022', level:'medium', levelLbl:'Trung bình', attempts:621, free:true,  thumb:'assets/img/education/courses-5.webp', time:60 },
+    { id:6, type:'official', year:'2022', title:'Đề thi THPTQG Tiếng Anh 2022 – Mã đề 402', source:'Bộ GD&ĐT – Kỳ thi chính thức 2022', level:'medium', levelLbl:'Trung bình', attempts:445, free:false, thumb:'assets/img/education/courses-6.webp', time:60 },
+    /* PRACTICE */
+    { id:7, type:'thu',  year:'thu', title:'Đề thi thử số 1 – Ngữ pháp & Từ vựng trọng tâm', source:'English Center – Biên soạn 2025', level:'easy',   levelLbl:'Cơ bản',    attempts:318, free:true,  thumb:'assets/img/education/courses-7.webp',  time:50 },
+    { id:8, type:'thu',  year:'thu', title:'Đề thi thử số 2 – Đọc hiểu nâng cao',             source:'English Center – Biên soạn 2025', level:'medium', levelLbl:'Trung bình', attempts:276, free:true,  thumb:'assets/img/education/courses-8.webp',  time:60 },
+    { id:9, type:'thu',  year:'thu', title:'Đề thi thử số 3 – Tổng hợp toàn diện A',          source:'English Center – Biên soạn 2025', level:'hard',   levelLbl:'Nâng cao',  attempts:198, free:false, thumb:'assets/img/education/courses-9.webp',  time:60 },
+    { id:10,type:'thu',  year:'thu', title:'Đề thi thử số 4 – Tổng hợp toàn diện B',          source:'English Center – Biên soạn 2025', level:'hard',   levelLbl:'Nâng cao',  attempts:154, free:false, thumb:'assets/img/education/courses-10.webp', time:60 },
+    { id:11,type:'thu',  year:'thu', title:'Đề thi thử số 5 – Bám sát cấu trúc đề mới',       source:'English Center – Biên soạn 2025', level:'medium', levelLbl:'Trung bình', attempts:221, free:true,  thumb:'assets/img/education/courses-11.webp', time:60 },
+    { id:12,type:'thu',  year:'thu', title:'Đề thi thử số 6 – Sprint trước kỳ thi',           source:'English Center – Biên soạn 2025', level:'easy',   levelLbl:'Cơ bản',    attempts:189, free:true,  thumb:'assets/img/education/courses-12.webp', time:45 },
+  ];
+
+  /* ── Dữ liệu câu hỏi mẫu (dùng chung cho tất cả đề, thực tế có thể thay mỗi đề) ── */
+  var questionsDB = [
+    /* PART 1 – PRONUNCIATION (1-4) */
+    { id:1, part:'PART 1 – Ngữ âm (Câu 1–4)', text:'Mark the letter A, B, C or D to indicate the word whose underlined part differs from the other three in pronunciation.\n<b><u>A.</u> ch</b>ange &nbsp;&nbsp; <b><u>B.</u> ch</b>air &nbsp;&nbsp; <b><u>C.</u> sch</b>ool &nbsp;&nbsp; <b><u>D.</u> ch</b>ance',
+      options:['A. change','B. chair','C. school','D. chance'], answer:2,
+      explain:'Đáp án C: "school" – âm "sch" đọc là /sk/, trong khi A, B, D đọc là /tʃ/.' },
+    { id:2, part:'PART 1 – Ngữ âm (Câu 1–4)', text:'Mark the letter A, B, C or D to indicate the word that differs from the other three in the position of primary stress.\nA. <b>stu</b>dent &nbsp;&nbsp; B. a<b>cross</b> &nbsp;&nbsp; C. <b>teach</b>er &nbsp;&nbsp; D. <b>win</b>dow',
+      options:['A. student','B. across','C. teacher','D. window'], answer:1,
+      explain:'Đáp án B: "across" nhấn âm tiết thứ 2 /ˈkrɒs/, còn A, C, D đều nhấn âm tiết đầu.' },
+    { id:3, part:'PART 1 – Ngữ âm (Câu 1–4)', text:'Choose the word whose underlined part is pronounced differently.\nA. <u>ea</u>rth &nbsp;&nbsp; B. <u>ear</u>n &nbsp;&nbsp; C. <u>ear</u> &nbsp;&nbsp; D. h<u>ear</u>d',
+      options:['A. earth','B. earn','C. ear','D. heard'], answer:2,
+      explain:'Đáp án C: "ear" phát âm /ɪər/, trong khi A, B, D đều phát âm /ɜːr/.' },
+    { id:4, part:'PART 1 – Ngữ âm (Câu 1–4)', text:'Mark the word that has a different stress pattern.\nA. be<b>gin</b> &nbsp;&nbsp; B. <b>hap</b>py &nbsp;&nbsp; C. <b>beau</b>ty &nbsp;&nbsp; D. <b>pret</b>ty',
+      options:['A. begin','B. happy','C. beauty','D. pretty'], answer:0,
+      explain:'Đáp án A: "begin" nhấn âm tiết thứ 2, còn B, C, D đều nhấn âm tiết đầu.' },
+
+    /* PART 2 – VOCABULARY & GRAMMAR (5-20) */
+    { id:5, part:'PART 2 – Từ vựng & Ngữ pháp (Câu 5–20)', text:'She ________ to the library every Saturday morning.',
+      options:['A. go','B. goes','C. went','D. has gone'], answer:1,
+      explain:'Đáp án B: Diễn đạt thói quen ở hiện tại → dùng thì hiện tại đơn, chủ ngữ "She" → động từ thêm "s".' },
+    { id:6, part:'PART 2 – Từ vựng & Ngữ pháp (Câu 5–20)', text:'If I ________ enough money, I would buy a new laptop.',
+      options:['A. had','B. have','C. will have','D. would have'], answer:0,
+      explain:'Đáp án A: Câu điều kiện loại 2 (giả định ở hiện tại không có thật) → If + V-ed/V2.' },
+    { id:7, part:'PART 2 – Từ vựng & Ngữ pháp (Câu 5–20)', text:'The book ________ by millions of readers around the world.',
+      options:['A. reads','B. is read','C. read','D. has read'], answer:1,
+      explain:'Đáp án B: Câu bị động thì hiện tại đơn → is/am/are + V-ed.' },
+    { id:8, part:'PART 2 – Từ vựng & Ngữ pháp (Câu 5–20)', text:'He is the man ________ car was stolen last night.',
+      options:['A. who','B. whom','C. whose','D. which'], answer:2,
+      explain:'Đáp án C: "whose" = mệnh đề quan hệ chỉ sở hữu (car = sở hữu của he).' },
+    { id:9, part:'PART 2 – Từ vựng & Ngữ pháp (Câu 5–20)', text:'You look tired. You ________ get some rest.',
+      options:['A. must','B. should','C. would','D. might'], answer:1,
+      explain:'Đáp án B: "should" dùng để đưa ra lời khuyên.' },
+    { id:10, part:'PART 2 – Từ vựng & Ngữ pháp (Câu 5–20)', text:'________ he was tired, he continued to work.',
+      options:['A. Despite','B. Although','C. Because','D. So'], answer:1,
+      explain:'Đáp án B: "Although" + mệnh đề (S+V) diễn đạt sự tương phản.' },
+    { id:11, part:'PART 2 – Từ vựng & Ngữ pháp (Câu 5–20)', text:'The student asked the teacher what the homework ________.',
+      options:['A. is','B. was','C. will be','D. would'], answer:1,
+      explain:'Đáp án B: Câu gián tiếp – lùi thì từ hiện tại đơn → quá khứ đơn.' },
+    { id:12, part:'PART 2 – Từ vựng & Ngữ pháp (Câu 5–20)', text:'I have lived in this city ________ ten years.',
+      options:['A. since','B. ago','C. for','D. before'], answer:2,
+      explain:'Đáp án C: "for" + khoảng thời gian dùng với thì hiện tại hoàn thành.' },
+    { id:13, part:'PART 2 – Từ vựng & Ngữ pháp (Câu 5–20)', text:'She told me that she ________ to visit me the next day.',
+      options:['A. will come','B. came','C. would come','D. comes'], answer:2,
+      explain:'Đáp án C: Câu gián tiếp – "will" → "would".' },
+    { id:14, part:'PART 2 – Từ vựng & Ngữ pháp (Câu 5–20)', text:'It\'s high time we ________ something about climate change.',
+      options:['A. do','B. did','C. have done','D. will do'], answer:1,
+      explain:'Đáp án B: "It\'s high time + S + V-ed" cấu trúc cố định diễn đạt đã đến lúc làm gì.' },
+    { id:15, part:'PART 2 – Từ vựng & Ngữ pháp (Câu 5–20)', text:'Not until he arrived home ________ that he had lost his wallet.',
+      options:['A. he realized','B. realized he','C. did he realize','D. he did realize'], answer:2,
+      explain:'Đáp án C: Đảo ngữ với "Not until" → Not until + mệnh đề, trợ động từ + S + V.' },
+    { id:16, part:'PART 2 – Từ vựng & Ngữ pháp (Câu 5–20)', text:'The word "OPTIMISTIC" is closest in meaning to ________.',
+      options:['A. hopeful','B. worried','C. negative','D. careless'], answer:0,
+      explain:'Đáp án A: "Optimistic" = lạc quan = "hopeful" (đầy hy vọng).' },
+    { id:17, part:'PART 2 – Từ vựng & Ngữ pháp (Câu 5–20)', text:'She ________ to the noise from outside because she was used to it.',
+      options:['A. paid attention','B. turned a blind eye','C. paid no attention','D. took notice'], answer:2,
+      explain:'Đáp án C: "paid no attention to" = phớt lờ, không để ý.' },
+    { id:18, part:'PART 2 – Từ vựng & Ngữ pháp (Câu 5–20)', text:'Mark the underlined word/phrase that needs correcting.\n<u>A. Although</u> it was <u>B. raining</u> heavily, but we <u>C. decided</u> to <u>D. go</u> out.',
+      options:['A. Although','B. raining','C. decided','D. go'], answer:0,
+      explain:'Đáp án A: Không dùng "Although" cùng "but" trong một câu. Bỏ "but" hoặc đổi "Although" thành "Despite".' },
+    { id:19, part:'PART 2 – Từ vựng & Ngữ pháp (Câu 5–20)', text:'The children were ________ by the magician\'s tricks.',
+      options:['A. fascinated','B. fascinate','C. fascinating','D. fascination'], answer:0,
+      explain:'Đáp án A: Vị trí sau "were" cần tính từ (V-ed form dùng như adj) → "fascinated" (cảm thấy thích thú).' },
+    { id:20, part:'PART 2 – Từ vựng & Ngữ pháp (Câu 5–20)', text:'Many people ________ their houses with solar panels to save electricity.',
+      options:['A. have equipped','B. equip','C. are equipping','D. equipped'], answer:2,
+      explain:'Đáp án C: Diễn đạt xu hướng đang xảy ra ngay hiện tại → thì hiện tại tiếp diễn.' },
+
+    /* PART 3 – READING (21-36) */
+    { id:21, part:'PART 3 – Đọc hiểu (Câu 21–36)', text:'<small style="color:#888;font-style:italic;">Read the following passage and choose the best answer.<br><br></small><b>Passage:</b> <i>"Social media has transformed the way people communicate. While it connects billions of people worldwide, it also raises concerns about privacy, mental health, and the spread of misinformation. Many experts argue that stricter regulations are needed to address these issues."</i><br><br>What is the main idea of the passage?',
+      options:['A. Social media is entirely harmful to society.','B. Social media has both benefits and drawbacks.','C. Experts want to ban social media.','D. Privacy is the only concern with social media.'], answer:1,
+      explain:'Đáp án B: Bài đọc đề cập đến cả mặt tích cực (kết nối) và tiêu cực (quyền riêng tư, sức khỏe tâm thần).' },
+    { id:22, part:'PART 3 – Đọc hiểu (Câu 21–36)', text:'According to the passage, what do many experts suggest?',
+      options:['A. Banning all social media platforms','B. Ignoring the concerns raised','C. Applying stricter regulations','D. Encouraging unlimited use'], answer:2,
+      explain:'Đáp án C: "Many experts argue that stricter regulations are needed" – tác giả nêu rõ trong đoạn văn.' },
+    { id:23, part:'PART 3 – Đọc hiểu (Câu 21–36)', text:'The word "transformed" in the passage is closest in meaning to ________.',
+      options:['A. limited','B. changed dramatically','C. slightly improved','D. destroyed'], answer:1,
+      explain:'Đáp án B: "Transform" = biến đổi hoàn toàn = "changed dramatically".' },
+    { id:24, part:'PART 3 – Đọc hiểu (Câu 21–36)', text:'Which of the following is NOT mentioned as a concern in the passage?',
+      options:['A. Privacy','B. Mental health','C. Job loss','D. Misinformation'], answer:2,
+      explain:'Đáp án C: "Job loss" (mất việc làm) không được đề cập trong đoạn văn.' },
+    { id:25, part:'PART 3 – Đọc hiểu (Câu 21–36)', text:'<small style="color:#888;font-style:italic;">Read the passage and choose the best answer.<br><br></small><b>Passage:</b> <i>"Renewable energy sources such as solar and wind power are becoming increasingly cost-effective. Governments around the world are investing heavily in clean energy to reduce carbon emissions and combat climate change."</i><br><br>What is the main purpose of investing in renewable energy?',
+      options:['A. To create more jobs','B. To reduce carbon emissions','C. To increase electricity prices','D. To replace fossil fuels immediately'], answer:1,
+      explain:'Đáp án B: "to reduce carbon emissions and combat climate change" được nêu rõ trong bài.' },
+    { id:26, part:'PART 3 – Đọc hiểu (Câu 21–36)', text:'The phrase "cost-effective" in the passage means ________.',
+      options:['A. very expensive','B. cheap but low quality','C. giving good value for money','D. free of charge'], answer:2,
+      explain:'Đáp án C: "cost-effective" = hiệu quả về chi phí, đáng đồng tiền bỏ ra.' },
+    { id:27, part:'PART 3 – Đọc hiểu (Câu 21–36)', text:'Choose A, B, C, or D to fill in the blank in the following passage.\n\n"Exercise has numerous (27) ________ for both physical and mental health."',
+      options:['A. benefits','B. damages','C. concerns','D. problems'], answer:0,
+      explain:'Đáp án A: "benefits" = lợi ích, phù hợp nghĩa câu.' },
+    { id:28, part:'PART 3 – Đọc hiểu (Câu 21–36)', text:'"Regular physical activity can (28) ________ the risk of chronic diseases."',
+      options:['A. increase','B. reduce','C. ignore','D. create'], answer:1,
+      explain:'Đáp án B: "reduce the risk" = giảm nguy cơ, hợp logic với lợi ích của tập thể dục.' },
+    { id:29, part:'PART 3 – Đọc hiểu (Câu 21–36)', text:'"Moreover, it helps improve (29) ________ and reduce stress levels."',
+      options:['A. confusion','B. laziness','C. concentration','D. ignorance'], answer:2,
+      explain:'Đáp án C: "concentration" = sự tập trung, phù hợp với lợi ích của tập thể dục với não bộ.' },
+    { id:30, part:'PART 3 – Đọc hiểu (Câu 21–36)', text:'"People who exercise regularly tend to have a more (30) ________ outlook on life."',
+      options:['A. pessimistic','B. negative','C. positive','D. confused'], answer:2,
+      explain:'Đáp án C: "positive outlook" = cái nhìn tích cực, trái nghĩa với stress/tiêu cực.' },
+    { id:31, part:'PART 3 – Đọc hiểu (Câu 21–36)', text:'Choose the sentence that is closest in meaning to:\n"Despite being tired, she finished all her homework."',
+      options:['A. She was tired so she couldn\'t finish her homework.','B. Although she was tired, she completed all her homework.','C. She finished her homework because she wasn\'t tired.','D. She was too tired to finish her homework.'], answer:1,
+      explain:'Đáp án B: "Despite + V-ing" = "Although + S + V", nghĩa tương đương.' },
+    { id:32, part:'PART 3 – Đọc hiểu (Câu 21–36)', text:'Choose the best sentence that combines these two sentences:\n"He studied hard. He passed the exam."',
+      options:['A. He passed the exam because of studying hard.','B. He studied hard, so he passed the exam.','C. He passed the exam, but he studied hard.','D. He studied hard although he passed the exam.'], answer:1,
+      explain:'Đáp án B: "so" diễn đạt kết quả của nguyên nhân, phù hợp nhất.' },
+    { id:33, part:'PART 3 – Đọc hiểu (Câu 21–36)', text:'"The teacher said, \'Please open your books to page 50.\'"<br>Choose the indirect speech:',
+      options:['A. The teacher told students to open their books to page 50.','B. The teacher said to open your books to page 50.','C. The teacher asked if they open their books.','D. The teacher told that open your books.'], answer:0,
+      explain:'Đáp án A: Câu mệnh lệnh gián tiếp: tell + O + to-infinitive.' },
+    { id:34, part:'PART 3 – Đọc hiểu (Câu 21–36)', text:'Mark the letter A, B, C or D to indicate the sentence that is CLOSEST in meaning to:\n"It is possible that she forgot the meeting."',
+      options:['A. She must have forgotten the meeting.','B. She may have forgotten the meeting.','C. She should have forgotten the meeting.','D. She could not have forgotten the meeting.'], answer:1,
+      explain:'Đáp án B: "It is possible" = có thể = "may have + V-ed" diễn đạt khả năng ở quá khứ.' },
+    { id:35, part:'PART 3 – Đọc hiểu (Câu 21–36)', text:'The word "sustainable" in the context of "sustainable development" means ________.',
+      options:['A. temporary and changing','B. able to continue over a long time','C. expensive and rare','D. fast and effective'], answer:1,
+      explain:'Đáp án B: "sustainable" = bền vững = có thể duy trì lâu dài.' },
+    { id:36, part:'PART 3 – Đọc hiểu (Câu 21–36)', text:'Which sentence uses the correct form of the verb?\nA. She suggested to go to the cinema.\nB. He avoided to answer the question.\nC. They decided going abroad.\nD. We considered moving to another city.',
+      options:['A. She suggested to go to the cinema.','B. He avoided to answer the question.','C. They decided going abroad.','D. We considered moving to another city.'], answer:3,
+      explain:'Đáp án D: "consider + V-ing". A sai (suggest + V-ing), B sai (avoid + V-ing), C sai (decide + to-V).' },
+
+    /* PART 4 – WRITING (37-50) */
+    { id:37, part:'PART 4 – Viết (Câu 37–50)', text:'Choose the sentence that is CORRECT and has the same meaning as:\n"The last time I saw her was in 2020."',
+      options:['A. I haven\'t seen her since 2020.','B. I didn\'t see her in 2020.','C. I saw her last in 2020.','D. A and C are both correct.'], answer:3,
+      explain:'Đáp án D: Cả A "haven\'t seen since 2020" và C "saw last in 2020" đều diễn đạt đúng nghĩa.' },
+    { id:38, part:'PART 4 – Viết (Câu 37–50)', text:'"The police caught the thief."<br>Choose the correct passive form:',
+      options:['A. The thief is caught by the police.','B. The thief was caught by the police.','C. The thief has caught by the police.','D. The thief caught by the police.'], answer:1,
+      explain:'Đáp án B: Câu chủ động ở thì quá khứ đơn → bị động: was/were + V-ed.' },
+    { id:39, part:'PART 4 – Viết (Câu 37–50)', text:'Choose the sentence that best combines: "She worked hard. She didn\'t get promoted."',
+      options:['A. She worked hard, so she didn\'t get promoted.','B. Despite working hard, she didn\'t get promoted.','C. Because she worked hard, she got promoted.','D. She worked hard and got promoted.'], answer:1,
+      explain:'Đáp án B: "Despite + V-ing" diễn đạt sự tương phản phù hợp nhất.' },
+    { id:40, part:'PART 4 – Viết (Câu 37–50)', text:'Mark the letter to indicate the underlined word/phrase that is INCORRECT.\n<u>A. It</u> is importance <u>B. to maintain</u> a <u>C. healthy</u> <u>D. lifestyle</u>.',
+      options:['A. It','B. to maintain','C. healthy','D. lifestyle'], answer:0,
+      explain:'Đáp án A: Phải là "It is important" không phải "It is importance". "important" là tính từ.' },
+    { id:41, part:'PART 4 – Viết (Câu 37–50)', text:'Choose the word/phrase closest in meaning to "take advantage of".',
+      options:['A. benefit from','B. suffer from','C. complain about','D. worry about'], answer:0,
+      explain:'Đáp án A: "take advantage of" = tận dụng, khai thác = "benefit from" (gần nghĩa nhất).' },
+    { id:42, part:'PART 4 – Viết (Câu 37–50)', text:'"Hardly ________ the exam results when she burst into tears."',
+      options:['A. she heard','B. did she hear','C. had she heard','D. she had heard'], answer:2,
+      explain:'Đáp án C: Đảo ngữ với "Hardly" → Hardly + had + S + V3/V-ed (thì quá khứ hoàn thành).' },
+    { id:43, part:'PART 4 – Viết (Câu 37–50)', text:'The sentence "He is said to be one of the best teachers in the school" means:',
+      options:['A. People say he is one of the best teachers.','B. He says he is one of the best teachers.','C. He said to be the best teacher.','D. It is said that he was one of the best teachers.'], answer:0,
+      explain:'Đáp án A: "S + is said to V" = "People say that S + V" – câu tường thuật bị động.' },
+    { id:44, part:'PART 4 – Viết (Câu 37–50)', text:'Choose the correct option to complete the sentence.\n"No sooner ________ than the lights went out."',
+      options:['A. he arrived','B. did he arrive','C. had he arrived','D. he had arrived'], answer:2,
+      explain:'Đáp án C: Đảo ngữ với "No sooner" → No sooner + had + S + V3 + than + quá khứ đơn.' },
+    { id:45, part:'PART 4 – Viết (Câu 37–50)', text:'"The more you practice English, ________ you become."',
+      options:['A. the more fluent','B. more fluent','C. the fluent','D. most fluent'], answer:0,
+      explain:'Đáp án A: Cấu trúc so sánh kép "the + so sánh hơn..., the + so sánh hơn...".' },
+    { id:46, part:'PART 4 – Viết (Câu 37–50)', text:'Choose the most suitable response.\nA: "Would you mind if I opened the window?"\nB: "________"',
+      options:['A. Yes, please.','B. No, not at all. Go ahead.','C. Yes, go ahead.','D. I mind very much.'], answer:1,
+      explain:'Đáp án B: "Would you mind if..." → trả lời "No" = không phiền = đồng ý cho làm.' },
+    { id:47, part:'PART 4 – Viết (Câu 37–50)', text:'Which sentence is GRAMMATICALLY CORRECT?',
+      options:['A. He suggested that she should to go home early.','B. She insisted on him paying for dinner.','C. They accused him to steal the money.','D. I apologize for to be late.'], answer:1,
+      explain:'Đáp án B: "insist on + V-ing" là đúng. A sai (suggest + V, không cần "to"), C sai (accuse sb of), D sai (apologize for + V-ing).' },
+    { id:48, part:'PART 4 – Viết (Câu 37–50)', text:'"By the end of next year, I ________ English for five years."',
+      options:['A. will learn','B. will have learned','C. am learning','D. have learned'], answer:1,
+      explain:'Đáp án B: "By the end of next year" → thì tương lai hoàn thành "will have + V-ed".' },
+    { id:49, part:'PART 4 – Viết (Câu 37–50)', text:'Choose the correct sentence with the given words:\n"wishes / hadn\'t said / those words / he / he"',
+      options:['A. He wishes he didn\'t say those words.','B. He wishes he hadn\'t said those words.','C. He wish he hadn\'t said those words.','D. He wishes he wouldn\'t say those words.'], answer:1,
+      explain:'Đáp án B: "wish + had + V3/V-ed" diễn đạt điều tiếc nuối ở quá khứ.' },
+    { id:50, part:'PART 4 – Viết (Câu 37–50)', text:'Choose the letter A, B, C or D to indicate the best sentence arrangement:\n1. However, with proper planning, it can be manageable.\n2. Many students find exam preparation stressful.\n3. Start by making a study schedule and prioritizing topics.\n4. Break your study time into shorter, focused sessions.',
+      options:['A. 2 – 1 – 3 – 4','B. 3 – 4 – 2 – 1','C. 1 – 2 – 3 – 4','D. 2 – 3 – 1 – 4'], answer:0,
+      explain:'Đáp án A: Nêu vấn đề (2) → phản biện (1) → giải pháp tổng quát (3) → giải pháp chi tiết (4).' }
+  ];
+
+  /* ════════════════════════════════════════
+     STATE
+  ════════════════════════════════════════ */
+  var currentExam   = null;
+  var currentQ      = 0;
+  var answers       = [];   /* answers[i] = index chọn hoặc -1 */
+  var skipped       = [];   /* skipped[i] = true/false */
+  var submitted     = false;
+  var timerInterval = null;
+  var totalSeconds  = 0;
+  var elapsedSec    = 0;
+
+  /* ════════════════════════════════════════
+     RENDER DANH SÁCH
+  ════════════════════════════════════════ */
+  function levelClass(l) { return l==='easy'?'lvl-easy':l==='hard'?'lvl-hard':'lvl-medium'; }
+
+  function renderCard(e, idx) {
+    var locked = idx >= 2;
+    var lockHtml = locked
+      ? '<div class="lock-overlay" onclick="showPW()">'
+          +'<div class="lock-icon"><i class="bi bi-lock-fill"></i></div>'
+          +'<div class="lock-label">Nội dung giới hạn</div>'
+          +'<div class="lock-sub">Đăng ký để mở khóa</div>'
+        +'</div>'
+      : '';
+    var actionBtn = locked
+      ? '<button class="btn-start ms-1" style="background:#9ca3af;cursor:default" onclick="showPW()"><i class="bi bi-lock-fill"></i>Khóa</button>'
+      : '<button class="btn-start ms-1" onclick="startExam('+e.id+')"><i class="bi bi-play-fill"></i>Làm bài</button>';
+    return '<div class="col-lg-4 col-md-6 exam-col" data-type="'+e.type+'" data-year="'+e.year+'" data-level="'+e.level+'" data-title="'+e.title.toLowerCase()+'">'
+      +'<div class="exam-card'+(locked?' locked':'')+'">'
+        +lockHtml
+        +'<div class="exam-thumb">'
+          +'<img src="'+e.thumb+'" alt="" onerror="this.style.display=\'none\'">'
+          +'<span class="ex-year">'+e.year.toUpperCase()+'</span>'
+          +'<span class="ex-level '+levelClass(e.level)+'">'+e.levelLbl+'</span>'
+        +'</div>'
+        +'<div class="exam-body">'
+          +'<h5>'+e.title+'</h5>'
+          +'<div class="exam-source"><i class="bi bi-building"></i>'+e.source+'</div>'
+          +'<div class="exam-meta">'
+            +'<span><i class="bi bi-list-ol"></i>50 câu</span>'
+            +'<span><i class="bi bi-clock"></i>'+e.time+' phút</span>'
+            +'<span><i class="bi bi-star-fill"></i>'+e.levelLbl+'</span>'
+          +'</div>'
+          +'<div class="exam-footer">'
+            +'<div class="exam-attempts"><i class="bi bi-people-fill"></i>'+e.attempts.toLocaleString()+' lượt làm</div>'
+            +'<div class="d-flex align-items-center gap-1">'
+              +(e.free?'<span class="tag-free">Miễn phí</span>':'<span class="tag-pro">Thành viên</span>')
+              +actionBtn
+            +'</div>'
+          +'</div>'
+        +'</div>'
+      +'</div>'
+    +'</div>';
+  }
+
+  function renderAllCards() {
+    var official = examList.filter(function(e){ return e.type==='official'; });
+    var practice = examList.filter(function(e){ return e.type==='thu'; });
+    document.getElementById('exam-grid-official').innerHTML = official.map(function(e,i){ return renderCard(e,i); }).join('');
+    document.getElementById('exam-grid-practice').innerHTML = practice.map(function(e,i){ return renderCard(e,i); }).join('');
+  }
+
+  function filterExam(key, btn) {
+    document.querySelectorAll('.dt-filter-btn').forEach(function(b){ b.classList.remove('active'); });
+    btn.classList.add('active');
+    var cols = document.querySelectorAll('.exam-col');
+    cols.forEach(function(col) {
+      var show = key==='all'
+        || col.getAttribute('data-year')===key
+        || col.getAttribute('data-type')===key
+        || col.getAttribute('data-level')===key;
+      col.style.display = show?'':'none';
+    });
+  }
+
+  function searchExam() {
+    var q = document.getElementById('examSearch').value.toLowerCase();
+    document.querySelectorAll('.exam-col').forEach(function(col){
+      var t = col.getAttribute('data-title')||'';
+      col.style.display = (!q||t.includes(q))?'':'none';
+    });
+  }
+
+  /* ════════════════════════════════════════
+     BẮT ĐẦU LÀM BÀI
+  ════════════════════════════════════════ */
+  function startExam(id) {
+    currentExam = examList.find(function(e){ return e.id===id; });
+    currentQ    = 0;
+    answers     = new Array(50).fill(-1);
+    skipped     = new Array(50).fill(false);
+    submitted   = false;
+    elapsedSec  = 0;
+    totalSeconds = currentExam.time * 60;
+
+    /* switch page */
+    document.getElementById('page-list').style.display   = 'none';
+    document.getElementById('page-result').style.display = 'none';
+    document.getElementById('page-exam').style.display   = 'block';
+    document.getElementById('footer').style.display      = 'none';
+    window.scrollTo(0,0);
+
+    document.getElementById('exam-topbar-title').textContent = currentExam.title;
+    buildQGrid();
+    renderQuestion(0);
+    startTimer();
+  }
+
+  /* ════════════════════════════════════════
+     TIMER
+  ════════════════════════════════════════ */
+  function startTimer() {
+    clearInterval(timerInterval);
+    var remaining = totalSeconds;
+    function tick() {
+      remaining--;
+      elapsedSec++;
+      var m = Math.floor(remaining/60);
+      var s = remaining%60;
+      document.getElementById('timerVal').textContent =
+        (m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+      if(remaining <= 120) document.getElementById('timerBox').classList.add('warning');
+      if(remaining <= 0)  { clearInterval(timerInterval); autoSubmit(); }
+    }
+    timerInterval = setInterval(tick, 1000);
+  }
+
+  function fmtTime(sec) {
+    var m=Math.floor(sec/60), s=sec%60;
+    return (m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+  }
+
+  /* ════════════════════════════════════════
+     RENDER CÂU HỎI
+  ════════════════════════════════════════ */
+  function renderQuestion(idx) {
+    currentQ = idx;
+    var q = questionsDB[idx];
+    var total = questionsDB.length;
+
+    /* Header */
+    document.getElementById('q-part-label').textContent = q.part;
+    document.getElementById('q-num-badge').textContent  = 'Câu '+(idx+1)+' / '+total;
+    document.getElementById('exam-progress-text').textContent = (idx+1)+'/'+total;
+    document.getElementById('examProgressBar').style.width = ((idx+1)/total*100)+'%';
+
+    /* Options */
+    var optHtml = '<ul class="option-list">';
+    q.options.forEach(function(opt, i) {
+      var cls = '';
+      if(submitted) {
+        if(i===q.answer)     cls = ' correct';
+        else if(answers[idx]===i) cls = ' wrong';
+      } else {
+        if(answers[idx]===i) cls = ' selected';
+      }
+      var label = String.fromCharCode(65+i);
+      optHtml += '<li class="option-item'+cls+'" onclick="'+(submitted?'':'selectOption('+idx+','+i+')')+'">'+
+        '<span class="option-label">'+label+'</span>'+
+        '<span class="option-text">'+opt+'</span>'+
+      '</li>';
+    });
+    optHtml += '</ul>';
+
+    /* Explanation (if submitted) */
+    var explainHtml = '';
+    if(submitted) {
+      explainHtml = '<div class="q-explain show"><strong>💡 Giải thích:</strong>'+q.explain+'</div>';
+    }
+
+    document.getElementById('q-body').innerHTML =
+      '<p class="q-text">'+q.text.replace(/\n/g,'<br>')+'</p>'+optHtml+explainHtml;
+
+    /* Nav buttons */
+    document.getElementById('btn-prev').style.visibility = idx===0?'hidden':'';
+    document.getElementById('btn-next').style.display    = idx===total-1?'none':'';
+    document.getElementById('btn-skip').style.display    = submitted?'none':'';
+
+    /* Update grid */
+    updateQGrid();
+    updateSidebar();
+  }
+
+  function selectOption(qIdx, optIdx) {
+    if(submitted) return;
+    answers[qIdx] = optIdx;
+    skipped[qIdx] = false;
+    renderQuestion(qIdx);
+  }
+
+  /* ════════════════════════════════════════
+     QUESTION GRID
+  ════════════════════════════════════════ */
+  function buildQGrid() {
+    var html='';
+    questionsDB.forEach(function(_,i){
+      html += '<div class="q-dot" id="qdot-'+i+'" onclick="goToQ('+i+')">'+(i+1)+'</div>';
+    });
+    document.getElementById('q-grid').innerHTML = html;
+  }
+
+  function updateQGrid() {
+    questionsDB.forEach(function(_,i){
+      var dot = document.getElementById('qdot-'+i);
+      if(!dot) return;
+      dot.className = 'q-dot';
+      if(i===currentQ) { dot.classList.add('current'); return; }
+      if(submitted) {
+        if(answers[i]===questionsDB[i].answer) dot.classList.add('correct');
+        else if(answers[i]===-1) dot.classList.add('');
+        else dot.classList.add('wrong');
+      } else {
+        if(answers[i]>=0)  dot.classList.add('answered');
+        else if(skipped[i]) dot.classList.add('skipped');
+      }
+    });
+  }
+
+  function goToQ(i) { renderQuestion(i); }
+
+  function updateSidebar() {
+    var ans=0, skip=0;
+    answers.forEach(function(a,i){ if(a>=0) ans++; else if(skipped[i]) skip++; });
+    document.getElementById('sb-answered').textContent   = ans;
+    document.getElementById('sb-skipped').textContent    = skip;
+    document.getElementById('sb-unanswered').textContent = questionsDB.length-ans-skip;
+  }
+
+  /* ════════════════════════════════════════
+     NAVIGATION
+  ════════════════════════════════════════ */
+  function nextQuestion() {
+    if(currentQ < questionsDB.length-1) renderQuestion(currentQ+1);
+  }
+  function prevQuestion() {
+    if(currentQ > 0) renderQuestion(currentQ-1);
+  }
+  function skipQuestion() {
+    skipped[currentQ] = true;
+    if(currentQ < questionsDB.length-1) renderQuestion(currentQ+1);
+    else updateSidebar();
+  }
+
+  /* ════════════════════════════════════════
+     NỘP BÀI
+  ════════════════════════════════════════ */
+  function confirmSubmit() {
+    var unanswered = answers.filter(function(a){ return a===-1; }).length;
+    var msg = unanswered>0
+      ? 'Bạn còn '+unanswered+' câu chưa trả lời. Bạn có chắc muốn nộp bài không?'
+      : 'Bạn đã trả lời tất cả các câu. Nộp bài ngay?';
+    if(confirm(msg)) submitExam();
+  }
+
+  function confirmExit() {
+    if(confirm('Bạn có chắc muốn thoát? Kết quả sẽ không được lưu.')) {
+      clearInterval(timerInterval);
+      goToList();
+    }
+  }
+
+  function autoSubmit() {
+    alert('⏰ Hết thời gian! Bài thi sẽ được nộp tự động.');
+    submitExam();
+  }
+
+  function submitExam() {
+    clearInterval(timerInterval);
+    submitted = true;
+
+    /* Calculate score */
+    var correct=0, wrong=0, skip=0;
+    questionsDB.forEach(function(q,i){
+      if(answers[i]===q.answer) correct++;
+      else if(answers[i]===-1)  skip++;
+      else wrong++;
+    });
+    var total    = questionsDB.length;
+    var score10  = (correct/total*10).toFixed(1);
+    var pct      = Math.round(correct/total*100);
+
+    /* Grade */
+    var grade, msg;
+    if(score10>=9)     { grade='Xuất sắc 🏆'; msg='Tuyệt vời! Bạn đã chinh phục đề thi này!'; }
+    else if(score10>=8){ grade='Giỏi 🎉';     msg='Rất tốt! Bạn đã làm bài xuất sắc!'; }
+    else if(score10>=7){ grade='Khá 👍';       msg='Khá tốt! Còn một ít cần ôn thêm.'; }
+    else if(score10>=5){ grade='Trung bình 📚';msg='Cần cố gắng thêm! Ôn lại những phần còn yếu.'; }
+    else               { grade='Cần cải thiện 💪';msg='Đừng nản! Hãy ôn luyện thêm và thử lại nhé.'; }
+
+    /* Show result page */
+    document.getElementById('page-exam').style.display   = 'none';
+    document.getElementById('page-result').style.display = 'block';
+    window.scrollTo(0,0);
+
+    document.getElementById('res-score').textContent   = score10;
+    document.getElementById('res-grade').textContent   = grade;
+    document.getElementById('res-msg').textContent     = msg;
+    document.getElementById('res-time').textContent    = fmtTime(elapsedSec);
+    document.getElementById('res-correct').textContent = correct;
+    document.getElementById('res-wrong').textContent   = wrong;
+    document.getElementById('res-skip').textContent    = skip;
+    document.getElementById('res-pct').textContent     = pct+'%';
+
+    /* Review list */
+    var rv='';
+    questionsDB.forEach(function(q,i){
+      var userAns = answers[i];
+      var isOk    = userAns===q.answer;
+      var isSkip  = userAns===-1;
+      var statusCls = isSkip?'rs-skip':isOk?'rs-ok':'rs-fail';
+      var statusIcon = isSkip?'⏭️':isOk?'✅':'❌';
+      var userLabel  = userAns>=0 ? q.options[userAns] : '(Bỏ qua)';
+      var corrLabel  = q.options[q.answer];
+      var ansCls     = isOk?'your-ans ok':'your-ans';
+      rv += '<div class="review-row">'
+          +'<div class="review-qnum">C'+( i+1)+'</div>'
+          +'<div class="review-content">'
+            +'<div class="review-q">'+q.text.replace(/<[^>]+>/g,'').replace(/\n/g,' ').substring(0,90)+(q.text.length>90?'…':'')+'</div>'
+            +'<div class="review-answer">'
+              +'Bạn chọn: <span class="'+ansCls+'">'+userLabel+'</span>'
+              +(isOk?'':' &nbsp;|&nbsp; Đáp án: <span class="correct-ans">'+corrLabel+'</span>')
+            +'</div>'
+            +(submitted&&!isOk&&!isSkip?'<div style="font-size:.77rem;color:#666;margin-top:.3rem;font-style:italic;">'+q.explain+'</div>':'')
+          +'</div>'
+          +'<div class="review-status '+statusCls+'">'+statusIcon+'</div>'
+        +'</div>';
+    });
+    document.getElementById('review-list').innerHTML = rv;
+  }
+
+  /* ════════════════════════════════════════
+     ĐIỀU HƯỚNG
+  ════════════════════════════════════════ */
+  function goToList() {
+    clearInterval(timerInterval);
+    document.getElementById('page-exam').style.display   = 'none';
+    document.getElementById('page-result').style.display = 'none';
+    document.getElementById('page-list').style.display   = 'block';
+    document.getElementById('footer').style.display      = '';
+    window.scrollTo(0,0);
+  }
+
+  function retakeExam() {
+    if(currentExam) startExam(currentExam.id);
+  }
+
+
+  /* ════════════════════════════════════════
+     KHỞI TẠO
+  ════════════════════════════════════════ */
+  document.addEventListener('DOMContentLoaded', function() {
+    renderAllCards();
+  });
+
+  </script>
+
+  <!-- ══ PAYWALL MODAL ══ -->
+  <style>
+    #pw-modal { display:none;position:fixed;inset:0;z-index:99999;align-items:center;justify-content:center;background:rgba(10,15,30,.68);backdrop-filter:blur(8px); }
+    #pw-modal.show { display:flex; }
+    .pw-box { background:#fff;border-radius:22px;padding:2.2rem 2rem 1.9rem;max-width:440px;width:94%;box-shadow:0 32px 90px rgba(0,0,0,.3);animation:pwIn .22s cubic-bezier(.34,1.56,.64,1);text-align:center;position:relative; }
+    @keyframes pwIn{from{opacity:0;transform:translateY(-14px) scale(.96)}to{opacity:1;transform:none}}
+    .pw-close{position:absolute;top:.9rem;right:1rem;background:none;border:none;font-size:1.15rem;color:#bbb;cursor:pointer;line-height:1;padding:.1rem;}
+    .pw-close:hover{color:#333;}
+    .pw-badge{display:inline-flex;align-items:center;gap:.4rem;background:#f0f4ff;color:#2d6ef5;border-radius:20px;padding:.25rem .8rem;font-size:.75rem;font-weight:700;margin-bottom:.9rem;border:1px solid rgba(45,110,245,.2);}
+    .pw-illu{width:60px;height:60px;border-radius:18px;background:linear-gradient(135deg,#1a3fbf,#4a2da8);display:flex;align-items:center;justify-content:center;margin:0 auto .9rem;box-shadow:0 8px 24px rgba(45,110,245,.3);}
+    .pw-illu i{color:#fff;font-size:1.65rem;}
+    .pw-title{font-size:1.2rem;font-weight:900;color:#1a1a2e;margin-bottom:.3rem;}
+    .pw-desc{font-size:.87rem;color:#666;line-height:1.65;margin-bottom:1.2rem;}
+    .pw-perks{display:flex;flex-direction:column;gap:.5rem;margin-bottom:1.4rem;text-align:left;background:#f8f9fd;border-radius:12px;padding:.9rem 1rem;}
+    .pw-perk{display:flex;align-items:center;gap:.6rem;font-size:.84rem;color:#333;}
+    .pw-perk i{color:#2d6ef5;font-size:.9rem;flex-shrink:0;}
+    .pw-btn1{width:100%;background:linear-gradient(90deg,#1a3fbf,#4a2da8);color:#fff;border:none;border-radius:11px;padding:.78rem;font-size:.95rem;font-weight:800;cursor:pointer;transition:filter .2s;margin-bottom:.5rem;}
+    .pw-btn1:hover{filter:brightness(1.1);}
+    .pw-btn2{width:100%;background:#f5f6f8;color:#555;border:none;border-radius:11px;padding:.65rem;font-size:.86rem;font-weight:600;cursor:pointer;transition:background .2s;}
+    .pw-btn2:hover{background:#e8ecf0;}
+    .pw-note{font-size:.74rem;color:#bbb;margin-top:.8rem;}
+  </style>
+  <div id="pw-modal">
+    <div class="pw-box">
+      <button class="pw-close" onclick="closePW()">✕</button>
+      <div class="pw-badge"><i class="bi bi-shield-lock-fill"></i> Nội dung thành viên</div>
+      <div class="pw-illu"><i class="bi bi-journal-text"></i></div>
+      <div class="pw-title">Mở khóa toàn bộ đề thi</div>
+      <div class="pw-desc">Đề thi này dành riêng cho học viên English Center. Đăng ký học để luyện tập không giới hạn.</div>
+      <div class="pw-perks">
+        <div class="pw-perk"><i class="bi bi-check-circle-fill"></i> Toàn bộ đề THPTQG chính thức từ 2020–2024</div>
+        <div class="pw-perk"><i class="bi bi-check-circle-fill"></i> Đề thi thử do giáo viên English Center biên soạn</div>
+        <div class="pw-perk"><i class="bi bi-check-circle-fill"></i> Đáp án & giải thích chi tiết sau mỗi bài thi</div>
+        <div class="pw-perk"><i class="bi bi-check-circle-fill"></i> Thống kê & theo dõi tiến độ cá nhân</div>
+      </div>
+      <button class="pw-btn1" onclick="closePW();window.location.href='dangky.html'">🎓 Đăng ký học ngay</button>
+      <button class="pw-btn2" onclick="closePW();window.location.href='dangnhap.html'">Tôi đã có tài khoản — Đăng nhập</button>
+      <div class="pw-note">Các đề miễn phí luôn mở — không cần đăng ký.</div>
+    </div>
+  </div>
+  <script>
+    function showPW(){ document.getElementById('pw-modal').classList.add('show'); document.body.style.overflow='hidden'; }
+    function closePW(){ document.getElementById('pw-modal').classList.remove('show'); document.body.style.overflow=''; }
+    document.getElementById('pw-modal').addEventListener('click',function(e){ if(e.target===this) closePW(); });
+  </script>
+
+</body>
+</html>

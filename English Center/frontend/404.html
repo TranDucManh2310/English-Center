@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>English Center – Mạng Xã Hội</title>
+  <link href="assets/img/favicon.png" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Raleway:wght@400;600;700;800;900&family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="assets/css/main.css" rel="stylesheet">
+
+  <style>
+  /* ══════════════════════════════════════
+     BIẾN MÀU
+  ══════════════════════════════════════ */
+  :root {
+    --blue:    #2d6ef5;
+    --blue-dk: #1a3fbf;
+    --purple:  #4a2da8;
+    --red:     #c0392b;
+    --grad:    linear-gradient(90deg,#1a3fbf 0%,#4a2da8 40%,#8b1a4a 70%,#c0392b 100%);
+  }
+
+
+
+  /* ══════════════════════════════════════
+     HERO – PLATFORM GRID
+  ══════════════════════════════════════ */
+  .mxh-hero {
+    background: #f8f9fc;
+    padding: 3rem 0 3.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .mxh-hero::before {
+    content: '';
+    position: absolute; inset: 0; pointer-events: none;
+    background:
+      radial-gradient(ellipse 55% 70% at 0% 0%, rgba(45,110,245,.07) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 50% at 100% 100%, rgba(74,45,168,.06) 0%, transparent 60%);
+  }
+
+  /* Tiêu đề trung tâm */
+  .mxh-hero-head { text-align: center; margin-bottom: 2.4rem; }
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: .5rem;
+    background: #eef3ff; border: 1px solid #c5d7ff;
+    border-radius: 30px; padding: .35rem 1.2rem;
+    font-size: .82rem; font-weight: 700; color: #2d6ef5;
+    letter-spacing: .5px; margin-bottom: 1.2rem;
+  }
+  .hero-eyebrow span {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: #2d6ef5; display: inline-block;
+    animation: blink 1.6s infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.25} }
+  .mxh-hero-title {
+    font-size: 3.4rem; font-weight: 900; color: #0d1117;
+    line-height: 1.2; margin-bottom: .75rem;
+  }
+  .mxh-hero-title span {
+    background: linear-gradient(90deg,#1a3fbf,#4a2da8,#c0392b);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .mxh-hero-sub { font-size: 1.1rem; color: #555; max-width: 620px; margin: 0 auto 1.5rem; line-height: 1.7; }
+  .hero-total-pill {
+    display: inline-flex; align-items: center; gap: .5rem;
+    background: linear-gradient(90deg,#1a3fbf,#4a2da8,#8b1a4a,#c0392b);
+    color: #fff; border-radius: 30px; padding: .55rem 1.6rem;
+    font-size: .95rem; font-weight: 700;
+  }
+
+  /* GRID NỀN TẢNG */
+  .plat-hero-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: auto auto;
+    gap: 1rem;
+  }
+  /* TikTok chiếm hàng đầu 2 cột */
+  .plat-hero-card { border-radius: 20px; overflow: hidden; text-decoration: none; display: block; position: relative; transition: transform .22s, box-shadow .22s; }
+  .plat-hero-card:hover { transform: translateY(-5px); box-shadow: 0 16px 40px rgba(0,0,0,.13); }
+
+  .plat-hero-card .phc-inner {
+    padding: 1.6rem 1.8rem; height: 100%;
+    display: flex; flex-direction: column; justify-content: space-between;
+    min-height: 155px;
+  }
+  .plat-hero-card.tk-card { grid-column: span 2; background: linear-gradient(135deg,#0f0f0f 0%,#1a1a1a 100%); color: #fff; }
+  .plat-hero-card.fb-card { background: linear-gradient(135deg,#1877f2 0%,#0a5cbf 100%); color: #fff; }
+  .plat-hero-card.yt-card { background: linear-gradient(135deg,#ff0000 0%,#cc0000 100%); color: #fff; }
+  .plat-hero-card.ig-card { background: linear-gradient(135deg,#f09433 0%,#e6683c 30%,#dc2743 60%,#cc2366 80%,#bc1888 100%); color: #fff; }
+  .plat-hero-card.dc-card { background: linear-gradient(135deg,#5865f2 0%,#404eed 100%); color: #fff; }
+  .plat-hero-card.zl-card { background: linear-gradient(135deg,#0068ff 0%,#0050cc 100%); color: #fff; }
+
+  .phc-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: .6rem; }
+  .phc-icon { font-size: 2rem; opacity: .9; }
+  .phc-arrow { font-size: .85rem; opacity: .5; transition: opacity .2s, transform .2s; }
+  .plat-hero-card:hover .phc-arrow { opacity: 1; transform: translate(2px,-2px); }
+  .phc-name { font-size: .78rem; font-weight: 700; opacity: .75; margin-bottom: .2rem; letter-spacing: .3px; }
+  .phc-num  { font-size: 2rem; font-weight: 900; line-height: 1; margin-bottom: .1rem; }
+  .plat-hero-card.tk-card .phc-num { font-size: 2.6rem; }
+  .phc-lbl  { font-size: .7rem; opacity: .65; }
+  .phc-tag  {
+    display: inline-block; margin-top: .7rem;
+    background: rgba(255,255,255,.18); border-radius: 20px;
+    padding: .18rem .65rem; font-size: .68rem; font-weight: 700;
+  }
+
+  @media (max-width: 768px) {
+    .plat-hero-grid { grid-template-columns: 1fr 1fr; }
+    .plat-hero-card.tk-card { grid-column: span 2; }
+    .mxh-hero-title { font-size: 2.2rem; }
+  }
+
+  /* ══════════════════════════════════════
+     PLATFORM CARDS
+  ══════════════════════════════════════ */
+  .platform-card {
+    background: #fff;
+    border: 1.5px solid #e8ecf0;
+    border-radius: 16px;
+    overflow: hidden;
+    transition: transform .22s, box-shadow .22s, border-color .22s;
+    height: 100%;
+  }
+  .platform-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 32px rgba(45,110,245,.13);
+    border-color: var(--blue);
+  }
+  .platform-header {
+    padding: 1.3rem 1.4rem 1rem;
+    display: flex; align-items: center; gap: .9rem;
+  }
+  .platform-icon {
+    width: 52px; height: 52px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.55rem; flex-shrink: 0;
+  }
+  .platform-icon.fb { background: #e8f0fe; color: #1877f2; }
+  .platform-icon.yt { background: #fff0f0; color: #ff0000; }
+  .platform-icon.tk { background: #f0fafa; color: #010101; }
+  .platform-icon.dc { background: #eef0ff; color: #5865f2; }
+  .platform-icon.ig { background: #fff0f8; color: #e1306c; }
+  .platform-icon.zl { background: #e6f0ff; color: #0068ff; }
+  .platform-name  { font-size: 1rem; font-weight: 800; color: #1a1a2e; margin: 0 0 .1rem; }
+  .platform-handle { font-size: .76rem; color: #888; margin: 0; }
+  .platform-followers {
+    margin-left: auto; text-align: right; flex-shrink: 0;
+  }
+  .platform-followers .num { font-size: 1.2rem; font-weight: 900; color: var(--blue); display: block; line-height: 1; }
+  .platform-followers .lbl { font-size: .68rem; color: #aaa; }
+
+  .platform-divider { height: 1px; background: #f0f0f0; margin: 0 1.4rem; }
+
+  .platform-desc {
+    padding: .85rem 1.4rem;
+    font-size: .83rem; color: #555; line-height: 1.6;
+  }
+
+  /* Preview posts mini */
+  .platform-posts { padding: 0 1.4rem .5rem; display: flex; gap: .5rem; flex-wrap: wrap; }
+  .post-chip {
+    background: #f5f6f8; border-radius: 20px;
+    padding: .25rem .7rem; font-size: .73rem; color: #555;
+    display: flex; align-items: center; gap: .3rem;
+  }
+  .post-chip i { font-size: .75rem; color: var(--blue); }
+
+  .platform-footer { padding: .9rem 1.4rem 1.1rem; }
+  .btn-follow {
+    display: flex; align-items: center; justify-content: center; gap: .45rem;
+    width: 100%; padding: .52rem 1rem; border-radius: 9px;
+    font-size: .83rem; font-weight: 700; text-decoration: none;
+    border: none; cursor: pointer; transition: all .2s;
+    color: #fff; background: var(--blue);
+  }
+  .btn-follow:hover { background: var(--blue-dk); color: #fff; }
+  .btn-follow.yt { background: #ff0000; }
+  .btn-follow.yt:hover { background: #cc0000; }
+  .btn-follow.tk { background: #010101; }
+  .btn-follow.tk:hover { background: #333; }
+  .btn-follow.ig { background: linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888); }
+  .btn-follow.ig:hover { opacity: .88; }
+  .btn-follow.dc { background: #5865f2; }
+  .btn-follow.dc:hover { background: #404eed; }
+  .btn-follow.zl { background: #0068ff; }
+  .btn-follow.zl:hover { background: #0050cc; }
+
+  /* ══════════════════════════════════════
+     SECTION LABEL
+  ══════════════════════════════════════ */
+  .section-label {
+    font-size: .68rem; font-weight: 800; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--blue);
+    margin-bottom: 1.2rem; display: flex; align-items: center; gap: .55rem;
+  }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: #e8ecf0; }
+
+  /* ══════════════════════════════════════
+     LIVE & UPDATES FEED
+  ══════════════════════════════════════ */
+  .feed-card {
+    background: #fff; border: 1.5px solid #e8ecf0; border-radius: 14px;
+    overflow: hidden; transition: box-shadow .2s, border-color .2s;
+  }
+  .feed-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,.08); border-color: #ccc; }
+  .feed-thumb {
+    position: relative; height: 160px; background: #1a1a2e; overflow: hidden;
+  }
+  .feed-thumb img { width: 100%; height: 100%; object-fit: cover; opacity: .85; transition: opacity .2s; }
+  .feed-card:hover .feed-thumb img { opacity: .65; }
+  .feed-badge {
+    position: absolute; top: 8px; left: 8px;
+    font-size: .65rem; font-weight: 800; padding: .2rem .55rem; border-radius: 5px;
+    letter-spacing: .4px; text-transform: uppercase;
+  }
+  .badge-live    { background: #ff3b3b; color: #fff; animation: pulse-live 1.5s infinite; }
+  .badge-new     { background: #2d6ef5; color: #fff; }
+  .badge-tip     { background: #f59e0b; color: #fff; }
+  .badge-yt      { background: #ff0000; color: #fff; }
+  .badge-tk      { background: #010101; color: #fff; }
+  @keyframes pulse-live {
+    0%,100% { opacity: 1; } 50% { opacity: .6; }
+  }
+  .feed-platform-icon {
+    position: absolute; bottom: 8px; right: 8px;
+    width: 28px; height: 28px; border-radius: 7px;
+    background: rgba(255,255,255,.92);
+    display: flex; align-items: center; justify-content: center;
+    font-size: .95rem;
+  }
+  .feed-body { padding: .85rem 1rem; }
+  .feed-body h6 { font-size: .88rem; font-weight: 800; color: #1a1a2e; margin: 0 0 .3rem; line-height: 1.4; }
+  .feed-meta { font-size: .73rem; color: #999; display: flex; align-items: center; gap: .5rem; }
+  .feed-meta i { color: var(--blue); }
+  .feed-footer {
+    padding: .6rem 1rem .9rem;
+    display: flex; align-items: center; justify-content: space-between;
+    border-top: 1px solid #f5f5f5;
+  }
+  .feed-stats { display: flex; gap: .8rem; }
+  .feed-stat { font-size: .73rem; color: #999; display: flex; align-items: center; gap: .25rem; }
+  .feed-stat i { color: var(--blue); font-size: .75rem; }
+  .btn-watch {
+    font-size: .76rem; font-weight: 700; color: var(--blue);
+    background: #f0f4ff; border: none; border-radius: 7px;
+    padding: .28rem .8rem; cursor: pointer; transition: all .2s;
+    text-decoration: none; display: inline-flex; align-items: center; gap: .3rem;
+  }
+  .btn-watch:hover { background: var(--blue); color: #fff; }
+
+  /* ══════════════════════════════════════
+     STUDENT SUCCESS WALL
+  ══════════════════════════════════════ */
+  .success-card {
+    background: #fff; border: 1.5px solid #e8ecf0; border-radius: 14px;
+    padding: 1.1rem 1.2rem; transition: box-shadow .2s, border-color .2s; height: 100%;
+  }
+  .success-card:hover { box-shadow: 0 6px 20px rgba(45,110,245,.1); border-color: var(--blue); }
+  .success-top { display: flex; align-items: center; gap: .7rem; margin-bottom: .75rem; }
+  .success-avatar {
+    width: 42px; height: 42px; border-radius: 50%;
+    background: var(--grad); display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; color: #fff; font-weight: 800; flex-shrink: 0;
+  }
+  .success-name { font-size: .86rem; font-weight: 800; color: #1a1a2e; margin: 0 0 .1rem; }
+  .success-school { font-size: .73rem; color: #888; margin: 0; }
+  .success-score {
+    margin-left: auto; flex-shrink: 0;
+    background: linear-gradient(135deg,var(--blue) 0%,var(--purple) 100%);
+    color: #fff; border-radius: 10px; padding: .3rem .75rem;
+    text-align: center;
+  }
+  .success-score .sc { font-size: 1.2rem; font-weight: 900; display: block; line-height: 1; }
+  .success-score .sl { font-size: .62rem; opacity: .85; }
+  .success-quote {
+    font-size: .82rem; color: #444; line-height: 1.65; font-style: italic;
+    border-left: 3px solid var(--blue); padding-left: .75rem; margin-bottom: .75rem;
+  }
+  .success-tags { display: flex; gap: .35rem; flex-wrap: wrap; }
+  .success-tag {
+    font-size: .68rem; font-weight: 700; padding: .15rem .5rem; border-radius: 20px;
+    background: #f0f4ff; color: var(--blue);
+  }
+  .success-platform { font-size: .7rem; color: #bbb; display: flex; align-items: center; gap: .3rem; margin-top: .6rem; }
+
+  /* ══════════════════════════════════════
+     DISCORD COMMUNITY STRIP
+  ══════════════════════════════════════ */
+  .discord-strip {
+    background: linear-gradient(90deg,#404eed 0%,#5865f2 100%);
+    border-radius: 14px; padding: 1rem 1.5rem;
+    display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; color: #fff;
+  }
+  .discord-strip i { font-size: 2rem; flex-shrink: 0; }
+  .discord-strip .zt { font-size: .95rem; font-weight: 800; display: block; }
+  .discord-strip .zs { font-size: .78rem; opacity: .85; }
+  .btn-discord {
+    margin-left: auto; background: #fff; color: #5865f2;
+    border: none; border-radius: 9px; padding: .48rem 1.3rem;
+    font-size: .83rem; font-weight: 800; cursor: pointer; transition: all .2s;
+    text-decoration: none; white-space: nowrap;
+  }
+  .btn-discord:hover { background: #eef0ff; color: #404eed; }
+
+  /* ══════════════════════════════════════
+     CTA JOIN
+  ══════════════════════════════════════ */
+  .mxh-cta {
+    background: var(--grad);
+    border-radius: 18px; padding: 2.5rem 2rem; color: #fff; text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .mxh-cta::before {
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 220px; height: 220px; background: rgba(255,255,255,.06); border-radius: 50%;
+  }
+  .mxh-cta::after {
+    content: ''; position: absolute; bottom: -50px; left: -30px;
+    width: 160px; height: 160px; background: rgba(255,255,255,.04); border-radius: 50%;
+  }
+  .mxh-cta h3 {
+    font-size: 1.6rem; font-weight: 900; margin-bottom: .5rem;
+    color: #ffffff;
+    text-shadow: 0 2px 12px rgba(0,0,0,.35);
+    position: relative; z-index: 1;
+  }
+  .mxh-cta p  {
+    color: rgba(255,255,255,.92); font-size: .92rem; margin-bottom: 1.6rem;
+    text-shadow: 0 1px 6px rgba(0,0,0,.25);
+    position: relative; z-index: 1;
+  }
+  .cta-btns { display: flex; gap: .75rem; flex-wrap: wrap; justify-content: center; position: relative; z-index: 1; }
+  .btn-cta-wh {
+    background: #fff; color: var(--blue); border: none; border-radius: 10px;
+    padding: .6rem 1.5rem; font-size: .88rem; font-weight: 800; cursor: pointer;
+    transition: all .2s; text-decoration: none; display: inline-flex; align-items: center; gap: .4rem;
+    box-shadow: 0 4px 14px rgba(0,0,0,.18);
+  }
+  .btn-cta-wh:hover { background: #f0f4ff; color: var(--blue-dk); transform: translateY(-2px); }
+  .btn-cta-outline {
+    background: rgba(255,255,255,.15); color: #fff; border: 2px solid rgba(255,255,255,.7);
+    border-radius: 10px; padding: .6rem 1.5rem; font-size: .88rem; font-weight: 700;
+    cursor: pointer; transition: all .2s; text-decoration: none;
+    display: inline-flex; align-items: center; gap: .4rem;
+    backdrop-filter: blur(4px);
+  }
+  .btn-cta-outline:hover { border-color: #fff; background: rgba(255,255,255,.25); color: #fff; transform: translateY(-2px); }
+  </style>
+</head>
+
+<body class="courses-page">
+
+  <!-- HEADER -->
+  <header id="header" class="header d-flex align-items-center sticky-top">
+    <div class="container-fluid container-xl position-relative d-flex align-items-center">
+      <a href="index.html" class="logo d-flex align-items-center me-auto">
+        <h1 class="sitename">English Center</h1>
+      </a>
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li><a href="index.html">Trang chủ</a></li>
+          <li><a href="gioithieu.html">Giới thiệu</a></li>
+          <li><a href="khoahoc.html">Khóa học</a></li>
+          <li><a href="giaovien.html">Giáo viên</a></li>
+          <li><a href="hocphi.html">Học Phí</a></li>
+          <li><a href="blog.html">Blog</a></li>
+          <li class="dropdown">
+            <a href="#"><span>Tài nguyên</span><i class="bi bi-chevron-down toggle-dropdown"></i></a>
+            <ul>
+              <li><a href="dethithu.html">Đề thi thử</a></li>
+              <li><a href="tailieuonthi.html">Tài liệu ôn thi</a></li>
+              <li><a href="sukien.html">Sự kiện</a></li>
+              <li><a href="404.html" class="active">Cộng đồng</a></li>
+            </ul>
+          </li>
+          <li><a href="lienhe.html">Liên hệ</a></li>
+        </ul>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
+      <div class="header-actions d-flex align-items-center">
+        <a class="btn-dangnhap" href="dangnhap.html"><i class="bi bi-person me-1"></i>Đăng Nhập</a>
+        <a class="btn-getstarted" href="dangky.html"><i class="bi bi-pencil-square me-1"></i>Đăng Ký</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+
+
+    <!-- ══ HERO BANNER ══ -->
+    <section class="mxh-hero">
+      <div class="container">
+
+        <!-- Tiêu đề trung tâm -->
+        <div class="mxh-hero-head" data-aos="fade-up">
+          <div class="hero-eyebrow"><span></span> CỘNG ĐỒNG HỌC SINH THPTQG</div>
+          <h1 class="mxh-hero-title">Theo dõi English Center trên<br><span>mọi nền tảng</span></h1>
+          <p class="mxh-hero-sub">Hơn 94.600 học sinh đang theo dõi mỗi ngày — tips tiếng Anh, livestream luyện đề và tài liệu miễn phí.</p>
+          <div><span class="hero-total-pill"><i class="bi bi-people-fill me-1"></i>95.600+ người theo dõi</span></div>
+        </div>
+
+        <!-- Grid nền tảng -->
+        <div class="plat-hero-grid" data-aos="fade-up" data-aos-delay="100">
+
+          <!-- TikTok – lớn nhất, chiếm 2 cột -->
+          <a href="#" class="plat-hero-card tk-card" style="grid-column:span 2;">
+            <div class="phc-inner" style="min-height:170px;">
+              <div class="phc-top"><i class="bi bi-tiktok phc-icon"></i><i class="bi bi-arrow-up-right phc-arrow"></i></div>
+              <div>
+                <div class="phc-name">TikTok · @englishcenter.vn</div>
+                <div class="phc-num">41.7K</div>
+                <div class="phc-lbl">người theo dõi — nền tảng lớn nhất</div>
+                <span class="phc-tag">Tips 60 giây · Trending</span>
+              </div>
+            </div>
+          </a>
+
+          <!-- Facebook -->
+          <a href="#" class="plat-hero-card fb-card">
+            <div class="phc-inner">
+              <div class="phc-top"><i class="bi bi-facebook phc-icon"></i><i class="bi bi-arrow-up-right phc-arrow"></i></div>
+              <div>
+                <div class="phc-name">Facebook</div>
+                <div class="phc-num">28.4K</div>
+                <div class="phc-lbl">người theo dõi</div>
+                <span class="phc-tag">Livestream · Tài liệu</span>
+              </div>
+            </div>
+          </a>
+
+          <!-- YouTube -->
+          <a href="#" class="plat-hero-card yt-card">
+            <div class="phc-inner">
+              <div class="phc-top"><i class="bi bi-youtube phc-icon"></i><i class="bi bi-arrow-up-right phc-arrow"></i></div>
+              <div>
+                <div class="phc-name">YouTube</div>
+                <div class="phc-num">15.2K</div>
+                <div class="phc-lbl">subscribers</div>
+                <span class="phc-tag">315+ bài giảng</span>
+              </div>
+            </div>
+          </a>
+
+          <!-- Instagram -->
+          <a href="#" class="plat-hero-card ig-card">
+            <div class="phc-inner">
+              <div class="phc-top"><i class="bi bi-instagram phc-icon"></i><i class="bi bi-arrow-up-right phc-arrow"></i></div>
+              <div>
+                <div class="phc-name">Instagram</div>
+                <div class="phc-num">9.3K</div>
+                <div class="phc-lbl">followers</div>
+                <span class="phc-tag">Infographic · Story</span>
+              </div>
+            </div>
+          </a>
+
+          <!-- Zalo -->
+          <a href="#" class="plat-hero-card zl-card">
+            <div class="phc-inner">
+              <div class="phc-top"><i class="bi bi-chat-dots-fill phc-icon"></i><i class="bi bi-arrow-up-right phc-arrow"></i></div>
+              <div>
+                <div class="phc-name">Zalo Official</div>
+                <div class="phc-num">3.8K</div>
+                <div class="phc-lbl">người quan tâm</div>
+                <span class="phc-tag">Tài liệu · Tư vấn</span>
+              </div>
+            </div>
+          </a>
+
+          <!-- Discord – full width, horizontal layout -->
+          <a href="#" class="plat-hero-card dc-card" style="grid-column:span 3;">
+            <div class="phc-inner" style="min-height:110px; flex-direction:row; align-items:center; justify-content:flex-start; gap:2.5rem; flex-wrap:wrap;">
+              <div style="display:flex;align-items:center;gap:1rem;flex-shrink:0;">
+                <i class="bi bi-discord" style="font-size:2.8rem;opacity:.9;"></i>
+                <div>
+                  <div class="phc-name" style="font-size:.82rem;">Discord · English Center Community</div>
+                  <div class="phc-num" style="font-size:2.4rem;">2.4K</div>
+                  <div class="phc-lbl">thành viên tích cực</div>
+                </div>
+              </div>
+              <div style="flex:1;min-width:180px;">
+                <div style="font-size:.85rem;opacity:.85;line-height:1.6;margin-bottom:.6rem;">Hỏi đáp bài tập, study rooms, voice chat luyện nói và chia sẻ tài liệu 24/7 — hoàn toàn miễn phí.</div>
+                <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+                  <span class="phc-tag" style="margin-top:0;">Study rooms</span>
+                  <span class="phc-tag" style="margin-top:0;">Hỏi bài</span>
+                  <span class="phc-tag" style="margin-top:0;">Voice chat</span>
+                  <span class="phc-tag" style="margin-top:0;">Tài liệu miễn phí</span>
+                </div>
+              </div>
+              <div style="margin-left:auto;flex-shrink:0;display:flex;align-items:center;gap:.5rem;opacity:.6;font-size:.85rem;">
+                Tham gia ngay <i class="bi bi-arrow-up-right"></i>
+              </div>
+            </div>
+          </a>
+
+        </div>
+      </div>
+    </section>
+    <section class="section">
+      <div class="container">
+
+        <!-- ══ PLATFORM CARDS ══ -->
+        <div class="section-label" data-aos="fade-up"><i class="bi bi-grid-3x3-gap"></i>Các nền tảng của chúng tôi</div>
+        <div class="row g-3 mb-5" data-aos="fade-up" data-aos-delay="50">
+
+          <!-- Facebook -->
+          <div class="col-lg-4 col-md-6">
+            <div class="platform-card">
+              <div class="platform-header">
+                <div class="platform-icon fb"><i class="bi bi-facebook"></i></div>
+                <div>
+                  <p class="platform-name">Facebook</p>
+                  <p class="platform-handle">@EnglishCenterVN</p>
+                </div>
+                <div class="platform-followers">
+                  <span class="num">28.4K</span>
+                  <span class="lbl">người theo dõi</span>
+                </div>
+              </div>
+              <div class="platform-divider"></div>
+              <div class="platform-desc">
+                Fanpage chính — nơi chia sẻ tài liệu, thông báo lịch học, livestream ôn thi và kết nối cộng đồng học sinh lớp 12 trên cả nước.
+              </div>
+              <div class="platform-posts">
+                <span class="post-chip"><i class="bi bi-megaphone"></i>Thông báo lịch học</span>
+                <span class="post-chip"><i class="bi bi-file-earmark-pdf"></i>Tài liệu miễn phí</span>
+                <span class="post-chip"><i class="bi bi-camera-video"></i>Livestream</span>
+              </div>
+              <div class="platform-footer">
+                <a href="#" class="btn-follow"><i class="bi bi-facebook"></i>Theo dõi trên Facebook</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- YouTube -->
+          <div class="col-lg-4 col-md-6">
+            <div class="platform-card">
+              <div class="platform-header">
+                <div class="platform-icon yt"><i class="bi bi-youtube"></i></div>
+                <div>
+                  <p class="platform-name">YouTube</p>
+                  <p class="platform-handle">English Center Official</p>
+                </div>
+                <div class="platform-followers">
+                  <span class="num">15.2K</span>
+                  <span class="lbl">subscribers</span>
+                </div>
+              </div>
+              <div class="platform-divider"></div>
+              <div class="platform-desc">
+                Kênh bài giảng chính thức — 315+ video hệ thống ngữ pháp, từ vựng và luyện đề THPTQG cập nhật mỗi tuần, hoàn toàn miễn phí.
+              </div>
+              <div class="platform-posts">
+                <span class="post-chip"><i class="bi bi-play-circle"></i>315+ bài giảng</span>
+                <span class="post-chip"><i class="bi bi-lightbulb"></i>Tips ngữ pháp</span>
+                <span class="post-chip"><i class="bi bi-broadcast"></i>Livestream đề</span>
+              </div>
+              <div class="platform-footer">
+                <a href="#" class="btn-follow yt"><i class="bi bi-youtube"></i>Đăng ký kênh YouTube</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- TikTok -->
+          <div class="col-lg-4 col-md-6">
+            <div class="platform-card">
+              <div class="platform-header">
+                <div class="platform-icon tk"><i class="bi bi-tiktok"></i></div>
+                <div>
+                  <p class="platform-name">TikTok</p>
+                  <p class="platform-handle">@englishcenter.vn</p>
+                </div>
+                <div class="platform-followers">
+                  <span class="num">41.7K</span>
+                  <span class="lbl">người theo dõi</span>
+                </div>
+              </div>
+              <div class="platform-divider"></div>
+              <div class="platform-desc">
+                Tips tiếng Anh siêu nhanh dưới 60 giây — từ vựng theo chủ đề thi, mẹo nhớ ngữ pháp, và thách thức luyện đề mỗi ngày.
+              </div>
+              <div class="platform-posts">
+                <span class="post-chip"><i class="bi bi-lightning"></i>Tips 60 giây</span>
+                <span class="post-chip"><i class="bi bi-trophy"></i>Thách thức</span>
+                <span class="post-chip"><i class="bi bi-chat-dots"></i>Trending</span>
+              </div>
+              <div class="platform-footer">
+                <a href="https://www.tiktok.com/@lethao20051?" class="btn-follow tk"><i class="bi bi-tiktok"></i>Follow trên TikTok</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Discord -->
+          <div class="col-lg-4 col-md-6">
+            <div class="platform-card">
+              <div class="platform-header">
+                <div class="platform-icon dc"><i class="bi bi-discord"></i></div>
+                <div>
+                  <p class="platform-name">Discord</p>
+                  <p class="platform-handle">English Center Community</p>
+                </div>
+                <div class="platform-followers">
+                  <span class="num">2.4K</span>
+                  <span class="lbl">thành viên</span>
+                </div>
+              </div>
+              <div class="platform-divider"></div>
+              <div class="platform-desc">
+                Server cộng đồng học tiếng Anh — study rooms, hỏi đáp bài tập, voice chat luyện nói và chia sẻ tài liệu 24/7.
+              </div>
+              <div class="platform-posts">
+                <span class="post-chip"><i class="bi bi-headset"></i>Voice study rooms</span>
+                <span class="post-chip"><i class="bi bi-question-circle"></i>Hỏi đáp bài</span>
+                <span class="post-chip"><i class="bi bi-file-earmark"></i>Tài liệu</span>
+              </div>
+              <div class="platform-footer">
+                <a href="https://www.facebook.com/profile.php?id=61582236935466&mibextid=wwXIfr&rdid=vO1FrfRsFQ24QMYB&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F14ZeqsmUgNv%2F%3Fmibextid%3DwwXIfr%26_rdc%3D2%26_rdr#" class="btn-follow dc"><i class="bi bi-discord"></i>Tham gia Discord</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Instagram -->
+          <div class="col-lg-4 col-md-6">
+            <div class="platform-card">
+              <div class="platform-header">
+                <div class="platform-icon ig"><i class="bi bi-instagram"></i></div>
+                <div>
+                  <p class="platform-name">Instagram</p>
+                  <p class="platform-handle">@englishcenter.vn</p>
+                </div>
+                <div class="platform-followers">
+                  <span class="num">9.3K</span>
+                  <span class="lbl">followers</span>
+                </div>
+              </div>
+              <div class="platform-divider"></div>
+              <div class="platform-desc">
+                Hình ảnh ôn thi đẹp mắt, infographic từ vựng, và khoảnh khắc đáng nhớ của học viên trong hành trình chinh phục THPTQG.
+              </div>
+              <div class="platform-posts">
+                <span class="post-chip"><i class="bi bi-image"></i>Infographic</span>
+                <span class="post-chip"><i class="bi bi-heart"></i>Story daily</span>
+                <span class="post-chip"><i class="bi bi-stars"></i>Thành tích HS</span>
+              </div>
+              <div class="platform-footer">
+                <a href="https://www.instagram.com/englishcenter387?igsh=YzFtcmF0MmFybHQz&utm_source=qr" class="btn-follow ig"><i class="bi bi-instagram"></i>Follow Instagram</a>
+              </div>
+            </div>
+          </div>
+
+
+
+          <!-- Zalo -->
+          <div class="col-lg-4 col-md-6">
+            <div class="platform-card">
+              <div class="platform-header">
+                <div class="platform-icon zl"><i class="bi bi-chat-dots-fill"></i></div>
+                <div>
+                  <p class="platform-name">Zalo Official</p>
+                  <p class="platform-handle">English Center VN</p>
+                </div>
+                <div class="platform-followers">
+                  <span class="num">3.8K</span>
+                  <span class="lbl">người quan tâm</span>
+                </div>
+              </div>
+              <div class="platform-divider"></div>
+              <div class="platform-desc">
+                Kênh Zalo Official — nhận thông báo lịch học, tài liệu độc quyền và hỗ trợ tư vấn nhanh trực tiếp qua tin nhắn.
+              </div>
+              <div class="platform-posts">
+                <span class="post-chip"><i class="bi bi-bell"></i>Thông báo nhanh</span>
+                <span class="post-chip"><i class="bi bi-file-earmark-zip"></i>Tài liệu VIP</span>
+                <span class="post-chip"><i class="bi bi-headset"></i>Hỗ trợ trực tiếp</span>
+              </div>
+              <div class="platform-footer">
+                <a href="#" class="btn-follow zl"><i class="bi bi-chat-dots-fill"></i>Quan tâm trên Zalo</a>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /row platform cards -->
+
+        <!-- ══ DISCORD STRIP ══ -->
+        <div class="discord-strip mb-5" data-aos="fade-up">
+          <i class="bi bi-discord"></i>
+          <div>
+            <span class="zt">Tham gia cộng đồng Discord — học cùng nhau 24/7</span>
+            <span class="zs">Study rooms, hỏi đáp bài tập, voice chat luyện nói và chia sẻ tài liệu hoàn toàn miễn phí</span>
+          </div>
+          <a href="#" class="btn-discord"><i class="bi bi-discord me-1"></i>Tham gia ngay</a>
+        </div>
+
+        <!-- ══ LIVE & UPDATES ══ -->
+        <div id="live-updates" style="scroll-margin-top: 90px;"></div>
+        <div class="section-label" data-aos="fade-up"><i class="bi bi-broadcast"></i>Live &amp; cập nhật mới nhất</div>
+        <div class="row g-3 mb-5" data-aos="fade-up" data-aos-delay="50">
+
+          <div class="col-lg-3 col-md-6">
+            <div class="feed-card">
+              <div class="feed-thumb">
+              <img src="assets/img/education/courses-3.webp" alt="">
+                <span class="feed-badge badge-live">🔴 Live</span>
+                <div class="feed-platform-icon" style="color:#ff0000;"><i class="bi bi-youtube"></i></div>
+              </div>
+              <div class="feed-body">
+                <h6>Livestream luyện đề THPTQG 2025 – Phần Ngữ pháp trọng tâm</h6>
+                <div class="feed-meta"><i class="bi bi-clock"></i>Hôm nay, 20:00</div>
+              </div>
+              <div class="feed-footer">
+                <div class="feed-stats">
+                  <span class="feed-stat"><i class="bi bi-eye"></i>1.2K xem</span>
+                </div>
+                <a href="https://youtu.be/rsvT1Ooxnh4?si=WP8eVErGINFk7U8I" class="btn-watch"><i class="bi bi-play-circle"></i> Xem live</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-md-6">
+            <div class="feed-card">
+              <div class="feed-thumb">
+              <img src="assets/img/education/courses-4.webp" alt="">
+                <span class="feed-badge badge-new">Mới</span>
+                <div class="feed-platform-icon" style="color:#ff0000;"><i class="bi bi-youtube"></i></div>
+              </div>
+              <div class="feed-body">
+                <h6>10 Cấu trúc đảo ngữ xuất hiện nhiều nhất trong đề thi</h6>
+                <div class="feed-meta"><i class="bi bi-clock"></i>2 ngày trước</div>
+              </div>
+              <div class="feed-footer">
+                <div class="feed-stats">
+                  <span class="feed-stat"><i class="bi bi-eye"></i>4.8K</span>
+                  <span class="feed-stat"><i class="bi bi-hand-thumbs-up"></i>312</span>
+                </div>
+                <a href="https://youtu.be/xBoXSJ2uKTY?si=ZRjsYC7KkdSv2C1U" class="btn-watch"><i class="bi bi-play-circle"></i>Xem ngay</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-md-6">
+            <div class="feed-card">
+              <div class="feed-thumb">
+                <img src="assets/img/education/courses-3.webp" alt="">
+                <span class="feed-badge badge-tip">💡 Tip</span>
+                <div class="feed-platform-icon" style="color:#010101;"><i class="bi bi-tiktok"></i></div>
+              </div>
+              <div class="feed-body">
+                <h6>Mẹo làm bài đọc hiểu trong 8 phút – đúng 100%</h6>
+                <div class="feed-meta"><i class="bi bi-clock"></i>3 ngày trước</div>
+              </div>
+              <div class="feed-footer">
+                <div class="feed-stats">
+                  <span class="feed-stat"><i class="bi bi-heart"></i>2.1K</span>
+                  <span class="feed-stat"><i class="bi bi-share"></i>890</span>
+                </div>
+                <a href="#" class="btn-watch"><i class="bi bi-tiktok"></i>Xem TikTok</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-md-6">
+            <div class="feed-card">
+              <div class="feed-thumb">
+                <img src="assets/img/education/courses-4.webp" alt="">
+                <span class="feed-badge badge-yt">YouTube</span>
+                <div class="feed-platform-icon" style="color:#ff0000;"><i class="bi bi-youtube"></i></div>
+              </div>
+              <div class="feed-body">
+                <h6>Phân tích cấu trúc đề thi Tiếng Anh THPTQG 2025 mới nhất</h6>
+                <div class="feed-meta"><i class="bi bi-clock"></i>5 ngày trước</div>
+              </div>
+              <div class="feed-footer">
+                <div class="feed-stats">
+                  <span class="feed-stat"><i class="bi bi-eye"></i>7.3K</span>
+                  <span class="feed-stat"><i class="bi bi-hand-thumbs-up"></i>541</span>
+                </div>
+                <a href="https://youtu.be/mw99ylu89M4?si=HW7H9l2h6BfubCI8" class="btn-watch"><i class="bi bi-play-circle"></i>Xem ngay</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-md-6">
+            <div class="feed-card">
+              <div class="feed-thumb">
+                <img src="assets/img/education/courses-5.webp" alt="">
+                <span class="feed-badge badge-tk">TikTok</span>
+                <div class="feed-platform-icon" style="color:#010101;"><i class="bi bi-tiktok"></i></div>
+              </div>
+              <div class="feed-body">
+                <h6>50 từ vựng chủ đề Environment xuất hiện trong đề thi</h6>
+                <div class="feed-meta"><i class="bi bi-clock"></i>6 ngày trước</div>
+              </div>
+              <div class="feed-footer">
+                <div class="feed-stats">
+                  <span class="feed-stat"><i class="bi bi-heart"></i>3.4K</span>
+                  <span class="feed-stat"><i class="bi bi-share"></i>1.2K</span>
+                </div>
+                <a href="#" class="btn-watch"><i class="bi bi-tiktok"></i>Xem TikTok</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-md-6">
+            <div class="feed-card">
+              <div class="feed-thumb">
+              <img src="assets/img/education/courses-5.webp" alt="">
+                <span class="feed-badge badge-new">Mới</span>
+                <div class="feed-platform-icon" style="color:#ff0000;"><i class="bi bi-youtube"></i></div>
+              </div>
+              <div class="feed-body">
+                <h6>Giải đề thi thử trường THPT Chuyên Lào Cai 2025</h6>
+                <div class="feed-meta"><i class="bi bi-clock"></i>1 tuần trước</div>
+              </div>
+              <div class="feed-footer">
+                <div class="feed-stats">
+                  <span class="feed-stat"><i class="bi bi-eye"></i>3.9K</span>
+                  <span class="feed-stat"><i class="bi bi-hand-thumbs-up"></i>278</span>
+                </div>
+                <a href="https://youtu.be/0JI5a2dtE60?si=ugABR031wsFC_-qH" class="btn-watch"><i class="bi bi-play-circle"></i>Xem ngay</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-md-6">
+            <div class="feed-card">
+              <div class="feed-thumb">
+                <img src="assets/img/education/courses-7.webp" alt="">
+                <span class="feed-badge badge-tip">💡 Tip</span>
+                <div class="feed-platform-icon" style="color:#010101;"><i class="bi bi-tiktok"></i></div>
+              </div>
+              <div class="feed-body">
+                <h6>Bí kíp phân biệt Although / Despite / In spite of</h6>
+                <div class="feed-meta"><i class="bi bi-clock"></i>1 tuần trước</div>
+              </div>
+              <div class="feed-footer">
+                <div class="feed-stats">
+                  <span class="feed-stat"><i class="bi bi-heart"></i>5.7K</span>
+                  <span class="feed-stat"><i class="bi bi-share"></i>2.3K</span>
+                </div>
+                <a href="#" class="btn-watch"><i class="bi bi-tiktok"></i>Xem TikTok</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-md-6">
+            <div class="feed-card">
+              <div class="feed-thumb">
+                <img src="assets/img/education/courses-8.webp" alt="">
+                <span class="feed-badge badge-yt">YouTube</span>
+                <div class="feed-platform-icon" style="color:#ff0000;"><i class="bi bi-youtube"></i></div>
+              </div>
+              <div class="feed-body">
+                <h6>Luyện câu bị động – 30 bài tập từ cơ bản đến nâng cao</h6>
+                <div class="feed-meta"><i class="bi bi-clock"></i>10 ngày trước</div>
+              </div>
+              <div class="feed-footer">
+                <div class="feed-stats">
+                  <span class="feed-stat"><i class="bi bi-eye"></i>6.1K</span>
+                  <span class="feed-stat"><i class="bi bi-hand-thumbs-up"></i>432</span>
+                </div>
+                <a href="https://youtu.be/wGHXt79hLsw?si=oqCZOmeh4pmDegRH" class="btn-watch"><i class="bi bi-play-circle"></i>Xem ngay</a>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /feed row -->
+
+        <!-- ══ STUDENT SUCCESS WALL ══ -->
+        <div class="section-label" data-aos="fade-up"><i class="bi bi-trophy"></i>Thành tích học viên chia sẻ</div>
+        <div class="row g-3 mb-5" data-aos="fade-up" data-aos-delay="50">
+
+          <div class="col-lg-4 col-md-6">
+            <div class="success-card">
+              <div class="success-top">
+                <div class="success-avatar">NA</div>
+                <div>
+                  <p class="success-name">Nguyễn Thị Lan Anh</p>
+                  <p class="success-school">THPT Nguyễn Huệ, Hà Nội</p>
+                </div>
+                <div class="success-score"><span class="sc">9.2</span><span class="sl">điểm THPTQG</span></div>
+              </div>
+              <p class="success-quote">"Nhờ các video YouTube của thầy mà em hệ thống lại toàn bộ ngữ pháp trong 3 tuần. Điểm thi thực tế còn cao hơn dự đoán!"</p>
+              <div class="success-tags">
+                <span class="success-tag">Ngữ pháp</span>
+                <span class="success-tag">THPTQG 2024</span>
+              </div>
+              <div class="success-platform"><i class="bi bi-facebook"></i>Chia sẻ trên Facebook · 2 tháng trước</div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6">
+            <div class="success-card">
+              <div class="success-top">
+                <div class="success-avatar">MD</div>
+                <div>
+                  <p class="success-name">Trần Minh Đức</p>
+                  <p class="success-school">THPT Chu Văn An, Hà Nội</p>
+                </div>
+                <div class="success-score"><span class="sc">8.8</span><span class="sl">điểm THPTQG</span></div>
+              </div>
+              <p class="success-quote">"TikTok của English Center hay lắm ạ! Em xem mỗi buổi sáng 10 phút, nhớ từ vựng siêu nhanh. Cảm ơn thầy cô rất nhiều!"</p>
+              <div class="success-tags">
+                <span class="success-tag">Từ vựng</span>
+                <span class="success-tag">TikTok tips</span>
+              </div>
+              <div class="success-platform"><i class="bi bi-tiktok"></i>Bình luận TikTok · 3 tháng trước</div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6">
+            <div class="success-card">
+              <div class="success-top">
+                <div class="success-avatar">PH</div>
+                <div>
+                  <p class="success-name">Lê Phương Hoa</p>
+                  <p class="success-school">THPT Trần Phú, Đà Nẵng</p>
+                </div>
+                <div class="success-score"><span class="sc">9.6</span><span class="sl">điểm THPTQG</span></div>
+              </div>
+              <p class="success-quote">"Server Discord của English Center hay lắm, em vào study room mỗi tối được học cùng các bạn khắp nơi. Không khí học rất cuốn!"</p>
+              <div class="success-tags">
+                <span class="success-tag">Study room</span>
+                <span class="success-tag">Discord</span>
+              </div>
+              <div class="success-platform"><i class="bi bi-discord"></i>Discord · 1 tháng trước</div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6">
+            <div class="success-card">
+              <div class="success-top">
+                <div class="success-avatar">QT</div>
+                <div>
+                  <p class="success-name">Phạm Quốc Tuấn</p>
+                  <p class="success-school">THPT Lê Hồng Phong, TP.HCM</p>
+                </div>
+                <div class="success-score"><span class="sc">8.4</span><span class="sl">điểm THPTQG</span></div>
+              </div>
+              <p class="success-quote">"Lúc đầu tiếng Anh em chỉ được 5.0, sau 2 tháng xem YouTube và luyện đề trên web, em đạt 8.4 — không tin nổi luôn!"</p>
+              <div class="success-tags">
+                <span class="success-tag">Cải thiện điểm</span>
+                <span class="success-tag">YouTube</span>
+              </div>
+              <div class="success-platform"><i class="bi bi-youtube"></i>Bình luận YouTube · 2 tháng trước</div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6">
+            <div class="success-card">
+              <div class="success-top">
+                <div class="success-avatar">BN</div>
+                <div>
+                  <p class="success-name">Vũ Bảo Ngọc</p>
+                  <p class="success-school">THPT Hoàng Văn Thụ, Bắc Giang</p>
+                </div>
+                <div class="success-score"><span class="sc">9.0</span><span class="sl">điểm THPTQG</span></div>
+              </div>
+              <p class="success-quote">"Hỏi bài trong Discord được reply rất nhanh, thậm chí có thầy cô vào giải thích trực tiếp. Cộng đồng thân thiện hơn em nghĩ nhiều!"</p>
+              <div class="success-tags">
+                <span class="success-tag">Cộng đồng</span>
+                <span class="success-tag">Discord</span>
+              </div>
+              <div class="success-platform"><i class="bi bi-discord"></i>Discord · 3 tuần trước</div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6">
+            <div class="success-card">
+              <div class="success-top">
+                <div class="success-avatar">TL</div>
+                <div>
+                  <p class="success-name">Đỗ Thanh Linh</p>
+                  <p class="success-school">THPT Chuyên Bắc Ninh</p>
+                </div>
+                <div class="success-score"><span class="sc">9.8</span><span class="sl">điểm THPTQG</span></div>
+              </div>
+              <p class="success-quote">"Infographic từ vựng trên Instagram giúp em ôn nhanh mỗi buổi tối. Story của English Center không bao giờ nhàm chán!"</p>
+              <div class="success-tags">
+                <span class="success-tag">Từ vựng</span>
+                <span class="success-tag">Instagram</span>
+              </div>
+              <div class="success-platform"><i class="bi bi-instagram"></i>Instagram story · 1 tháng trước</div>
+            </div>
+          </div>
+
+        </div><!-- /success row -->
+
+        <!-- ══ CTA ══ -->
+        <div class="mxh-cta" data-aos="zoom-in">
+          <h3>Tham gia cộng đồng 94.600+ người học tiếng Anh 🚀</h3>
+          <p>Follow tất cả kênh để không bỏ lỡ tips mỗi ngày, livestream luyện đề và tài liệu miễn phí.</p>
+          <div class="cta-btns">
+            <a href="#" class="btn-cta-wh"><i class="bi bi-youtube"></i>Đăng ký YouTube</a>
+            <a href="#" class="btn-cta-wh"><i class="bi bi-facebook"></i>Follow Facebook</a>
+            <a href="#" class="btn-cta-wh"><i class="bi bi-tiktok"></i>Follow TikTok</a>
+            <a href="#" class="btn-cta-wh"><i class="bi bi-instagram"></i>Follow Instagram</a>
+            <a href="dangky.html" class="btn-cta-outline"><i class="bi bi-person-plus"></i>Học thử miễn phí</a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer id="footer" class="footer accent-background">
+    <div class="container footer-top">
+      <div class="row gy-4">
+        <div class="col-lg-5 col-md-12 footer-about">
+          <a href="index.html" class="logo d-flex align-items-center">
+            <span class="sitename">English Center</span>
+          </a>
+          <p>Nền tảng ôn thi Tiếng Anh THPTQG chuyên biệt, đồng hành cùng học sinh lớp 12 trên hành trình chinh phục kỳ thi quan trọng nhất.</p>
+          <div class="social-links d-flex mt-4">
+            <a href=""><i class="bi bi-twitter-x"></i></a>
+            <a href=""><i class="bi bi-facebook"></i></a>
+            <a href=""><i class="bi bi-instagram"></i></a>
+            <a href=""><i class="bi bi-linkedin"></i></a>
+          </div>
+        </div>
+
+        <div class="col-lg-2 col-6 footer-links">
+          <h4>Thông tin</h4>
+          <ul>
+            <li><a href="index.html">Trang chủ</a></li>
+            <li><a href="gioithieu.html">Về chúng tôi</a></li>
+            <li><a href="khoahoc.html">Khóa học</a></li>
+            <li><a href="giaovien.html">Giáo viên</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="dieukhoan.html">Điều khoản dịch vụ</a></li>
+            <li><a href="quyenriengtu.html">Chính sách bảo mật</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-2 col-6 footer-links">
+          <h4>Khóa học</h4>
+          <ul>
+            <li><a href="khoahoc.html">Ngữ Pháp Trọng Tâm</a></li>
+            <li><a href="khoahoc.html">Luyện Đề THPTQG</a></li>
+            <li><a href="khoahoc.html">Từ Vựng Theo Chủ Đề</a></li>
+            <li><a href="khoahoc.html">Phát âm & Speaking</a></li>
+            <li><a href="khoahoc.html">Ôn Thi Cấp Tốc</a></li>
+          </ul>
+        </div>
+
+        <div class="col-lg-3 col-md-12 footer-contact text-center text-md-start">
+          <h4>Liên Hệ</h4>
+          <p>182 Lương Thế Vinh, Thanh Xuân Bắc, Thanh Xuân, Hà Nội</p>
+          <p class="mt-4"><strong>Phone:</strong> <span>+1 34567892</span></p>
+          <p><strong>Email:</strong> <span>Nhom3@englishcenter.edu.vn</span></p>
+
+          </a></span></p>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="container copyright text-center mt-4">
+      <p>© <span>2026</span> <strong class="px-1 sitename">English Center</strong> <span>All Rights Reserved</span></p>
+    </div>
+  </footer>
+
+  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+  <div id="preloader"></div>
+
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/vendor/aos/aos.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
+  <script src="assets/js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Khởi tạo AOS
+      AOS.init({
+        duration: 600,
+        easing: 'ease-in-out',
+        once: true,
+        mirror: false
+      });
+
+      // Scroll-top button
+      const scrollTop = document.getElementById('scroll-top');
+      if (scrollTop) {
+        window.addEventListener('scroll', function () {
+          if (window.scrollY > 100) {
+            scrollTop.classList.add('active');
+          } else {
+            scrollTop.classList.remove('active');
+          }
+        });
+        scrollTop.addEventListener('click', function (e) {
+          e.preventDefault();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      }
+
+      // Preloader
+      const preloader = document.getElementById('preloader');
+      if (preloader) {
+        window.addEventListener('load', function () {
+          preloader.remove();
+        });
+      }
+
+      // Mobile nav toggle
+      const mobileNavToggle = document.querySelector('.mobile-nav-toggle');
+      if (mobileNavToggle) {
+        mobileNavToggle.addEventListener('click', function () {
+          document.querySelector('body').classList.toggle('mobile-nav-active');
+          this.classList.toggle('bi-list');
+          this.classList.toggle('bi-x');
+        });
+      }
+
+      // Dropdown toggle trong nav mobile
+      document.querySelectorAll('.navmenu .toggle-dropdown').forEach(function (el) {
+        el.addEventListener('click', function (e) {
+          e.preventDefault();
+          const parent = el.closest('li');
+          if (parent) {
+            parent.classList.toggle('active');
+            const sibling = parent.querySelector('ul');
+            if (sibling) sibling.classList.toggle('dropdown-active');
+          }
+          e.stopImmediatePropagation();
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>
