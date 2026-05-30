@@ -7,11 +7,15 @@
     "start": "node server.js",
     "dev": "node server.js",
     "db:setup": "node setup-db.js",
+    "db:migrate": "node migrate-db.js",
+    "db:empty": "node empty-db.js",
     "seed": "node seed.js",
-    "check": "node --check server.js && node --check db.js && node --check seed.js && node --check setup-db.js && node --check ../frontend/assets/js/api.js && node --check ../frontend/assets/js/main.js"
+    "db:seed": "node seed.js",
+    "check": "node --check server.js && node --check db.js && node --check seed.js && node --check setup-db.js && node --check migrate-db.js && node --check empty-db.js && node --check ../frontend/assets/js/api.js && node --check ../frontend/assets/js/auth.js && node --check ../frontend/assets/js/site-integration.js && node --check ../frontend/assets/js/dashboard-data.js && node --check ../frontend/assets/js/teacher-dashboard.js && node --check ../frontend/assets/js/admin-management.js && node --check ../frontend/assets/js/admin-ops-core.js && node --check ../frontend/assets/js/admin-ops-courses.js && node --check ../frontend/assets/js/admin-ops-finance.js && node --check ../frontend/assets/js/admin-ops-approvals.js && node --check ../frontend/assets/js/admin-ops-notifications.js && node --check ../frontend/assets/js/admin-ops-schedule.js && node --check ../frontend/assets/js/admin-ops-materials-reports.js && node --check ../frontend/assets/js/admin-operations.js && node --check ../frontend/assets/js/main.js"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=18",
+    "npm": ">=9"
   },
   "keywords": [
     "english-center",

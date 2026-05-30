@@ -2,7 +2,6 @@ const fs = require('fs');
 const path = require('path');
 const mysql = require('mysql2/promise');
 const { DB_CONFIG } = require('./db');
-const { seedDemoUsers } = require('./seed');
 
 async function setupDatabase() {
   const schemaPath = path.join(__dirname, 'database.sql');
@@ -22,7 +21,6 @@ async function setupDatabase() {
     await connection.end();
   }
 
-  await seedDemoUsers();
 }
 
 setupDatabase()

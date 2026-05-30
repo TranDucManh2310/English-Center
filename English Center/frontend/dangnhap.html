@@ -477,6 +477,8 @@
   <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="assets/vendor/aos/aos.js"></script>
   <script src="assets/js/api.js"></script>
+  <script src="assets/js/site-integration.js?v=20260530-integrated-db"></script>
+  <script src="assets/js/auth.js?v=20260530-session-db"></script>
   <script src="assets/js/main.js"></script>
 
   <script>
@@ -571,15 +573,17 @@
           const isTeacher = role === 'teacher';
 
           // ── Lưu session ──
-          localStorage.setItem('ec_current_user', JSON.stringify({
-            email: account.email,
-            name:  account.name,
-            role:  role,
-          }));
+          const sessionUser = Object.assign({}, account, { role: role });
+          delete sessionUser.password;
+          delete sessionUser.passwordHash;
+          localStorage.setItem('ec_current_user', JSON.stringify(sessionUser));
+          if (window.EC_AUTH) window.EC_AUTH.setUser(sessionUser);
 
           // ── Xác định trang đích ──
           let dashboardUrl;
-          if (role === 'admin') {
+          if (window.EC_AUTH && (role === 'admin' || role === 'teacher')) {
+            dashboardUrl = window.EC_AUTH.roleHome(role);
+          } else if (role === 'admin') {
             dashboardUrl = 'admin.html';
           } else if (isTeacher) {
             dashboardUrl = 'dashboard_giaovien.html';
@@ -594,6 +598,11 @@
               const enrolled = JSON.parse(localStorage.getItem('ec_enrolled_' + account.email) || '[]');
               dashboardUrl = enrolled.length > 0 ? 'dashboard_hocsinh.html' : 'chonkhoahoc.html';
             }
+          }
+          const afterLoginUrl = sessionStorage.getItem('ec_after_login');
+          if (afterLoginUrl) {
+            sessionStorage.removeItem('ec_after_login');
+            dashboardUrl = afterLoginUrl;
           }
           const badgeColor   = role === 'admin' ? '#dc2626' : (isTeacher ? '#7c3aed' : '#106eea');
           const badgeBg      = role === 'admin' ? '#fef2f2' : (isTeacher ? '#f3f0ff' : '#e8f1fd');

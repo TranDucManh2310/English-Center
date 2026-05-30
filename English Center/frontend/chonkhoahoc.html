@@ -874,7 +874,17 @@ function updateSummary(){
 }
 
 /* ─── LƯU ENROLLMENT ─── */
-function saveEnrollment(){
+async function saveEnrollment(){
+  if (window.EC_SITE && window.EC_SITE.enrollSelectedCourses) {
+    const ok = await window.EC_SITE.enrollSelectedCourses(selected, {
+      planId: planId,
+      payMethod: payMethod,
+      couponCode: couponCode,
+      amount: calcFinal().final,
+      paymentStatus: 'paid'
+    });
+    if (ok) return;
+  }
   const user=JSON.parse(localStorage.getItem('ec_current_user')||'{}');
   const email=user.email||ecCurrentEmail();
   if(email){
@@ -905,8 +915,8 @@ function handlePay(){
     showModal(`<div class="spinner"></div>
       <div style="font-size:15px;font-weight:700;color:var(--ink);margin-bottom:5px">Đang kích hoạt khóa học...</div>
       <div style="font-size:13px;color:var(--ink3)">Vui lòng chờ giây lát</div>`);
-    setTimeout(()=>{
-      saveEnrollment();
+    setTimeout(async()=>{
+      await saveEnrollment();
       const names=selected.map(id=>EC_COURSES[id].name).join('<br>• ');
       showModal(`
         <div class="pop-anim">
@@ -984,8 +994,8 @@ function confirmPayment(){
   showModal(`<div class="spinner"></div>
     <div style="font-size:15px;font-weight:700;color:var(--ink);margin-bottom:5px">Đang xác nhận thanh toán...</div>
     <div style="font-size:13px;color:var(--ink3)">${payMethod.toUpperCase()} · ${fmt(final)}</div>`);
-  setTimeout(()=>{
-    saveEnrollment();
+  setTimeout(async()=>{
+    await saveEnrollment();
     const names=selected.map(id=>EC_COURSES[id].name).join('<br>• ');
     showModal(`
       <div class="pop-anim">
@@ -1026,10 +1036,14 @@ document.addEventListener('DOMContentLoaded',()=>{
     document.getElementById('topAvatar').textContent=user.name.split(' ').map(w=>w[0]).slice(-2).join('').toUpperCase();
   }
   // không chọn sẵn — người học tự chọn
+  const preselect = new URLSearchParams(location.search).get('course');
+  if(preselect && EC_COURSES[preselect] && !selected.includes(preselect)) selected.push(preselect);
   renderCourses(); renderPlans(); updateSummary();
   const saved=sessionStorage.getItem('ec_coupon');
   if(saved){document.getElementById('couponInput').value=saved;applyCoupon()}
 });
 </script>
+  <script src="assets/js/site-integration.js?v=20260530-integrated-db"></script>
+  <script src="assets/js/auth.js?v=20260530-session-db"></script>
 </body>
 </html>

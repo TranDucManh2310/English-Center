@@ -6,7 +6,7 @@
 
   async function request(path, options) {
     if (window.location.protocol === "file:") {
-      throw new Error("Backend is not running. Open the site through npm start.");
+      throw new Error("He thong chua san sang. Vui long mo trang qua dia chi local.");
     }
 
     const token = localStorage.getItem(TOKEN_KEY);
@@ -51,6 +51,10 @@
       }).then(saveSession);
     },
 
+    me() {
+      return request("/api/auth/me", { method: "GET" }).then(saveSession);
+    },
+
     contact(payload) {
       return request("/api/contact", {
         method: "POST",
@@ -58,8 +62,88 @@
       });
     },
 
+    dashboard(role, params) {
+      const search = new URLSearchParams(params || {});
+      const query = search.toString();
+      return request(`/api/dashboard/${role}${query ? `?${query}` : ""}`, {
+        method: "GET"
+      });
+    },
+
+    courses(params) {
+      const search = new URLSearchParams(params || {});
+      const query = search.toString();
+      return request(`/api/courses${query ? `?${query}` : ""}`, {
+        method: "GET"
+      });
+    },
+
+    users(params) {
+      const search = new URLSearchParams(params || {});
+      const query = search.toString();
+      return request(`/api/users${query ? `?${query}` : ""}`, {
+        method: "GET"
+      });
+    },
+
+    createUser(payload) {
+      return request("/api/users", {
+        method: "POST",
+        body: JSON.stringify(payload)
+      });
+    },
+
+    updateUser(id, payload) {
+      return request(`/api/users/${encodeURIComponent(id)}`, {
+        method: "PATCH",
+        body: JSON.stringify(payload)
+      });
+    },
+
+    deleteUser(id) {
+      return request(`/api/users/${encodeURIComponent(id)}`, {
+        method: "DELETE"
+      });
+    },
+
+    createCourse(payload) {
+      return request("/api/courses", {
+        method: "POST",
+        body: JSON.stringify(payload)
+      });
+    },
+
+    enrollments(params) {
+      const search = new URLSearchParams(params || {});
+      const query = search.toString();
+      return request(`/api/enrollments${query ? `?${query}` : ""}`, {
+        method: "GET"
+      });
+    },
+
+    enroll(payload) {
+      return request("/api/enrollments", {
+        method: "POST",
+        body: JSON.stringify(payload)
+      });
+    },
+
+    saveLessonProgress(payload) {
+      return request("/api/lesson-progress", {
+        method: "POST",
+        body: JSON.stringify(payload)
+      });
+    },
+
+    saveExamResult(payload) {
+      return request("/api/exam-results", {
+        method: "POST",
+        body: JSON.stringify(payload)
+      });
+    },
+
     logout() {
-      return request("/api/auth/logout", { method: "POST" }).finally(() => {
+      return request("/api/auth/logout", { method: "POST" }).catch(() => ({ ok: true })).finally(() => {
         localStorage.removeItem(TOKEN_KEY);
         localStorage.removeItem(USER_KEY);
       });
