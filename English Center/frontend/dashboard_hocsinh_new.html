@@ -976,14 +976,14 @@
       </div>
     </div>
 
-    <!-- Đề thi thử hôm nay -->
+    <!-- De thi thu -->
     <div style="background:var(--bg-card);border:1.5px solid #e9d5ff;border-radius:var(--radius);padding:18px;display:flex;gap:14px;align-items:flex-start;transition:box-shadow .15s;cursor:pointer" onmouseover="this.style.boxShadow='0 4px 18px rgba(124,58,237,.1)'" onmouseout="this.style.boxShadow='none'" onclick="switchView('dethithu')">
       <div style="width:42px;height:42px;border-radius:11px;background:linear-gradient(135deg,#7c3aed,#a78bfa);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">📝</div>
       <div style="min-width:0">
-        <div style="font-size:10px;font-weight:800;color:var(--purple);text-transform:uppercase;letter-spacing:.8px;margin-bottom:3px">Đề thi thử hôm nay</div>
-        <div style="font-size:13.5px;font-weight:700;color:var(--text);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Đề THPTQG 2023 — Mã đề 401</div>
-        <div style="font-size:12px;color:var(--text-muted)">50 câu · 60 phút · +30 XP</div>
-        <div style="margin-top:8px;display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:var(--purple);background:var(--purple-light);padding:2px 8px;border-radius:20px">🎯 Chưa làm</div>
+        <div style="font-size:10px;font-weight:800;color:var(--purple);text-transform:uppercase;letter-spacing:.8px;margin-bottom:3px">Đề thi thử</div>
+        <div style="font-size:13.5px;font-weight:700;color:var(--text);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Chưa có đề thi được giao hôm nay</div>
+        <div style="font-size:12px;color:var(--text-muted)">Khi giáo viên giao đề, hệ thống sẽ hiển thị tại đây.</div>
+        <div style="margin-top:8px;display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:var(--text-muted);background:var(--bg);padding:2px 8px;border-radius:20px">⏳ Chờ dữ liệu</div>
       </div>
     </div>
 
@@ -1030,38 +1030,11 @@
 
       <div class="card">
         <div class="card-title" style="color:var(--purple)"><i class="bi bi-calendar-event-fill"></i> Sắp diễn ra</div>
-        <div>
-          <div class="upcoming-item">
-            <div class="udot" style="background:var(--red)"></div>
-            <div style="flex:1">
-              <div style="font-size:13px;font-weight:600;color:var(--text)">Thi thử trực tuyến #4</div>
-              <div style="font-size:11.5px;color:var(--text-muted)"><i class="bi bi-clock me-1"></i>Thứ 6, 19:00 – 21:00</div>
-            </div>
-            <span class="ubadge" style="background:var(--red-light);color:var(--red)">Hôm nay</span>
-          </div>
-          <div class="upcoming-item">
-            <div class="udot" style="background:var(--purple)"></div>
-            <div style="flex:1">
-              <div style="font-size:13px;font-weight:600;color:var(--text)">Live: Giải đề THPTQG 2024</div>
-              <div style="font-size:11.5px;color:var(--text-muted)"><i class="bi bi-clock me-1"></i>Thứ 7, 14:00 – 16:00</div>
-            </div>
-            <span class="ubadge" style="background:var(--purple-light);color:var(--purple)">Thứ 7</span>
-          </div>
-          <div class="upcoming-item">
-            <div class="udot" style="background:var(--green)"></div>
-            <div style="flex:1">
-              <div style="font-size:13px;font-weight:600;color:var(--text)">Kiểm tra từ vựng tuần 3</div>
-              <div style="font-size:11.5px;color:var(--text-muted)"><i class="bi bi-clock me-1"></i>Chủ nhật, 09:00</div>
-            </div>
-            <span class="ubadge" style="background:var(--green-light);color:var(--green)">CN</span>
-          </div>
-          <div class="upcoming-item">
-            <div class="udot" style="background:var(--blue)"></div>
-            <div style="flex:1">
-              <div style="font-size:13px;font-weight:600;color:var(--text)">Workshop: Kỹ năng làm bài Reading</div>
-              <div style="font-size:11.5px;color:var(--text-muted)"><i class="bi bi-clock me-1"></i>Thứ 2 tuần sau, 20:00</div>
-            </div>
-            <span class="ubadge" style="background:var(--blue-light);color:var(--blue)">Thứ 2</span>
+        <div id="upcomingSessionWrap">
+          <div style="text-align:center;padding:28px 16px;color:var(--text-muted)">
+            <div style="font-size:30px;margin-bottom:9px">📅</div>
+            <div style="font-size:13.5px;font-weight:800;color:var(--text);margin-bottom:5px">Chưa có lịch sắp diễn ra</div>
+            <div style="font-size:12.5px;line-height:1.6">Khi giáo viên tạo lịch học hoặc lịch thi, nội dung sẽ hiển thị tại đây.</div>
           </div>
         </div>
       </div>
@@ -1198,10 +1171,10 @@
 
     <!-- Banner stats -->
     <div class="dt-banner mb-4">
-      <div class="si"><span class="n">12</span><span class="l">Đề thi có sẵn</span></div>
+      <div class="si"><span class="n">0</span><span class="l">Đề thi có sẵn</span></div>
       <div class="si"><span class="n">50</span><span class="l">Câu hỏi mỗi đề</span></div>
       <div class="si"><span class="n">60'</span><span class="l">Thời gian làm bài</span></div>
-      <div class="si"><span class="n">2.400+</span><span class="l">Lượt làm bài</span></div>
+      <div class="si"><span class="n">0</span><span class="l">Lượt làm bài</span></div>
       <div style="margin-left:auto"><span style="font-size:.82rem;opacity:.8;">Bám sát cấu trúc đề thi THPTQG mới nhất</span></div>
     </div>
 
@@ -1488,6 +1461,18 @@ var dtActiveFilter  = 'all';
 
 /* ══ RENDER CARDS ══ */
 function dtRenderAllCards() {
+  if (localStorage.getItem('ec_auth_token')) {
+    const empty = `<div class="col-12"><div style="background:var(--bg-card);border:1px solid var(--border);border-radius:13px;padding:34px 18px;text-align:center;color:var(--text-muted)">
+      <div style="font-size:34px;margin-bottom:10px">📝</div>
+      <div style="font-size:14px;font-weight:800;color:var(--text);margin-bottom:6px">Chưa có đề thi thật</div>
+      <div style="font-size:12.5px;line-height:1.6">Khi giáo viên tạo đề trong backend, danh sách đề sẽ hiển thị tại đây. Không hiển thị đề mẫu hardcode cho phiên đăng nhập thật.</div>
+    </div></div>`;
+    const official = document.getElementById('dt-exam-grid-official');
+    const practice = document.getElementById('dt-exam-grid-practice');
+    if (official) official.innerHTML = empty;
+    if (practice) practice.innerHTML = '';
+    return;
+  }
   dtRenderSection('official', document.getElementById('dt-exam-grid-official'));
   dtRenderSection('thu',      document.getElementById('dt-exam-grid-practice'));
 }
@@ -1761,10 +1746,10 @@ function dtClosePW(){ document.getElementById('dt-pw-modal').classList.remove('s
     <div><h1>Tài Liệu Ôn Thi 📚</h1><p>PDF, video bài giảng theo từng chủ đề — tải xuống không giới hạn</p></div>
   </div>
   <div style="background:linear-gradient(90deg,#1a3fbf 0%,#4a2da8 45%,#6d3b8a 75%,#8b4a6b 100%);border-radius:14px;padding:1.1rem 1.6rem;color:#fff;display:flex;gap:2.5rem;flex-wrap:wrap;align-items:center;margin-bottom:20px">
-    <div><span style="font-size:1.5rem;font-weight:900;display:block;line-height:1.1">315</span><span style="font-size:.73rem;opacity:.8">Bài giảng video</span></div>
-    <div><span style="font-size:1.5rem;font-weight:900;display:block;line-height:1.1">120+</span><span style="font-size:.73rem;opacity:.8">Tài liệu PDF</span></div>
-    <div><span style="font-size:1.5rem;font-weight:900;display:block;line-height:1.1">200+</span><span style="font-size:.73rem;opacity:.8">Thẻ flashcard</span></div>
-    <div><span style="font-size:1.5rem;font-weight:900;display:block;line-height:1.1">6</span><span style="font-size:.73rem;opacity:.8">Chủ đề ôn thi</span></div>
+    <div><span style="font-size:1.5rem;font-weight:900;display:block;line-height:1.1">0</span><span style="font-size:.73rem;opacity:.8">Bài giảng video</span></div>
+    <div><span style="font-size:1.5rem;font-weight:900;display:block;line-height:1.1">0</span><span style="font-size:.73rem;opacity:.8">Tài liệu PDF</span></div>
+    <div><span style="font-size:1.5rem;font-weight:900;display:block;line-height:1.1">0</span><span style="font-size:.73rem;opacity:.8">Thẻ flashcard</span></div>
+    <div><span style="font-size:1.5rem;font-weight:900;display:block;line-height:1.1">0</span><span style="font-size:.73rem;opacity:.8">Chủ đề ôn thi</span></div>
   </div>
   <div style="display:flex;gap:0;flex-wrap:wrap;border-bottom:2px solid var(--border);margin-bottom:20px">
     <button onclick="tlSwitch('nguphap',this)" class="tl-tab tl-active"><i class="bi bi-list-check"></i> Ngữ pháp</button>
@@ -1849,18 +1834,18 @@ function dtClosePW(){ document.getElementById('dt-pw-modal').classList.remove('s
       <div style="font-size:42px;filter:drop-shadow(0 0 12px rgba(245,158,11,.6))">🥇</div>
       <div style="flex:1">
         <div style="font-size:11px;font-weight:800;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.8px">Cấp độ hiện tại</div>
-        <div style="font-size:20px;font-weight:900;color:#fbbf24;letter-spacing:-.3px">Học sinh tích cực</div>
-        <div style="font-size:12px;color:rgba(255,255,255,.4);margin-top:2px">Cấp 4 · 340 XP đã tích lũy</div>
+        <div style="font-size:20px;font-weight:900;color:#fbbf24;letter-spacing:-.3px">Chưa xếp hạng</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.4);margin-top:2px">0 XP đã tích lũy</div>
         <div style="margin-top:10px">
           <div style="height:6px;background:rgba(255,255,255,.1);border-radius:10px;overflow:hidden"><div id="hh-rankFill" style="height:100%;background:linear-gradient(90deg,#f59e0b,#fbbf24);border-radius:10px;width:0;transition:width .8s ease"></div></div>
-          <div style="font-size:10.5px;color:rgba(255,255,255,.4);margin-top:4px;font-family:'JetBrains Mono',monospace">340 / 500 XP → Cấp 5: Ngôi sao đang lên</div>
+          <div style="font-size:10.5px;color:rgba(255,255,255,.4);margin-top:4px;font-family:'JetBrains Mono',monospace">Dữ liệu cấp độ sẽ cập nhật theo XP thật</div>
         </div>
       </div>
     </div>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px;position:relative;">
-      <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:12px 14px;"><div style="font-size:20px;font-weight:900;font-family:'JetBrains Mono',monospace;color:#fbbf24;line-height:1">8</div><div style="font-size:10.5px;color:rgba(255,255,255,.45);font-weight:600;margin-top:3px">Huy hiệu đã đạt</div></div>
-      <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:12px 14px;"><div style="font-size:20px;font-weight:900;font-family:'JetBrains Mono',monospace;color:#4ade80;line-height:1">#5</div><div style="font-size:10.5px;color:rgba(255,255,255,.45);font-weight:600;margin-top:3px">Xếp hạng lớp</div></div>
-      <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:12px 14px;"><div style="font-size:20px;font-weight:900;font-family:'JetBrains Mono',monospace;color:#c084fc;line-height:1">340</div><div style="font-size:10.5px;color:rgba(255,255,255,.45);font-weight:600;margin-top:3px">Tổng XP</div></div>
+      <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:12px 14px;"><div style="font-size:20px;font-weight:900;font-family:'JetBrains Mono',monospace;color:#fbbf24;line-height:1">0</div><div style="font-size:10.5px;color:rgba(255,255,255,.45);font-weight:600;margin-top:3px">Huy hiệu đã đạt</div></div>
+      <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:12px 14px;"><div style="font-size:20px;font-weight:900;font-family:'JetBrains Mono',monospace;color:#4ade80;line-height:1">-</div><div style="font-size:10.5px;color:rgba(255,255,255,.45);font-weight:600;margin-top:3px">Xếp hạng lớp</div></div>
+      <div style="background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:12px 14px;"><div style="font-size:20px;font-weight:900;font-family:'JetBrains Mono',monospace;color:#c084fc;line-height:1">0</div><div style="font-size:10.5px;color:rgba(255,255,255,.45);font-weight:600;margin-top:3px">Tổng XP</div></div>
     </div>
   </div>
 
@@ -2122,9 +2107,9 @@ function dtClosePW(){ document.getElementById('dt-pw-modal').classList.remove('s
     </div>
   </div>
   <div style="background:linear-gradient(90deg,#1a3fbf 0%,#2d6aa8 40%,#1a6ef5 100%);border-radius:14px;padding:1.1rem 1.6rem;color:#fff;display:flex;gap:2.5rem;flex-wrap:wrap;align-items:center;margin-bottom:20px">
-    <div><span style="font-size:1.5rem;font-weight:900;display:block;line-height:1.1">8</span><span style="font-size:.73rem;opacity:.85">Tổng câu hỏi</span></div>
-    <div><span style="font-size:1.5rem;font-weight:900;display:block;line-height:1.1">5</span><span style="font-size:.73rem;opacity:.85">Đã trả lời</span></div>
-    <div><span style="font-size:1.5rem;font-weight:900;display:block;line-height:1.1">2</span><span style="font-size:.73rem;opacity:.85">Chờ phản hồi</span></div>
+    <div><span style="font-size:1.5rem;font-weight:900;display:block;line-height:1.1">0</span><span style="font-size:.73rem;opacity:.85">Tổng câu hỏi</span></div>
+    <div><span style="font-size:1.5rem;font-weight:900;display:block;line-height:1.1">0</span><span style="font-size:.73rem;opacity:.85">Đã trả lời</span></div>
+    <div><span style="font-size:1.5rem;font-weight:900;display:block;line-height:1.1">0</span><span style="font-size:.73rem;opacity:.85">Chờ phản hồi</span></div>
     <div><span style="font-size:1.5rem;font-weight:900;display:block;line-height:1.1">~3h</span><span style="font-size:.73rem;opacity:.85">Thời gian phản hồi TB</span></div>
   </div>
   <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">
@@ -2433,12 +2418,14 @@ function dtClosePW(){ document.getElementById('dt-pw-modal').classList.remove('s
   function logout() {
     if (confirm('Bạn có chắc muốn đăng xuất không?')) {
       localStorage.removeItem('ec_current_user');
+      localStorage.removeItem('ec_auth_token');
       window.location.href = 'dangnhap.html';
     }
   }
 
 /* ── Load enrolled courses ── */
 function loadCourses() {
+  if (localStorage.getItem('ec_auth_token')) return;
   const user = JSON.parse(localStorage.getItem('ec_current_user') || '{}');
   const email = user.email || (() => {
     const acc = JSON.parse(localStorage.getItem('ec_accounts') || '[]').filter(a => !a.email.endsWith('@englishcenter.vn'));
@@ -2678,6 +2665,7 @@ function loadCourses() {
      LEADERBOARD
   ============================================================ */
   function renderLB(key) {
+    if (localStorage.getItem('ec_auth_token')) return;
     const data = getLBData()[key];
     document.getElementById('lbList').innerHTML = data.map((p,i) => `
       <div class="lb-item${p.me?' me':''}">
@@ -2698,6 +2686,7 @@ function loadCourses() {
      ACTIVITY LOG
   ============================================================ */
   function renderActs() {
+    if (localStorage.getItem('ec_auth_token')) return;
     const user = JSON.parse(localStorage.getItem('ec_current_user') || '{}');
     const email = user.email || '';
     const log = email ? JSON.parse(localStorage.getItem('ec_activity_log_' + email) || '[]') : [];
@@ -2725,6 +2714,7 @@ function loadCourses() {
      ANIMATE BARS
   ============================================================ */
   function animateBars() {
+    if (localStorage.getItem('ec_auth_token')) return;
     setTimeout(() => {
       document.querySelectorAll('[data-w]').forEach(el => { el.style.width = el.dataset.w + '%'; });
       const xpFill = document.getElementById('xpFill');
@@ -2805,6 +2795,24 @@ function loadCourses() {
       </div>`;
     }
     grid.innerHTML = html;
+
+    if (localStorage.getItem('ec_auth_token')) {
+      const sessions = (window.EC_STUDENT_DASHBOARD && window.EC_STUDENT_DASHBOARD.upcomingSessions) || [];
+      document.getElementById('calSchedule').innerHTML = sessions.length
+        ? sessions.slice(0, 4).map(s => {
+            const st = s.startAt ? new Date(s.startAt) : null;
+            const en = s.endAt ? new Date(s.endAt) : null;
+            return `<div style="display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">
+              <div style="width:8px;height:8px;border-radius:50%;background:var(--purple);margin-top:7px;flex-shrink:0"></div>
+              <div style="flex:1;min-width:0">
+                <div style="font-size:12.5px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${s.title || 'Lịch học'}</div>
+                <div style="font-size:11px;color:var(--text-muted);margin-top:1px">${st ? st.toLocaleString('vi-VN', { weekday:'short', hour:'2-digit', minute:'2-digit', day:'2-digit', month:'2-digit' }) : 'Đang cập nhật'}${en ? ' - ' + en.toLocaleTimeString('vi-VN', { hour:'2-digit', minute:'2-digit' }) : ''}</div>
+              </div>
+            </div>`;
+          }).join('')
+        : `<div style="font-size:13px;color:var(--text-muted);padding:12px 0">Chưa có lịch học hoặc lịch thi sắp tới.</div>`;
+      return;
+    }
 
     // Tên thứ tiếng Việt đầy đủ
     const THU = ['','Thứ 2','Thứ 3','Thứ 4','Thứ 5','Thứ 6','Thứ 7','Chủ nhật'];
@@ -2916,11 +2924,15 @@ function loadCourses() {
  
   let notifFilter = 'all';
   let notifOpen   = false;
+
+  function getNotifData() {
+    return localStorage.getItem('ec_auth_token') ? (window.EC_STUDENT_NOTIFS || []) : NOTIFS;
+  }
  
   function renderNotifList() {
     const list = document.getElementById('notifList');
     if (!list) return;
-    const filtered = NOTIFS.filter(n => {
+    const filtered = getNotifData().filter(n => {
       if (notifFilter === 'unread') return n.unread;
       if (notifFilter === 'system') return n.type === 'system';
       return true;
@@ -2973,7 +2985,7 @@ function loadCourses() {
   }
  
   function readNotif(id, el) {
-    const n = NOTIFS.find(x => x.id === id);
+    const n = getNotifData().find(x => String(x.id) === String(id));
     if (n && n.unread) {
       n.unread = false;
       el.style.background = '';
@@ -2983,13 +2995,13 @@ function loadCourses() {
   }
  
   function markAllRead() {
-    NOTIFS.forEach(n => n.unread = false);
+    getNotifData().forEach(n => n.unread = false);
     updateNotifBadge();
     renderNotifList();
   }
  
   function updateNotifBadge() {
-    const count = NOTIFS.filter(n => n.unread).length;
+    const count = getNotifData().filter(n => n.unread).length;
     const dot   = document.getElementById('notifDot');
     const label = document.getElementById('notifUnreadLabel');
     if (dot) {
@@ -3058,6 +3070,14 @@ let hdCurrentFilter = 'all';
 
 function hdRender(filter) {
   hdCurrentFilter = filter;
+  if (localStorage.getItem('ec_auth_token')) {
+    document.getElementById('hdList').innerHTML = `<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:13px;padding:36px 18px;text-align:center;color:var(--text-muted)">
+      <div style="font-size:34px;margin-bottom:10px">💬</div>
+      <div style="font-size:14px;font-weight:800;color:var(--text);margin-bottom:6px">Chưa có câu hỏi nào</div>
+      <div style="font-size:12.5px;line-height:1.6">Chức năng hỏi đáp sẽ hiển thị dữ liệu thật sau khi backend hỗ trợ lưu câu hỏi của học viên.</div>
+    </div>`;
+    return;
+  }
   const statusMap = { pending:'pending', answered:'answered', closed:'closed' };
   const filtered = filter === 'all' ? HD_DATA : HD_DATA.filter(q => q.status === statusMap[filter]);
   const topicColor = { 'Ngữ pháp':'var(--blue)','Từ vựng':'var(--green)','Đọc hiểu':'var(--purple)','Nghe hiểu':'var(--orange)','Phát âm':'var(--yellow)','Đề thi thử':'var(--red)','Khác':'var(--text-muted)' };
@@ -3111,6 +3131,10 @@ function hdFilter(f, btn) {
 function hdOpenNew() { document.getElementById('hdModal').style.display = 'flex'; }
 function hdCloseNew() { document.getElementById('hdModal').style.display = 'none'; }
 function hdSubmit() {
+  if (localStorage.getItem('ec_auth_token')) {
+    alert('Chức năng hỏi đáp giáo viên chưa có API lưu câu hỏi. Không tạo dữ liệu giả trên frontend.');
+    return;
+  }
   const title = document.getElementById('hdTitle').value.trim();
   const topic = document.getElementById('hdTopic').value;
   if (!title) { alert('Vui lòng nhập tiêu đề câu hỏi!'); return; }
@@ -3543,6 +3567,17 @@ let tlPageVideo  = 1;
 
 function tlRender(tab) {
   tlCurrentTab = tab;
+  if (localStorage.getItem('ec_auth_token')) {
+    const empty = `<div class="col-12"><div style="background:var(--bg-card);border:1px solid var(--border);border-radius:13px;padding:34px 18px;text-align:center;color:var(--text-muted)">
+      <div style="font-size:34px;margin-bottom:10px">📚</div>
+      <div style="font-size:14px;font-weight:800;color:var(--text);margin-bottom:6px">Chưa có tài liệu thật</div>
+      <div style="font-size:12.5px;line-height:1.6">Tài liệu PDF, video và flashcard sẽ hiển thị sau khi được tạo/lưu từ backend.</div>
+    </div></div>`;
+    document.getElementById('tl-pdf-grid').innerHTML = empty;
+    document.getElementById('tl-video-grid').innerHTML = '';
+    document.getElementById('tl-fc-area').innerHTML = '';
+    return;
+  }
   const d = TL_DATA[tab];
 
   const totalPdfP = Math.ceil(d.pdfs.length / TL_PER_PDF);
@@ -3687,6 +3722,10 @@ let fcCurrentTab = 'nguphap';
 let fcIndex = {};
 
 function tlFCRender(tab) {
+  if (localStorage.getItem('ec_auth_token')) {
+    document.getElementById('tl-fc-area').innerHTML = '';
+    return;
+  }
   if (fcIndex[tab] === undefined) fcIndex[tab] = 0;
   const cards = FC_DATA[tab] || [];
   if (!cards.length) { document.getElementById('tl-fc-area').innerHTML = ''; return; }
@@ -3777,9 +3816,14 @@ function kqInit() {
   kqInited = true;
   const user = JSON.parse(localStorage.getItem('ec_current_user') || '{}');
   const email = user.email || '';
-  const examResults = email ? JSON.parse(localStorage.getItem('ec_exam_results_' + email) || '[]') : [];
-  const spkResults  = email ? JSON.parse(localStorage.getItem('ec_spk_results_'  + email) || '[]') : [];
-  const activityLog = email ? JSON.parse(localStorage.getItem('ec_activity_log_' + email) || '[]') : [];
+  const apiDashboard = localStorage.getItem('ec_auth_token') ? (window.EC_STUDENT_DASHBOARD || {}) : null;
+  const examResults = apiDashboard
+    ? (apiDashboard.recentExamResults || []).map(e => ({ name:e.title, score:e.score, skill:e.type || 'Mixed', date:e.submittedAt || e.gradedAt }))
+    : (email ? JSON.parse(localStorage.getItem('ec_exam_results_' + email) || '[]') : []);
+  const spkResults  = apiDashboard ? [] : (email ? JSON.parse(localStorage.getItem('ec_spk_results_'  + email) || '[]') : []);
+  const activityLog = apiDashboard
+    ? (apiDashboard.activities || []).map(a => ({ icon:'⚡', text:a.title, xp:`+${a.xp || 0} XP`, time:a.createdAt, color:'var(--green)' }))
+    : (email ? JSON.parse(localStorage.getItem('ec_activity_log_' + email) || '[]') : []);
 
   // Header stats
   const allScores = examResults.map(e => e.score).filter(Boolean);
@@ -3914,7 +3958,10 @@ function hhInit() {
   hhInited = true;
   hhRenderBadges();
   hhRenderNextBadges();
-  setTimeout(() => { const rf = document.getElementById('hh-rankFill'); if (rf) rf.style.width = '68%'; }, 300);
+  setTimeout(() => {
+    const rf = document.getElementById('hh-rankFill');
+    if (rf) rf.style.width = localStorage.getItem('ec_auth_token') ? '0%' : '68%';
+  }, 300);
 }
 
 function hhFilterBadge(btn, filter) {
@@ -3925,6 +3972,15 @@ function hhFilterBadge(btn, filter) {
 }
 
 function hhRenderBadges() {
+  if (localStorage.getItem('ec_auth_token')) {
+    const grid = document.getElementById('hh-badgeGrid');
+    if (grid) grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:34px 16px;color:var(--text-muted)">
+      <div style="font-size:32px;margin-bottom:10px">🏅</div>
+      <div style="font-size:13.5px;font-weight:800;color:var(--text);margin-bottom:5px">Chưa có dữ liệu huy hiệu</div>
+      <div style="font-size:12.5px;line-height:1.6">Khi backend lưu thành tích, huy hiệu thật của học viên sẽ hiển thị tại đây.</div>
+    </div>`;
+    return;
+  }
   const filtered = hhBadgeFilter === 'all' ? HH_BADGES
     : hhBadgeFilter === 'earned' ? HH_BADGES.filter(b => b.earned)
     : HH_BADGES.filter(b => !b.earned);
@@ -3950,6 +4006,22 @@ function hhRenderBadges() {
 function hhRenderLeaderboard() {
   const lb = document.getElementById('hh-leaderboard');
   if (!lb) return;
+  if (localStorage.getItem('ec_auth_token')) {
+    const rows = (window.EC_STUDENT_DASHBOARD && window.EC_STUDENT_DASHBOARD.leaderboard) || [];
+    lb.innerHTML = rows.length ? rows.slice(0, 8).map(p => {
+      const rank = Number(p.rank || 0);
+      const rc = rank===1 ? '#f59e0b' : rank===2 ? '#94a3b8' : rank===3 ? '#b45309' : 'var(--text-muted)';
+      const displayName = p.name || 'Học viên';
+      const avatarChar = displayName.charAt(0);
+      return `<div style="display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;margin-bottom:6px">
+        <div style="width:28px;text-align:center;font-size:13px;font-weight:900;font-family:'JetBrains Mono',monospace;flex-shrink:0;color:${rc}">${rank ? '#' + rank : '-'}</div>
+        <div style="width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0;background:var(--blue)">${avatarChar}</div>
+        <div style="flex:1;font-size:13px;font-weight:700;color:var(--text)">${displayName}</div>
+        <div style="font-size:12px;font-weight:800;font-family:'JetBrains Mono',monospace;color:var(--blue)">${Number(p.xp || 0)} XP</div>
+      </div>`;
+    }).join('') : `<div style="text-align:center;padding:24px 12px;color:var(--text-muted);font-size:13px">Chưa có dữ liệu xếp hạng.</div>`;
+    return;
+  }
   const u = JSON.parse(localStorage.getItem('ec_current_user') || '{}');
   const myName = (u.name || '').trim();
   lb.innerHTML = HH_LEADERBOARD.map(p => {
@@ -3967,6 +4039,11 @@ function hhRenderLeaderboard() {
 }
 
 function hhRenderNextBadges() {
+  if (localStorage.getItem('ec_auth_token')) {
+    const nb = document.getElementById('hh-nextBadges');
+    if (nb) nb.innerHTML = `<div style="text-align:center;padding:22px 8px;color:var(--text-muted);font-size:13px">Chưa có huy hiệu sắp đạt.</div>`;
+    return;
+  }
   const upcoming = HH_BADGES.filter(b => !b.earned).slice(0, 3);
   const nb = document.getElementById('hh-nextBadges');
   if (!nb) return;
@@ -4045,7 +4122,30 @@ function lhIsNow(date,t,e){
   const s=new Date(date),en=new Date(date);s.setHours(h,m,0,0);en.setHours(eh,em,0,0);
   return now>=s&&now<=en;
 }
+function lhGetApiDayEvs(date){
+  const sessions = (window.EC_STUDENT_DASHBOARD && window.EC_STUDENT_DASHBOARD.upcomingSessions) || [];
+  return sessions.map((s,i)=>{
+    const start=s.startAt?new Date(s.startAt):null,end=s.endAt?new Date(s.endAt):null;
+    if(!start||isNaN(start))return null;
+    return {
+      id:`api-${i}`,
+      type:'lesson',
+      time:start.toTimeString().slice(0,5),
+      end:end&&!isNaN(end)?end.toTimeString().slice(0,5):start.toTimeString().slice(0,5),
+      dur:end&&!isNaN(end)?Math.max(0,Math.round((end-start)/60000)):0,
+      dow:start.getDay()||7,
+      title:s.title||'Lịch học',
+      note:s.courseName||s.teacherName||'',
+      date:new Date(start)
+    };
+  }).filter(Boolean).filter(e=>lhSame(e.date,date));
+}
 function lhGetDayEvs(date){
+  if(localStorage.getItem('ec_auth_token')){
+    const apiEvents=lhGetApiDayEvs(date).sort((a,b)=>a.time.localeCompare(b.time));
+    apiEvents.forEach(e=>lhEvMap[e.id]=e);
+    return apiEvents;
+  }
   const dow=date.getDay()||7;
   const r=LH_REC.filter(e=>e.dow===dow).map(e=>({...e,date}));
   const all=[...r].sort((a,b)=>a.time.localeCompare(b.time));
@@ -4249,6 +4349,7 @@ const SPK_TOPICS = [
 ];
 
 function spkGetHistory() {
+  if (localStorage.getItem('ec_auth_token')) return [];
   const user = JSON.parse(localStorage.getItem('ec_current_user') || '{}');
   const email = user.email || '';
   return email ? JSON.parse(localStorage.getItem('ec_spk_results_' + email) || '[]') : [];
@@ -4372,7 +4473,10 @@ function spkStopRecord() {
   document.getElementById('spk-micStatus').textContent='Đã ghi âm — đang chấm điểm...';
   document.getElementById('spk-waveform').style.opacity='0';
   document.querySelectorAll('#spk-waveform .wave-bar').forEach(b=>b.style.height='8px');
-  if(spkRecSecs>=3){ setTimeout(()=>spkShowScore(),1200); }
+  if(spkRecSecs>=3){
+    if(localStorage.getItem('ec_auth_token')) setTimeout(()=>spkSubmitForReview(),400);
+    else setTimeout(()=>spkShowScore(),1200);
+  }
   else { document.getElementById('spk-micStatus').textContent='Ghi âm quá ngắn — thử lại!'; spkResetRecorder(); }
 }
 
@@ -4385,6 +4489,54 @@ function spkResetRecorder() {
   document.getElementById('spk-timerDisplay').textContent='0:00';
   document.getElementById('spk-waveform').style.opacity='0';
   document.querySelectorAll('#spk-waveform .wave-bar').forEach(b=>b.style.height='8px');
+}
+
+async function spkSubmitForReview() {
+  const q = spkSelectedTopic && spkSelectedTopic.questions ? spkSelectedTopic.questions[spkCurrentQ] : null;
+  document.getElementById('spk-micStatus').textContent='Đang gửi bài luyện lên hệ thống...';
+  try {
+    const res = await fetch('/api/speaking-submissions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('ec_auth_token') || ''}`
+      },
+      body: JSON.stringify({
+        topic: spkSelectedTopic ? spkSelectedTopic.name : 'Speaking',
+        question: q ? q.q : '',
+        durationSeconds: spkRecSecs
+      })
+    });
+    const data = await res.json().catch(()=>({}));
+    if (!res.ok || data.ok === false) throw new Error(data.message || 'Khong gui duoc bai speaking.');
+    spkShowPendingScore();
+  } catch (err) {
+    document.getElementById('spk-micStatus').textContent='Không gửi được bài luyện. Vui lòng thử lại.';
+    if (typeof showVideoToast === 'function') showVideoToast(err.message || 'Không gửi được bài luyện.');
+  }
+}
+
+function spkShowPendingScore() {
+  document.getElementById('spk-micStatus').textContent=`✅ Đã gửi bài luyện — ${spkRecSecs}s ghi âm`;
+  const sn=document.getElementById('spk-scoreNumber');
+  sn.textContent='—';
+  sn.style.color='var(--blue)';
+  document.getElementById('spk-scoreFeedback').textContent='Bài luyện đã được lưu và đang chờ chấm.';
+  const sc=document.getElementById('spk-scoreCircle');
+  sc.style.background='var(--blue-light)';
+  document.getElementById('spk-criteriaGrid').innerHTML=`<div style="grid-column:1/-1;background:var(--bg);border-radius:10px;padding:16px;text-align:center;color:var(--text-muted);font-size:12.5px;line-height:1.6">Không tạo điểm AI giả trên frontend. Kết quả thật sẽ cập nhật khi backend có dịch vụ chấm điểm.</div>`;
+  document.getElementById('spk-aiComment').textContent='Bài luyện đã được nhận. Nhận xét sẽ hiển thị sau khi có kết quả chấm thật.';
+  document.getElementById('spk-scorePanel').style.display='block';
+  if (spkSelectedTopic) {
+    const totalQ = spkSelectedTopic.questions.length;
+    const newPct = Math.round(((spkCurrentQ + 1) / totalQ) * 100);
+    spkSelectedTopic.progress = Math.max(spkSelectedTopic.progress, newPct);
+    spkUpdateProgressBar();
+  }
+  setTimeout(() => {
+    const scorePanel = document.getElementById('spk-scorePanel');
+    if (scorePanel) scorePanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 100);
 }
 
 function spkShowScore() {
@@ -4518,7 +4670,8 @@ function spkNextQuestion(){
   } else {
     // Hoàn thành toàn bộ chủ đề → progress đã = 100% từ spkShowScore
     spkSelectedTopic.progress = 100;
-    showVideoToast('🎉 Hoàn thành chủ đề! +' + spkSelectedTopic.xp + ' XP đã được cộng!');
+    if(localStorage.getItem('ec_auth_token')) showVideoToast('🎉 Hoàn thành chủ đề! XP sẽ cập nhật sau khi có kết quả chấm thật.');
+    else showVideoToast('🎉 Hoàn thành chủ đề! +' + spkSelectedTopic.xp + ' XP đã được cộng!');
     spkBackToTopics();
     spkRenderTopics(); // Re-render grid để hiện ✅ Đã hoàn thành
   }
@@ -4617,10 +4770,10 @@ function showVideoToast(title) {
 </div>
 
 
-    <script src="assets/js/dashboard-data.js?v=20260530-real-admin-db"></script>
+    <script src="assets/js/dashboard-data.js?v=20260602-student-real-data"></script>
   <script src="assets/js/site-integration.js?v=20260530-integrated-db"></script>
-  <script src="assets/js/auth.js?v=20260530-session-db"></script>
-  <script src="assets/js/student-dashboard.js?v=20260530"></script>
+  <script src="assets/js/auth.js?v=20260602-session-db"></script>
+  <script src="assets/js/student-dashboard.js?v=20260602-student-role"></script>
   <script src="assets/js/student-dashboard-extended.js?v=20260530"></script>
 </body>
 </html>

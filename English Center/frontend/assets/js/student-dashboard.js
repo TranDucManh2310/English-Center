@@ -36,6 +36,14 @@
       }
       
       state.user = JSON.parse(userData);
+      if (!state.user || !state.user.email) {
+        window.location.replace('dangnhap.html');
+        return;
+      }
+      if (state.user.role && !['student', 'admin'].includes(state.user.role)) {
+        window.location.replace(window.EC_AUTH ? window.EC_AUTH.roleHome(state.user.role) : 'dangnhap.html');
+        return;
+      }
       
       // Cập nhật UI với thông tin user
       updateUserUI();
@@ -56,9 +64,14 @@
   // ========== API CALLS ==========
   async function apiCall(path, options = {}) {
     const token = localStorage.getItem('ec_auth_token');
+    if (window.location.protocol === 'file:' || !token) {
+      throw new Error('API unavailable without an authenticated session.');
+    }
+    
     const headers = {
       'Content-Type': 'application/json',
-      ...(token ? { Authorization: `Bearer ${token}` } : {})
+      Authorization: `Bearer ${token}`,
+      ...options.headers
     };
 
     try {
@@ -108,18 +121,19 @@
   // ========== UI UPDATES ==========
   function updateUserUI() {
     const user = state.user;
+    const displayName = user.name || user.email || 'Hoc sinh';
     
     // Update sidebar
-    const initials = user.name
+    const initials = displayName
       .split(' ')
       .map(n => n[0])
       .join('')
       .toUpperCase()
       .slice(0, 2);
     
-    document.getElementById('sAvatar').textContent = initials;
-    document.getElementById('sName').textContent = user.name;
-    document.getElementById('sEmail').textContent = user.email;
+    setText('sAvatar', initials);
+    setText('sName', displayName);
+    setText('sEmail', user.email || '');
     
     // Update greeting
     const hour = new Date().getHours();
@@ -127,7 +141,12 @@
     if (hour >= 12 && hour < 18) greeting = 'Chào buổi chiều! ☀️';
     if (hour >= 18) greeting = 'Chào buổi tối! 🌙';
     
-    document.getElementById('wTitle').textContent = greeting;
+    setText('wTitle', greeting);
+  }
+
+  function setText(id, value) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = value;
   }
 
   // ========== DASHBOARD VIEW ==========
@@ -440,28 +459,33 @@
     const container = document.getElementById('materialsContent');
     if (!container) return;
     
-    const materials = [
-      { name: 'Từ vựng THPTQG 2024', size: '2.5 MB' },
-      { name: 'Ngữ pháp trọng tâm', size: '1.8 MB' },
-      { name: 'Đáp án 100 đề thi', size: '5.2 MB' }
-    ];
+    const materials = state.dashboard?.materials || [];
     
-    const html = materials.map(mat => `
-      <div class="db-pdf-card">
-        <div class="db-pdf-icon">
-          <i class="bi bi-file-pdf"></i>
+    if (materials && materials.length > 0) {
+      const html = materials.map(mat => `
+        <div class="db-pdf-card">
+          <div class="db-pdf-icon">
+            <i class="bi bi-file-pdf"></i>
+          </div>
+          <div class="db-pdf-info">
+            <h6>${mat.name || 'Tài liệu'}</h6>
+            <small>${mat.size || '-'}</small>
+          </div>
+          <a href="${mat.url || '#'}" download class="db-btn-dl" style="text-decoration: none; color: inherit">
+            <i class="bi bi-download"></i> Tải
+          </a>
         </div>
-        <div class="db-pdf-info">
-          <h6>${mat.name}</h6>
-          <small>${mat.size}</small>
+      `).join('');
+      
+      container.innerHTML = html;
+    } else {
+      container.innerHTML = `
+        <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 40px; text-align: center; grid-column: 1/-1">
+          <div style="font-size: 48px; margin-bottom: 12px">📚</div>
+          <p style="color: var(--text-muted); font-size: 14px">Chưa có tài liệu nào. Vui lòng liên hệ giáo viên để nhận tài liệu ôn thi!</p>
         </div>
-        <button class="db-btn-dl">
-          <i class="bi bi-download"></i> Tải
-        </button>
-      </div>
-    `).join('');
-    
-    container.innerHTML = html;
+      `;
+    }
   }
 
   // ========== Q&A VIEW ==========
@@ -496,25 +520,59 @@
       return;
     }
     
-    container.innerHTML = `
-      <div style="padding: 24px">
-        <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 20px">📊 Kết quả & Tiến độ</h2>
-        
+    // Get stats from API data
+    const stats = state.dashboard || {};
+    const averageScore = stats.averageExamScore || 0;
+    const completedExams = state.exams ? state.exams.length : 0;
+    const completionRate = stats.completionRate || 0;
+    
+    // Render stats cards (only if there's data)
+    let statsHtml = '';
+    if (averageScore > 0 || completedExams > 0 || completionRate > 0) {
+      statsHtml = `
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px">
-          <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; text-align: center">
-            <div style="font-size: 28px; font-weight: 900; color: var(--blue)">85</div>
-            <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px">Điểm trung bình</div>
-          </div>
-          <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; text-align: center">
-            <div style="font-size: 28px; font-weight: 900; color: var(--green)">45</div>
-            <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px">Bài kiểm tra</div>
-          </div>
-          <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; text-align: center">
-            <div style="font-size: 28px; font-weight: 900; color: var(--orange)">68%</div>
-            <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px">Tỉ lệ hoàn thành</div>
-          </div>
+          ${averageScore > 0 ? `
+            <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; text-align: center">
+              <div style="font-size: 28px; font-weight: 900; color: var(--blue)">${averageScore.toFixed(1)}</div>
+              <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px">Điểm trung bình</div>
+            </div>
+          ` : ''}
+          ${completedExams > 0 ? `
+            <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; text-align: center">
+              <div style="font-size: 28px; font-weight: 900; color: var(--green)">${completedExams}</div>
+              <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px">Bài kiểm tra</div>
+            </div>
+          ` : ''}
+          ${completionRate > 0 ? `
+            <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; text-align: center">
+              <div style="font-size: 28px; font-weight: 900; color: var(--orange)">${completionRate}%</div>
+              <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px">Tỉ lệ hoàn thành</div>
+            </div>
+          ` : ''}
         </div>
+      `;
+    }
+    
+    // Render exam results table (only if there's data)
+    let resultsHtml = '';
+    if (state.exams && state.exams.length > 0) {
+      const examsTableRows = state.exams.map(exam => {
+        const score = exam.score || 0;
+        const maxScore = exam.maxScore || 100;
+        const percentage = Math.round((score / maxScore) * 100);
+        const scoreClass = percentage >= 70 ? 's-high' : percentage >= 50 ? 's-mid' : 's-low';
+        const rank = exam.rank || '-';
         
+        return `
+          <tr>
+            <td>${exam.title || 'Bài thi'}</td>
+            <td><span class="score-pill ${scoreClass}">${score}/${maxScore}</span></td>
+            <td>${rank}</td>
+          </tr>
+        `;
+      }).join('');
+      
+      resultsHtml = `
         <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 20px">
           <h3 style="font-size: 14px; font-weight: 800; margin-bottom: 16px">Điểm theo kỳ thi</h3>
           <table class="score-table">
@@ -526,24 +584,26 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>Đề thi thử 1</td>
-                <td><span class="score-pill s-high">82/100</span></td>
-                <td>Top 15%</td>
-              </tr>
-              <tr>
-                <td>Đề thi thử 2</td>
-                <td><span class="score-pill s-mid">75/100</span></td>
-                <td>Top 25%</td>
-              </tr>
-              <tr>
-                <td>Đề thi thử 3</td>
-                <td><span class="score-pill s-low">68/100</span></td>
-                <td>Top 40%</td>
-              </tr>
+              ${examsTableRows}
             </tbody>
           </table>
         </div>
+      `;
+    } else {
+      resultsHtml = `
+        <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 40px; text-align: center">
+          <div style="font-size: 48px; margin-bottom: 12px">📊</div>
+          <p style="color: var(--text-muted); font-size: 14px">Chưa có kết quả bài kiểm tra nào. Hãy bắt đầu làm bài để xem tiến độ của bạn!</p>
+        </div>
+      `;
+    }
+    
+    container.innerHTML = `
+      <div style="padding: 24px">
+        <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 20px">📊 Kết quả & Tiến độ</h2>
+        
+        ${statsHtml}
+        ${resultsHtml}
       </div>
     `;
   }
@@ -556,60 +616,80 @@
       return;
     }
     
+    const badges = state.dashboard?.badges || [];
+    const leaderboard = state.dashboard?.leaderboard || [];
+    
+    // Render badges section
+    let badgesHtml = '';
+    if (badges && badges.length > 0) {
+      badgesHtml = `
+        <div style="margin-bottom: 24px">
+          <h3 style="font-size: 14px; font-weight: 800; margin-bottom: 12px">Huy hiệu của bạn</h3>
+          <div class="badges-grid">
+            ${badges.map(badge => `
+              <div class="badge-item ${badge.unlocked ? '' : 'locked'}">
+                <div class="badge-icon">${badge.icon || '🏅'}</div>
+                <div class="badge-name">${badge.name}</div>
+                <div class="badge-desc">${badge.description}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    } else {
+      badgesHtml = `
+        <div style="margin-bottom: 24px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 40px; text-align: center">
+          <div style="font-size: 48px; margin-bottom: 12px">🏅</div>
+          <p style="color: var(--text-muted); font-size: 14px">Chưa mở khóa huy hiệu nào. Hãy tiếp tục học để mở khóa huy hiệu!</p>
+        </div>
+      `;
+    }
+    
+    // Render leaderboard section
+    let leaderboardHtml = '';
+    if (leaderboard && leaderboard.length > 0) {
+      const leaderboardItems = leaderboard.map((user, index) => {
+        const isCurrentUser = user.isCurrentUser || false;
+        const initials = (user.name || 'User')
+          .split(' ')
+          .map(n => n[0])
+          .join('')
+          .toUpperCase()
+          .slice(0, 2);
+        
+        return `
+          <div class="lb-item ${isCurrentUser ? 'me' : ''}">
+            <div class="lb-rank">${index + 1}</div>
+            <div class="lb-avatar" style="background: linear-gradient(135deg, ${user.avatarColor || '#1a6ef5'}, ${user.avatarColorLight || '#60a5fa'})">${initials}</div>
+            <div class="lb-name ${isCurrentUser ? 'me-name' : ''}">${user.name || 'Học sinh'}</div>
+            <div class="lb-xp">${user.xp || 0} XP</div>
+          </div>
+        `;
+      }).join('');
+      
+      leaderboardHtml = `
+        <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 20px">
+          <h3 style="font-size: 14px; font-weight: 800; margin-bottom: 16px">Bảng xếp hạng</h3>
+          <div id="leaderboard" style="margin-top: 16px">
+            ${leaderboardItems}
+          </div>
+        </div>
+      `;
+    } else {
+      leaderboardHtml = `
+        <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 40px; text-align: center">
+          <div style="font-size: 48px; margin-bottom: 12px">🏆</div>
+          <p style="color: var(--text-muted); font-size: 14px">Bảng xếp hạng hiện chưa có dữ liệu. Hãy làm bài để xuất hiện trong bảng xếp hạng!</p>
+        </div>
+      `;
+    }
+    
     container.innerHTML = `
       <div style="padding: 24px">
         <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 20px">🏆 Huy hiệu & Xếp hạng</h2>
         
-        <div style="margin-bottom: 24px">
-          <h3 style="font-size: 14px; font-weight: 800; margin-bottom: 12px">Huy hiệu của bạn</h3>
-          <div class="badges-grid">
-            <div class="badge-item">
-              <div class="badge-icon">🌟</div>
-              <div class="badge-name">Bắt đầu tốt</div>
-              <div class="badge-desc">Hoàn thành 1 khóa</div>
-            </div>
-            <div class="badge-item">
-              <div class="badge-icon">🔥</div>
-              <div class="badge-name">Chiến binh</div>
-              <div class="badge-desc">7 ngày liên tiếp</div>
-            </div>
-            <div class="badge-item locked">
-              <div class="badge-icon">👑</div>
-              <div class="badge-name">Vua học tập</div>
-              <div class="badge-desc">Hoàn thành 5 khóa</div>
-            </div>
-          </div>
-        </div>
-        
-        <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 20px">
-          <h3 style="font-size: 14px; font-weight: 800; margin-bottom: 16px">Bảng xếp hạng hàng tuần</h3>
-          <div class="tab-row">
-            <button class="tab-btn active">Hàng tuần</button>
-            <button class="tab-btn">Hàng tháng</button>
-            <button class="tab-btn">Tất cả thời gian</button>
-          </div>
-          
-          <div id="leaderboard" style="margin-top: 16px">
-            <div class="lb-item me">
-              <div class="lb-rank">1</div>
-              <div class="lb-avatar" style="background: linear-gradient(135deg, var(--blue), #60a5fa)">Bạn</div>
-              <div class="lb-name me-name">Bạn (2500 XP)</div>
-              <div class="lb-xp">🔥 Đỉnh cao</div>
-            </div>
-            <div class="lb-item">
-              <div class="lb-rank">2</div>
-              <div class="lb-avatar" style="background: linear-gradient(135deg, #f59e0b, #fbbf24)">ND</div>
-              <div class="lb-name">Nguyễn Duy</div>
-              <div class="lb-xp">2400 XP</div>
-            </div>
-            <div class="lb-item">
-              <div class="lb-rank">3</div>
-              <div class="lb-avatar" style="background: linear-gradient(135deg, #8b5cf6, #a78bfa)">TL</div>
-              <div class="lb-name">Trần Linh</div>
-              <div class="lb-xp">2300 XP</div>
-            </div>
-          </div>
-        </div>
+        ${badgesHtml}
+        ${leaderboardHtml}
       </div>
     `;
   }
@@ -706,11 +786,202 @@
   }
 
   // ========== PLACEHOLDER FUNCTIONS ==========
-  window.startExam = function(examId) {
-    console.log('Starting exam:', examId);
-    // Redirect to exam page
-    window.location.href = `dethithu.html?exam=${examId}`;
+  window.startExam = async function(examId) {
+    try {
+      console.log('Starting exam:', examId);
+      
+      // Fetch exam details from API
+      const response = await apiCall(`/api/exams/${examId}`);
+      if (!response.ok || !response.exam) {
+        alert('Không thể tải bài thi. Vui lòng thử lại.');
+        return;
+      }
+      
+      const exam = response.exam;
+      displayExamModal(exam);
+    } catch (error) {
+      console.error('Error starting exam:', error);
+      alert('Có lỗi xảy ra. Vui lòng thử lại.');
+    }
   };
+
+  function displayExamModal(exam) {
+    // Check if modal already exists, remove it
+    const existing = document.getElementById('examModal');
+    if (existing) existing.remove();
+
+    const questions = exam.questions || [];
+    let currentQuestion = 0;
+    const answers = {};
+
+    const modalHtml = `
+      <div id="examModal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 10000">
+        <div style="background: var(--bg); border-radius: 14px; width: 90%; max-width: 900px; max-height: 90vh; display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,0.3)">
+          <!-- Header -->
+          <div style="padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center">
+            <h2 style="margin: 0; font-size: 18px; font-weight: 800">${exam.title}</h2>
+            <button onclick="document.getElementById('examModal').remove()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-muted)">&times;</button>
+          </div>
+
+          <!-- Question Container -->
+          <div style="flex: 1; overflow-y: auto; padding: 24px">
+            <div id="examContent">
+              <!-- Question content inserted here -->
+            </div>
+          </div>
+
+          <!-- Footer with navigation -->
+          <div style="padding: 20px 24px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; gap: 12px">
+            <div style="font-size: 12px; color: var(--text-muted)">
+              Câu <span id="currentQuestionNo">${currentQuestion + 1}</span>/${questions.length}
+              <span id="timerDisplay" style="margin-left: 16px">⏱️ ${exam.durationMinutes}:00</span>
+            </div>
+            <div style="display: flex; gap: 8px">
+              <button id="prevBtn" onclick="previousQuestion()" style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 8px 16px; cursor: pointer; font-weight: 600">← Trước</button>
+              <button id="nextBtn" onclick="nextQuestion()" style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 8px 16px; cursor: pointer; font-weight: 600">Tiếp →</button>
+              <button onclick="submitExam()" style="background: var(--blue); color: #fff; border: none; border-radius: 8px; padding: 8px 16px; cursor: pointer; font-weight: 600">Nộp bài</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+    // Store exam state globally for navigation
+    window.currentExamState = {
+      exam: exam,
+      currentQuestion: 0,
+      answers: {},
+      questions: questions
+    };
+
+    // Display first question
+    displayQuestion(0);
+
+    // Start timer
+    startExamTimer(exam.durationMinutes);
+  }
+
+  function displayQuestion(index) {
+    if (index < 0 || index >= window.currentExamState.questions.length) return;
+
+    window.currentExamState.currentQuestion = index;
+    const question = window.currentExamState.questions[index];
+    const contentEl = document.getElementById('examContent');
+    
+    let questionHtml = `
+      <div>
+        <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 16px">Câu ${index + 1}: ${question.content}</h3>
+    `;
+
+    if (question.type === 'multiple_choice' && question.options && question.options.length > 0) {
+      questionHtml += `<div style="display: flex; flex-direction: column; gap: 10px">`;
+      question.options.forEach((option, i) => {
+        const checked = window.currentExamState.answers[question.id] === option ? 'checked' : '';
+        questionHtml += `
+          <label style="display: flex; align-items: center; padding: 12px; border: 1px solid var(--border); border-radius: 8px; cursor: pointer; transition: all 0.2s">
+            <input type="radio" name="question_${question.id}" value="${option}" ${checked} style="margin-right: 10px" onchange="saveAnswer('${question.id}', '${option}')">
+            <span>${option}</span>
+          </label>
+        `;
+      });
+      questionHtml += `</div>`;
+    } else if (question.type === 'true_false') {
+      const trueChecked = window.currentExamState.answers[question.id] === 'true' ? 'checked' : '';
+      const falseChecked = window.currentExamState.answers[question.id] === 'false' ? 'checked' : '';
+      questionHtml += `
+        <div style="display: flex; gap: 16px">
+          <label style="display: flex; align-items: center; padding: 12px; border: 1px solid var(--border); border-radius: 8px; cursor: pointer">
+            <input type="radio" name="question_${question.id}" value="true" ${trueChecked} onchange="saveAnswer('${question.id}', 'true')">
+            <span style="margin-left: 8px">Đúng</span>
+          </label>
+          <label style="display: flex; align-items: center; padding: 12px; border: 1px solid var(--border); border-radius: 8px; cursor: pointer">
+            <input type="radio" name="question_${question.id}" value="false" ${falseChecked} onchange="saveAnswer('${question.id}', 'false')">
+            <span style="margin-left: 8px">Sai</span>
+          </label>
+        </div>
+      `;
+    } else if (question.type === 'essay') {
+      const answer = window.currentExamState.answers[question.id] || '';
+      questionHtml += `
+        <textarea style="width: 100%; min-height: 150px; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-family: 'Be Vietnam Pro', sans-serif; font-size: 14px; resize: vertical" onchange="saveAnswer('${question.id}', this.value)" placeholder="Nhập câu trả lời của bạn...">${answer}</textarea>
+      `;
+    }
+
+    questionHtml += `</div>`;
+    contentEl.innerHTML = questionHtml;
+
+    // Update button states
+    document.getElementById('prevBtn').disabled = index === 0;
+    document.getElementById('nextBtn').disabled = index === window.currentExamState.questions.length - 1;
+    document.getElementById('currentQuestionNo').textContent = index + 1;
+  }
+
+  window.previousQuestion = function() {
+    if (window.currentExamState.currentQuestion > 0) {
+      displayQuestion(window.currentExamState.currentQuestion - 1);
+    }
+  };
+
+  window.nextQuestion = function() {
+    if (window.currentExamState.currentQuestion < window.currentExamState.questions.length - 1) {
+      displayQuestion(window.currentExamState.currentQuestion + 1);
+    }
+  };
+
+  window.saveAnswer = function(questionId, answer) {
+    window.currentExamState.answers[questionId] = answer;
+    console.log('Answer saved:', questionId, answer);
+  };
+
+  window.submitExam = async function() {
+    if (!confirm('Bạn chắc chắn muốn nộp bài thi?')) return;
+
+    const examId = window.currentExamState.exam.id;
+    const answers = window.currentExamState.answers;
+
+    try {
+      // Submit exam result
+      const response = await apiCall(`/api/exam-results`, {
+        method: 'POST',
+        body: JSON.stringify({
+          examId: examId,
+          answers: answers,
+          submittedAt: new Date().toISOString()
+        })
+      });
+
+      if (response.ok) {
+        alert('Nộp bài thành công! Bạn sẽ sớm nhận được kết quả.');
+        document.getElementById('examModal').remove();
+        // Reload dashboard
+        location.reload();
+      } else {
+        alert('Có lỗi xảy ra khi nộp bài. Vui lòng thử lại.');
+      }
+    } catch (error) {
+      console.error('Error submitting exam:', error);
+      alert('Có lỗi xảy ra. Vui lòng thử lại.');
+    }
+  };
+
+  function startExamTimer(durationMinutes) {
+    let totalSeconds = durationMinutes * 60;
+    const timerEl = document.getElementById('timerDisplay');
+
+    const interval = setInterval(() => {
+      totalSeconds--;
+      const minutes = Math.floor(totalSeconds / 60);
+      const seconds = totalSeconds % 60;
+      timerEl.textContent = `⏱️ ${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+      if (totalSeconds <= 0) {
+        clearInterval(interval);
+        window.submitExam();
+      }
+    }, 1000);
+  }
 
   window.startSpeakingPractice = function() {
     console.log('Starting speaking practice');

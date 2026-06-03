@@ -65,6 +65,15 @@ function normalizeEmail(email) {
   return String(email || '').trim().toLowerCase();
 }
 
+function normalizeTextForChat(value) {
+  return String(value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/đ/g, 'd')
+    .replace(/Đ/g, 'd')
+    .toLowerCase();
+}
+
 function roleFromEmail(email) {
   return normalizeEmail(email).endsWith('@englishcenter.vn') ? 'teacher' : 'student';
 }
@@ -271,6 +280,59 @@ async function handleApi(req, res, pathname) {
     return sendJson(res, 201, { ok: true, message: 'Da ghi nhan thong tin.' });
   }
 
+  if (req.method === 'POST' && pathname === '/api/chat') {
+    const body = await parseBody(req);
+    const messages = Array.isArray(body.messages) ? body.messages : [];
+    const last = messages.slice().reverse().find(item => item && item.role === 'user');
+    const text = normalizeTextForChat(last ? last.content : '');
+    let reply = 'Minh chua hieu ro cau hoi nay. Ban co the hoi ve khoa hoc, hoc phi, giao vien, lich hoc hoac dang ky de minh tu van nhanh hon.';
+    if (text.includes('hoc phi') || text.includes('gia') || text.includes('phi')) {
+      reply = 'Hoc phi tuy theo khoa hoc. Ban co the xem trang Hoc phi hoac noi muc tieu diem so, minh se goi y khoa phu hop.';
+    } else if (text.includes('giao vien') || text.includes('teacher') || text.includes('thay') || text.includes('co ')) {
+      reply = 'English Center co doi ngu giao vien luyen thi THPTQG theo tung muc tieu diem. Ban co the xem trang Giao vien de chon giao vien phu hop.';
+    } else if (text.includes('dang ky') || text.includes('register') || text.includes('enroll')) {
+      reply = 'Ban bam Dang Ky, tao tai khoan hoc sinh, sau do chon khoa hoc va xac nhan ghi danh. He thong se dua ban vao dashboard hoc sinh.';
+    } else if (text.includes('test') || text.includes('trinh do') || text.includes('kiem tra')) {
+      reply = 'TEST_START';
+    } else if (text.includes('khoa') || text.includes('course')) {
+      reply = 'English Center co cac khoa nen tang, luyen de, cap toc, tu vung, phat am AI va nang cao. Hay noi muc tieu diem hien tai de minh goi y.';
+    }
+    return sendJson(res, 200, { ok: true, content: [{ text: reply }] });
+  }
+
+  if (req.method === 'POST' && pathname === '/api/speaking-submissions') {
+    const user = await requireUser(req, res, ['student', 'admin']);
+    if (!user) return;
+    const body = await parseBody(req);
+    await db.createSubmission({
+      id: crypto.randomUUID(),
+      type: 'speaking',
+      data: {
+        ...body,
+        userId: user.role === 'admin' && body.userId ? body.userId : user.id,
+        submittedAt: body.submittedAt || new Date().toISOString()
+      }
+    });
+    return sendJson(res, 201, { ok: true, message: 'Da ghi nhan bai speaking.' });
+  }
+
+  if (req.method === 'POST' && pathname === '/api/analytics') {
+    const user = await requireUser(req, res, ['admin', 'teacher', 'student']);
+    if (!user) return;
+    const body = await parseBody(req);
+    await db.createSubmission({
+      id: crypto.randomUUID(),
+      type: 'analytics',
+      data: {
+        ...body,
+        userId: body.userId || user.id,
+        role: user.role,
+        receivedAt: new Date().toISOString()
+      }
+    });
+    return sendJson(res, 201, { ok: true });
+  }
+
   if (req.method === 'GET' && pathname === '/api/dashboard/admin') {
     const user = await requireUser(req, res, ['admin']);
     if (!user) return;
@@ -298,6 +360,17 @@ async function handleApi(req, res, pathname) {
       : user.id;
     const dashboard = await db.getStudentDashboard(studentId);
     return sendJson(res, 200, { ok: true, dashboard });
+  }
+
+  const examId = idFromPath(pathname, '/api/exams/');
+  if (req.method === 'GET' && examId && !examId.includes('/')) {
+    const user = await requireUser(req, res, ['student', 'teacher', 'admin']);
+    if (!user) return;
+    const exam = await db.getExamDetail(examId);
+    if (!exam) {
+      return sendJson(res, 404, { ok: false, message: 'Exam not found' });
+    }
+    return sendJson(res, 200, { ok: true, exam });
   }
 
   if (req.method === 'GET' && pathname === '/api/users') {

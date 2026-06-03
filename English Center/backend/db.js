@@ -1579,6 +1579,59 @@ async function getTeacherDashboard(teacherId) {
   };
 }
 
+async function getExamDetail(examId) {
+  const [examRows, questionRows] = await Promise.all([
+    query(
+      `SELECT id, title, type, total_score AS totalScore, duration_minutes AS durationMinutes,
+              status, published_at AS publishedAt, due_at AS dueAt, course_id AS courseId
+         FROM exams
+        WHERE id = ?
+        LIMIT 1`,
+      [examId]
+    ),
+    query(
+      `SELECT id, question_no AS questionNo, content, type, options, correct_answer AS correctAnswer,
+              explanation
+         FROM exam_questions
+        WHERE exam_id = ?
+        ORDER BY question_no ASC`,
+      [examId]
+    )
+  ]);
+
+  const exam = examRows[0];
+  if (!exam) return null;
+
+  return {
+    id: exam.id,
+    title: exam.title,
+    type: exam.type,
+    totalScore: toNumber(exam.totalScore),
+    durationMinutes: toNumber(exam.durationMinutes),
+    status: exam.status,
+    publishedAt: isoDate(exam.publishedAt),
+    dueAt: isoDate(exam.dueAt),
+    courseId: exam.courseId,
+    questions: questionRows.map(q => {
+      let options = [];
+      try {
+        options = q.options ? JSON.parse(q.options) : [];
+      } catch {
+        options = [];
+      }
+      return {
+        id: q.id,
+        questionNo: toNumber(q.questionNo),
+        content: q.content,
+        type: q.type,
+        options: options,
+        correctAnswer: q.correctAnswer,
+        explanation: q.explanation
+      };
+    })
+  };
+}
+
 module.exports = {
   DB_CONFIG,
   query,
@@ -1622,5 +1675,6 @@ module.exports = {
   updateMaterialRequest,
   getAdminDashboard,
   getStudentDashboard,
-  getTeacherDashboard
+  getTeacherDashboard,
+  getExamDetail
 };

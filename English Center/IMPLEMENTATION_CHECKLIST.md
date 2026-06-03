@@ -38,14 +38,14 @@
 ## 🔄 Công Việc Cần Tiếp Tục
 
 ### Phase 2: Backend API Enhancement
-- [ ] Cập nhật `/api/dashboard/student` endpoint
-- [ ] Cập nhật `/api/enrollments` endpoint
-- [ ] Cập nhật `/api/exams` endpoint
-- [ ] Cập nhật `/api/class-sessions` endpoint
-- [ ] Thêm `/api/exam-results` endpoint
-- [ ] Thêm `/api/lesson-progress` endpoint
-- [ ] Thêm `/api/speaking-submissions` endpoint
-- [ ] Thêm `/api/analytics` endpoint
+- [x] Cập nhật `/api/dashboard/student` endpoint
+- [x] Cập nhật `/api/enrollments` endpoint
+- [x] Cập nhật `/api/exams` endpoint
+- [x] Cập nhật `/api/class-sessions` endpoint
+- [x] Thêm `/api/exam-results` endpoint
+- [x] Thêm `/api/lesson-progress` endpoint
+- [x] Thêm `/api/speaking-submissions` endpoint
+- [x] Thêm `/api/analytics` endpoint
 
 ### Phase 3: UI/UX Improvements
 - [ ] Thêm loading skeleton screens

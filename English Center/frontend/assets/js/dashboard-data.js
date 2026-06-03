@@ -1003,67 +1003,143 @@
     return dashboard;
   }
 
+  function studentEmptyState(icon, title, desc, actionHtml) {
+    return `<div style="text-align:center;padding:28px 16px;color:var(--text-muted)">` +
+      `<div style="font-size:30px;margin-bottom:9px">${icon}</div>` +
+      `<div style="font-size:13.5px;font-weight:800;color:var(--text);margin-bottom:5px">${escapeHtml(title)}</div>` +
+      `<div style="font-size:12.5px;line-height:1.6;margin-bottom:${actionHtml ? "13px" : "0"}">${escapeHtml(desc)}</div>` +
+      (actionHtml || "") +
+      `</div>`;
+  }
+
   function renderStudentCourses(courses) {
     const wrap = document.getElementById("courseListWrap");
-    if (!wrap || !courses || !courses.length) return;
-    wrap.innerHTML = courses.map(course => (
+    if (!wrap) return;
+    const rows = Array.isArray(courses) ? courses : [];
+    if (!rows.length) {
+      wrap.innerHTML = studentEmptyState(
+        "📖",
+        "Chua co khoa hoc nao",
+        "Dang ky khoa hoc de bat dau hoc tap.",
+        `<a href="#" onclick="handleRegisterClick();return false;" style="display:inline-flex;align-items:center;gap:6px;background:var(--blue);color:#fff;border-radius:8px;padding:9px 18px;font-size:13px;font-weight:700;text-decoration:none"><i class="bi bi-plus-circle-fill"></i> Dang ky ngay</a>`
+      );
+      return;
+    }
+    wrap.innerHTML = rows.map(course => {
+      const progress = Math.max(0, Math.min(100, Number(course.progress || 0)));
+      return (
       `<div style="padding:14px 0;border-bottom:1px solid var(--border);display:flex;gap:12px;align-items:center">` +
-      `<div style="width:42px;height:42px;border-radius:11px;background:var(--blue-light);display:flex;align-items:center;justify-content:center;color:var(--blue);font-weight:900">${Math.round(course.progress)}%</div>` +
+      `<div style="width:42px;height:42px;border-radius:11px;background:var(--blue-light);display:flex;align-items:center;justify-content:center;color:var(--blue);font-weight:900">${Math.round(progress)}%</div>` +
       `<div style="flex:1;min-width:0">` +
-      `<div style="font-size:13.5px;font-weight:800;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${course.name}</div>` +
-      `<div style="font-size:12px;color:var(--text-muted)">GV: ${course.teacherName || "Dang cap nhat"} · ${course.completedLessons}/${course.totalLessons} bai</div>` +
-      `<div style="height:5px;background:var(--border);border-radius:99px;margin-top:8px;overflow:hidden"><div style="height:100%;width:${Math.min(100, course.progress)}%;background:var(--blue)"></div></div>` +
+      `<div style="font-size:13.5px;font-weight:800;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(course.name || "Khoa hoc")}</div>` +
+      `<div style="font-size:12px;color:var(--text-muted)">GV: ${escapeHtml(course.teacherName || "Dang cap nhat")} · ${Number(course.completedLessons || 0)}/${Number(course.totalLessons || 0)} bai</div>` +
+      `<div style="height:5px;background:var(--border);border-radius:99px;margin-top:8px;overflow:hidden"><div style="height:100%;width:${progress}%;background:var(--blue)"></div></div>` +
       `</div>` +
       `</div>`
-    )).join("");
+      );
+    }).join("");
   }
 
   function renderStudentExams(results) {
     const wrap = document.getElementById("recentExamWrap");
-    if (!wrap || !results || !results.length) return;
-    wrap.innerHTML = results.slice(0, 5).map(item => (
+    if (!wrap) return;
+    const rows = Array.isArray(results) ? results : [];
+    if (!rows.length) {
+      wrap.innerHTML = studentEmptyState(
+        "📊",
+        "Chua co ket qua nao",
+        "Lam de thi thu hoac bai tap duoc giao de xem diem tai day.",
+        `<a href="#" onclick="switchView('dethithu');return false;" style="display:inline-flex;align-items:center;gap:6px;background:var(--orange);color:#fff;border-radius:8px;padding:8px 16px;font-size:12.5px;font-weight:700;text-decoration:none"><i class="bi bi-pencil-square"></i> Xem de thi</a>`
+      );
+      return;
+    }
+    wrap.innerHTML = rows.slice(0, 5).map(item => (
       `<div style="display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">` +
-      `<div style="min-width:0"><div style="font-size:13px;font-weight:800;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${item.title}</div>` +
-      `<div style="font-size:11.5px;color:var(--text-muted)">${item.courseName || ""}</div></div>` +
+      `<div style="min-width:0"><div style="font-size:13px;font-weight:800;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(item.title || "Bai kiem tra")}</div>` +
+      `<div style="font-size:11.5px;color:var(--text-muted)">${escapeHtml(item.courseName || dateTime(item.submittedAt) || "")}</div></div>` +
       `<div style="font-size:18px;font-weight:900;color:var(--orange);font-family:'JetBrains Mono',monospace">${item.score == null ? "Cho cham" : item.score}</div>` +
       `</div>`
     )).join("");
   }
 
+  function renderStudentSessions(sessions) {
+    const wrap = document.getElementById("upcomingSessionWrap");
+    if (!wrap) return;
+    const rows = Array.isArray(sessions) ? sessions : [];
+    if (!rows.length) {
+      wrap.innerHTML = studentEmptyState(
+        "📅",
+        "Chua co lich sap dien ra",
+        "Khi giao vien tao lich hoc hoac lich thi, noi dung se hien tai day.",
+        ""
+      );
+      return;
+    }
+    wrap.innerHTML = rows.slice(0, 4).map(item => (
+      `<div class="upcoming-item">` +
+      `<div class="udot" style="background:var(--purple)"></div>` +
+      `<div style="flex:1;min-width:0">` +
+      `<div style="font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(item.title || "Lich hoc")}</div>` +
+      `<div style="font-size:11.5px;color:var(--text-muted)"><i class="bi bi-clock me-1"></i>${escapeHtml(dateTime(item.startAt) || "Dang cap nhat")}</div>` +
+      `<div style="font-size:11px;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(item.courseName || item.teacherName || "")}</div>` +
+      `</div>` +
+      `<span class="ubadge" style="background:var(--purple-light);color:var(--purple)">API</span>` +
+      `</div>`
+    )).join("");
+  }
+
   function applyStudentDashboard(dashboard) {
+    window.EC_STUDENT_DASHBOARD = dashboard || {};
+    window.EC_STUDENT_NOTIFS = (Array.isArray(dashboard.notifications) ? dashboard.notifications : []).map((item, index) => ({
+      id: index + 1,
+      type: item.type || "system",
+      unread: !item.isRead,
+      icon: item.type === "exam" ? "📝" : item.type === "material" ? "📚" : "🔔",
+      color: item.type === "exam" ? "var(--orange)" : item.type === "material" ? "var(--blue)" : "var(--purple)",
+      bg: item.type === "exam" ? "var(--orange-light)" : item.type === "material" ? "var(--blue-light)" : "var(--purple-light)",
+      title: item.title || "Thong bao",
+      body: item.body || "",
+      time: dateTime(item.createdAt) || "",
+      tag: item.type || "system"
+    }));
     const stats = dashboard.stats || {};
     const values = document.querySelectorAll(".stat-grid .stat-value");
-    text(values[0], stats.activeCourses);
-    text(values[1], stats.completedLessons);
+    text(values[0], Number(stats.activeCourses || 0));
+    text(values[1], Number(stats.completedLessons || 0));
     text(values[2], Number(stats.averageExamScore || 0).toFixed(1));
-    text(values[3], stats.totalXp);
-    text(document.getElementById("statXp"), stats.totalXp);
+    text(values[3], Number(stats.totalXp || 0));
+    text(document.getElementById("statXp"), Number(stats.totalXp || 0));
     text(document.getElementById("statScore"), Number(stats.averageExamScore || 0).toFixed(1));
-    text(document.getElementById("statLessons"), stats.completedLessons);
+    text(document.getElementById("statLessons"), Number(stats.completedLessons || 0));
     text(document.getElementById("todayXp"), `+${stats.todayXp || 0} XP`);
+    const dayXpBar = document.getElementById("dayXpBar");
+    if (dayXpBar) dayXpBar.style.width = `${Math.min(100, Math.round(Number(stats.todayXp || 0) / 80 * 100))}%`;
 
     const slot = document.getElementById("courseSlotLabel");
     if (slot) slot.textContent = `${(dashboard.courses || []).filter(c => c.status === "active").length} / 2 khoa`;
 
     renderStudentCourses(dashboard.courses || []);
     renderStudentExams(dashboard.recentExamResults || []);
+    renderStudentSessions(dashboard.upcomingSessions || []);
 
     const lb = document.getElementById("lbList");
-    if (lb && dashboard.leaderboard) {
-      lb.innerHTML = dashboard.leaderboard.slice(0, 5).map(item => (
+    if (lb) {
+      const rows = Array.isArray(dashboard.leaderboard) ? dashboard.leaderboard : [];
+      lb.innerHTML = rows.length ? rows.slice(0, 5).map(item => (
         `<div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px">` +
-        `<span style="font-weight:800">#${item.rank} ${item.name}</span><span style="color:var(--blue);font-weight:900">${item.xp} XP</span>` +
+        `<span style="font-weight:800">#${Number(item.rank || 0)} ${escapeHtml(item.name || "Hoc vien")}</span><span style="color:var(--blue);font-weight:900">${Number(item.xp || 0)} XP</span>` +
         `</div>`
-      )).join("");
+      )).join("") : studentEmptyState("🏆", "Chua co bang xep hang", "Hoan thanh hoat dong hoc tap de bat dau tinh XP.", "");
     }
 
     const act = document.getElementById("actLog");
-    if (act && dashboard.activities) {
-      act.innerHTML = dashboard.activities.slice(0, 5).map(item => (
+    if (act) {
+      const rows = Array.isArray(dashboard.activities) ? dashboard.activities : [];
+      act.innerHTML = rows.length ? rows.slice(0, 5).map(item => (
         `<div style="font-size:12.5px;color:var(--text);display:flex;justify-content:space-between;gap:8px">` +
-        `<span>${item.title}</span><strong style="color:var(--green)">+${item.xp} XP</strong>` +
+        `<span>${escapeHtml(item.title || "Hoat dong hoc tap")}</span><strong style="color:var(--green)">+${Number(item.xp || 0)} XP</strong>` +
         `</div>`
-      )).join("");
+      )).join("") : studentEmptyState("⚡", "Chua co hoat dong nao", "Bat dau hoc bai dau tien de ghi nhan hoat dong tai day.", "");
     }
   }
 

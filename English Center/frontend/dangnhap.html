@@ -553,11 +553,13 @@
 
         let account = null;
         let apiErrorMessage = '';
+        let apiAuthenticated = false;
 
         if (window.EC_API) {
           try {
             const payload = await window.EC_API.login(email, password);
             account = payload.user;
+            apiAuthenticated = true;
           } catch (error) {
             apiErrorMessage = error.message || '';
           }
@@ -590,13 +592,23 @@
           } else {
             // Học sinh: kiểm tra đã đăng ký khóa học chưa
             const isDemo = DEMO_ACCOUNTS.some(d => d.email === account.email);
-            if (isDemo) {
+            const studentHome = window.EC_AUTH ? window.EC_AUTH.roleHome(role) : 'dashboard_hocsinh_new.html';
+            const localEnrolled = JSON.parse(localStorage.getItem('ec_enrolled_' + account.email) || '[]');
+            let hasEnrollment = localEnrolled.length > 0 || (Array.isArray(sessionUser.enrolled) && sessionUser.enrolled.length > 0);
+
+            if (apiAuthenticated && window.EC_API && !hasEnrollment) {
+              try {
+                const data = await window.EC_API.enrollments();
+                hasEnrollment = Array.isArray(data.enrollments) && data.enrollments.length > 0;
+              } catch (error) {}
+            }
+
+            if (isDemo || hasEnrollment) {
               // Tài khoản demo / học sinh cũ → dashboard chính
-              dashboardUrl = 'dashboard_hocsinh.html';
+              dashboardUrl = studentHome;
             } else {
               // Tài khoản tự đăng ký → check đã chọn khóa chưa
-              const enrolled = JSON.parse(localStorage.getItem('ec_enrolled_' + account.email) || '[]');
-              dashboardUrl = enrolled.length > 0 ? 'dashboard_hocsinh.html' : 'chonkhoahoc.html';
+              dashboardUrl = 'chonkhoahoc.html';
             }
           }
           const afterLoginUrl = sessionStorage.getItem('ec_after_login');

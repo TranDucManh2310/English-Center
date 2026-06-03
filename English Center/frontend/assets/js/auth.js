@@ -6,7 +6,7 @@
   const DASHBOARDS = {
     admin: "admin.html",
     teacher: "dashboard_giaovien.html",
-    student: "dashboard_hocsinh.html"
+    student: "dashboard_hocsinh_new.html"
   };
 
   function ready(fn) {
@@ -134,7 +134,7 @@
     const roles = requiredRoleForPage();
     if (!roles) return;
     if (!user || !roles.includes(user.role)) {
-      window.location.href = "dangnhap.html";
+      window.location.href = user && user.role ? roleHome(user.role) : "dangnhap.html";
     }
   }
 
