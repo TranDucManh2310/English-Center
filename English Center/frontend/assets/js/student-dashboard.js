@@ -103,10 +103,15 @@
       const dashboard = dashboardRes.dashboard || {};
       
       state.dashboard = dashboard.stats || {};
+      state.dashboard.badges = dashboard.badges || [];
+      state.dashboard.leaderboard = dashboard.leaderboard || [];
       state.enrollments = dashboard.courses || [];
       state.exams = dashboard.recentExamResults || [];
       state.classSessions = dashboard.upcomingSessions || [];
-      
+      state.notif.allNotifs = dashboard.notifications || [];
+      state.notif.unreadCount = (dashboard.notifications || []).filter(n => !n.isRead).length;
+      renderNotifList();
+
       console.log('Dashboard data loaded:', {
         stats: state.dashboard,
         enrollments: state.enrollments,
@@ -445,15 +450,124 @@
     container.innerHTML = `
       <div style="padding: 24px">
         <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 20px">📚 Tài liệu ôn thi</h2>
-        
+
         <div id="materialsContent" style="display: grid; gap: 12px; max-width: 600px">
           Đang tải tài liệu...
         </div>
+
+        <h3 style="font-size: 16px; font-weight: 800; margin: 28px 0 14px">🃏 Thẻ ghi nhớ (Flashcard)</h3>
+        <div id="flashcardSets" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px">
+          Đang tải bộ thẻ...
+        </div>
       </div>
     `;
-    
+
     renderMaterialsContent();
+    loadFlashcardSets();
   }
+
+  async function loadFlashcardSets() {
+    const container = document.getElementById('flashcardSets');
+    if (!container) return;
+    try {
+      const res = await apiCall('/api/flashcard-sets');
+      const sets = res.sets || [];
+      if (!sets.length) {
+        container.innerHTML = '<div style="color: var(--text-muted); font-size: 14px; grid-column: 1/-1">Chưa có bộ thẻ nào.</div>';
+        return;
+      }
+      container.innerHTML = sets.map(set => `
+        <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; cursor: pointer; transition: border-color .15s" onmouseover="this.style.borderColor='var(--blue)'" onmouseout="this.style.borderColor='var(--border)'" onclick="openFlashcardSet('${set.id}')">
+          <div style="font-size: 28px; margin-bottom: 8px">🃏</div>
+          <div style="font-size: 14px; font-weight: 700; color: var(--text)">${escapeHtml(set.title)}</div>
+          <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px">${escapeHtml(set.topic || '')}</div>
+          <div style="font-size: 12px; color: var(--blue); font-weight: 700; margin-top: 8px">${set.cardCount} thẻ →</div>
+        </div>
+      `).join('');
+    } catch (error) {
+      container.innerHTML = '<div style="color: var(--text-muted); font-size: 14px; grid-column: 1/-1">Không tải được bộ thẻ.</div>';
+    }
+  }
+
+  window.openFlashcardSet = async function(setId) {
+    try {
+      const res = await apiCall(`/api/flashcard-sets/${setId}`);
+      const set = res.set;
+      if (!set || !set.cards.length) {
+        alert('Bộ thẻ này chưa có thẻ nào.');
+        return;
+      }
+      displayFlashcardModal(set);
+    } catch (error) {
+      alert('Không mở được bộ thẻ. Vui lòng thử lại.');
+    }
+  };
+
+  function displayFlashcardModal(set) {
+    const existing = document.getElementById('flashcardModal');
+    if (existing) existing.remove();
+
+    window.currentFlashcards = { cards: set.cards, index: 0, flipped: false };
+
+    const modalHtml = `
+      <div id="flashcardModal" style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 10000">
+        <div style="background: var(--bg); border-radius: 14px; width: 90%; max-width: 520px; padding: 24px; box-shadow: 0 20px 60px rgba(0,0,0,0.3)">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px">
+            <h3 style="margin: 0; font-size: 16px; font-weight: 800">${escapeHtml(set.title)}</h3>
+            <button onclick="document.getElementById('flashcardModal').remove()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-muted)">&times;</button>
+          </div>
+          <div id="flashcardCard" onclick="flipFlashcard()" style="min-height: 200px; border: 1px solid var(--border); border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 24px; cursor: pointer; background: var(--bg-card)"></div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px">
+            <button onclick="prevFlashcard()" style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 8px 16px; cursor: pointer; font-weight: 600">← Trước</button>
+            <span id="flashcardCounter" style="font-size: 12px; color: var(--text-muted)"></span>
+            <button onclick="nextFlashcard()" style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 8px 16px; cursor: pointer; font-weight: 600">Tiếp →</button>
+          </div>
+          <div style="text-align: center; font-size: 12px; color: var(--text-muted); margin-top: 10px">Nhấp vào thẻ để lật</div>
+        </div>
+      </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+    renderFlashcard();
+  }
+
+  function renderFlashcard() {
+    const fc = window.currentFlashcards;
+    const cardEl = document.getElementById('flashcardCard');
+    const counterEl = document.getElementById('flashcardCounter');
+    if (!fc || !cardEl) return;
+    const card = fc.cards[fc.index];
+    if (fc.flipped) {
+      cardEl.innerHTML = `
+        <div style="font-size: 22px; font-weight: 800; color: var(--blue)">${escapeHtml(card.back)}</div>
+        ${card.example ? `<div style="font-size: 13px; color: var(--text-muted); margin-top: 12px; font-style: italic">${escapeHtml(card.example)}</div>` : ''}
+      `;
+    } else {
+      cardEl.innerHTML = `<div style="font-size: 24px; font-weight: 800; color: var(--text)">${escapeHtml(card.front)}</div>`;
+    }
+    if (counterEl) counterEl.textContent = `${fc.index + 1} / ${fc.cards.length}`;
+  }
+
+  window.flipFlashcard = function() {
+    if (!window.currentFlashcards) return;
+    window.currentFlashcards.flipped = !window.currentFlashcards.flipped;
+    renderFlashcard();
+  };
+
+  window.nextFlashcard = function() {
+    const fc = window.currentFlashcards;
+    if (!fc || fc.index >= fc.cards.length - 1) return;
+    fc.index += 1;
+    fc.flipped = false;
+    renderFlashcard();
+  };
+
+  window.prevFlashcard = function() {
+    const fc = window.currentFlashcards;
+    if (!fc || fc.index <= 0) return;
+    fc.index -= 1;
+    fc.flipped = false;
+    renderFlashcard();
+  };
 
   function renderMaterialsContent() {
     const container = document.getElementById('materialsContent');
@@ -495,22 +609,103 @@
       createView('hoidap', 'Hỏi đáp');
       return;
     }
-    
+
+    const courseOptions = (state.enrollments || [])
+      .map(c => `<option value="${c.id}">${c.name}</option>`)
+      .join('');
+
     container.innerHTML = `
       <div style="padding: 24px">
         <h2 style="font-size: 20px; font-weight: 800; margin-bottom: 20px">💬 Hỏi đáp giáo viên</h2>
-        
+
         <div style="max-width: 600px; margin-bottom: 20px">
-          <textarea placeholder="Đặt câu hỏi của bạn..." style="width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 12px; font-family: 'Be Vietnam Pro', sans-serif; font-size: 14px; resize: vertical; min-height: 100px"></textarea>
-          <button style="margin-top: 10px; background: var(--blue); color: #fff; border: none; border-radius: 8px; padding: 10px 20px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: 'Be Vietnam Pro', sans-serif;">Gửi câu hỏi</button>
+          ${courseOptions ? `<select id="qaCourse" style="width: 100%; margin-bottom: 10px; border: 1px solid var(--border); border-radius: 8px; padding: 10px; font-family: 'Be Vietnam Pro', sans-serif; font-size: 14px; background: var(--bg)">
+            <option value="">-- Chọn khóa học (không bắt buộc) --</option>
+            ${courseOptions}
+          </select>` : ''}
+          <input id="qaTitle" type="text" placeholder="Tiêu đề câu hỏi (không bắt buộc)" style="width: 100%; margin-bottom: 10px; border: 1px solid var(--border); border-radius: 8px; padding: 10px; font-family: 'Be Vietnam Pro', sans-serif; font-size: 14px">
+          <textarea id="qaBody" placeholder="Đặt câu hỏi của bạn..." style="width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 12px; font-family: 'Be Vietnam Pro', sans-serif; font-size: 14px; resize: vertical; min-height: 100px"></textarea>
+          <button onclick="submitQuestion()" style="margin-top: 10px; background: var(--blue); color: #fff; border: none; border-radius: 8px; padding: 10px 20px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: 'Be Vietnam Pro', sans-serif;">Gửi câu hỏi</button>
         </div>
-        
+
         <div id="qaContent" style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 20px">
-          <div style="text-align: center; color: var(--text-muted)">Chưa có câu hỏi nào</div>
+          <div style="text-align: center; color: var(--text-muted)">Đang tải câu hỏi...</div>
         </div>
       </div>
     `;
+
+    loadQAContent();
   }
+
+  function escapeHtml(value) {
+    return String(value == null ? '' : value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  async function loadQAContent() {
+    const container = document.getElementById('qaContent');
+    if (!container) return;
+    try {
+      const res = await apiCall('/api/questions');
+      const questions = res.questions || [];
+      if (!questions.length) {
+        container.innerHTML = '<div style="text-align: center; color: var(--text-muted)">Chưa có câu hỏi nào. Hãy đặt câu hỏi đầu tiên!</div>';
+        return;
+      }
+      container.innerHTML = questions.map(q => {
+        const answered = q.status === 'answered';
+        const answerBlock = answered
+          ? `<div style="margin-top: 10px; padding: 12px; background: var(--bg); border-left: 3px solid var(--blue); border-radius: 6px">
+               <div style="font-size: 12px; font-weight: 700; color: var(--blue); margin-bottom: 4px">👩‍🏫 ${escapeHtml(q.teacherName || 'Giáo viên')} trả lời:</div>
+               <div style="font-size: 14px; color: var(--text)">${escapeHtml(q.answer)}</div>
+             </div>`
+          : `<div style="margin-top: 8px; font-size: 12px; color: var(--text-muted); font-style: italic">⏳ Đang chờ giáo viên trả lời...</div>`;
+        return `
+          <div style="padding: 14px 0; border-bottom: 1px solid var(--border)">
+            <div style="display: flex; justify-content: space-between; gap: 10px; align-items: flex-start">
+              <div style="font-size: 14px; font-weight: 700; color: var(--text)">${escapeHtml(q.title || 'Câu hỏi')}</div>
+              <span style="flex-shrink: 0; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px; background: ${answered ? '#e6f7ee' : '#fff4e5'}; color: ${answered ? '#15803d' : '#b45309'}">${answered ? 'Đã trả lời' : 'Chờ trả lời'}</span>
+            </div>
+            ${q.courseName ? `<div style="font-size: 12px; color: var(--text-muted); margin-top: 2px">${escapeHtml(q.courseName)}</div>` : ''}
+            <div style="font-size: 14px; color: var(--text); margin-top: 6px">${escapeHtml(q.body)}</div>
+            ${answerBlock}
+          </div>
+        `;
+      }).join('');
+    } catch (error) {
+      container.innerHTML = '<div style="text-align: center; color: var(--text-muted)">Không tải được câu hỏi. Vui lòng thử lại.</div>';
+    }
+  }
+
+  window.submitQuestion = async function() {
+    const bodyEl = document.getElementById('qaBody');
+    const titleEl = document.getElementById('qaTitle');
+    const courseEl = document.getElementById('qaCourse');
+    const body = (bodyEl && bodyEl.value || '').trim();
+    if (!body) {
+      alert('Vui lòng nhập nội dung câu hỏi.');
+      return;
+    }
+    try {
+      await apiCall('/api/questions', {
+        method: 'POST',
+        body: JSON.stringify({
+          body,
+          title: titleEl ? titleEl.value.trim() : '',
+          courseId: courseEl ? courseEl.value : ''
+        })
+      });
+      if (bodyEl) bodyEl.value = '';
+      if (titleEl) titleEl.value = '';
+      alert('Đã gửi câu hỏi tới giáo viên!');
+      loadQAContent();
+    } catch (error) {
+      alert('Không gửi được câu hỏi. Vui lòng thử lại.');
+    }
+  };
 
   // ========== RESULTS VIEW ==========
   function renderResultsView() {
@@ -995,10 +1190,60 @@
     button.style.borderBottomColor = 'var(--blue)';
   };
 
-  window.markAllRead = function() {
-    // Mark all notifications as read
-    console.log('Marking all as read');
+  window.markAllRead = async function() {
+    try {
+      await apiCall('/api/notifications/read-all', { method: 'POST' });
+      state.notif.allNotifs = (state.notif.allNotifs || []).map(n => ({ ...n, isRead: true }));
+      state.notif.unreadCount = 0;
+      renderNotifList();
+    } catch (error) {
+      console.error('Error marking all read:', error);
+    }
   };
+
+  window.markNotifRead = async function(id, event) {
+    if (event) event.stopPropagation();
+    try {
+      await apiCall(`/api/notifications/${id}`, { method: 'PATCH' });
+      const item = (state.notif.allNotifs || []).find(n => n.id === id);
+      if (item && !item.isRead) {
+        item.isRead = true;
+        state.notif.unreadCount = Math.max(0, state.notif.unreadCount - 1);
+      }
+      renderNotifList();
+    } catch (error) {
+      console.error('Error marking notification read:', error);
+    }
+  };
+
+  function renderNotifList() {
+    const list = document.getElementById('notifList');
+    const notifs = state.notif.allNotifs || [];
+    const unread = notifs.filter(n => !n.isRead).length;
+    state.notif.unreadCount = unread;
+
+    const label = document.getElementById('notifUnreadLabel');
+    if (label) label.textContent = `${unread} chưa đọc`;
+    const dot = document.getElementById('notifDot');
+    if (dot) dot.style.display = unread > 0 ? 'block' : 'none';
+
+    if (!list) return;
+    if (!notifs.length) {
+      list.innerHTML = '<div style="padding: 24px; text-align: center; color: var(--text-muted); font-size: 13px">Không có thông báo nào</div>';
+      return;
+    }
+    const iconFor = type => type === 'exam' ? '📝' : type === 'material' ? '📚' : type === 'qa' ? '💬' : type === 'schedule' ? '📅' : '🔔';
+    list.innerHTML = notifs.map(n => `
+      <div style="display: flex; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--border); background: ${n.isRead ? 'transparent' : 'var(--blue-light, #eef4ff)'}; cursor: ${n.isRead ? 'default' : 'pointer'}" ${n.isRead ? '' : `onclick="markNotifRead('${n.id}', event)"`}>
+        <div style="font-size: 18px; line-height: 1.2">${iconFor(n.type)}</div>
+        <div style="flex: 1; min-width: 0">
+          <div style="font-size: 13px; font-weight: 700; color: var(--text)">${escapeHtml(n.title)}</div>
+          <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px">${escapeHtml(n.body || '')}</div>
+        </div>
+        ${n.isRead ? '' : '<div style="width: 8px; height: 8px; border-radius: 50%; background: var(--blue); flex-shrink: 0; margin-top: 4px"></div>'}
+      </div>
+    `).join('');
+  }
 
   // ========== AUTO-INITIALIZE ==========
   document.addEventListener('DOMContentLoaded', initDashboard);

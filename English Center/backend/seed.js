@@ -497,6 +497,132 @@ async function seedMaterialRequests(users, courses) {
   }
 }
 
+const BADGE_DEFS = [
+  ['xp-100', 'Khoi dau', 'Dat 100 XP dau tien', '\u{1F331}', 'xp', 100, 1],
+  ['xp-500', 'Cham chi', 'Tich luy 500 XP', '\u{1F525}', 'xp', 500, 2],
+  ['xp-1000', 'Bac thay XP', 'Tich luy 1000 XP', '⚡', 'xp', 1000, 3],
+  ['lessons-10', 'Hoc deu', 'Hoan thanh 10 bai hoc', '\u{1F4D8}', 'completed_lessons', 10, 4],
+  ['lessons-30', 'Kien tri', 'Hoan thanh 30 bai hoc', '\u{1F4DA}', 'completed_lessons', 30, 5],
+  ['score-8', 'Hoc sinh gioi', 'Diem trung binh tu 8.0 tro len', '\u{1F3AF}', 'average_score', 8, 6],
+  ['score-9', 'Xuat sac', 'Diem trung binh tu 9.0 tro len', '\u{1F3C6}', 'average_score', 9, 7],
+  ['courses-2', 'Da nhiem', 'Tham gia 2 khoa hoc cung luc', '\u{1F680}', 'active_courses', 2, 8],
+  ['exams-5', 'Chien binh de thi', 'Hoan thanh 5 bai thi', '✍️', 'exam_count', 5, 9]
+];
+
+const FLASHCARD_DEFS = [
+  {
+    slug: 'tu-vung-giao-duc',
+    title: 'Tu vung chu de Giao duc',
+    topic: 'Education',
+    description: 'Tu vung thuong gap chu de giao duc trong de THPTQG.',
+    position: 1,
+    cards: [
+      ['curriculum', 'chuong trinh hoc', 'The school updated its curriculum this year.'],
+      ['tuition', 'hoc phi', 'Tuition fees have increased recently.'],
+      ['scholarship', 'hoc bong', 'She won a full scholarship to university.'],
+      ['literacy', 'biet doc viet', 'The literacy rate has improved a lot.'],
+      ['vocational', 'thuoc ve day nghe', 'He chose a vocational training course.'],
+      ['enroll', 'ghi danh, nhap hoc', 'Many students enroll in online courses.']
+    ]
+  },
+  {
+    slug: 'tu-vung-moi-truong',
+    title: 'Tu vung chu de Moi truong',
+    topic: 'Environment',
+    description: 'Tu vung trong tam chu de moi truong.',
+    position: 2,
+    cards: [
+      ['pollution', 'o nhiem', 'Air pollution is a serious problem in big cities.'],
+      ['deforestation', 'nan pha rung', 'Deforestation destroys animal habitats.'],
+      ['renewable', 'co the tai tao', 'Solar power is a renewable energy source.'],
+      ['emission', 'su phat thai', 'We must reduce carbon emissions.'],
+      ['sustainable', 'ben vung', 'Sustainable development protects the future.'],
+      ['conserve', 'bao ton, tiet kiem', 'We should conserve water and energy.']
+    ]
+  },
+  {
+    slug: 'tu-vung-cong-nghe',
+    title: 'Tu vung chu de Cong nghe',
+    topic: 'Technology',
+    description: 'Tu vung cong nghe pho bien trong de doc hieu.',
+    position: 3,
+    cards: [
+      ['device', 'thiet bi', 'Smartphones are popular electronic devices.'],
+      ['innovation', 'su doi moi', 'Innovation drives economic growth.'],
+      ['artificial intelligence', 'tri tue nhan tao', 'Artificial intelligence is changing our lives.'],
+      ['automation', 'su tu dong hoa', 'Automation increases factory productivity.'],
+      ['cybersecurity', 'an ninh mang', 'Cybersecurity protects our personal data.']
+    ]
+  }
+];
+
+const QUESTION_DEFS = [
+  ['student-demo', 'grammar', 'Cach dung menh de quan he', 'Em chua ro khi nao dung "which" va khi nao dung "that" trong menh de quan he, thay/co giai thich giup em voi a.', null],
+  ['student-an', 'mock', 'Quan ly thoi gian khi lam de', 'Lam sao de phan bo thoi gian hop ly cho tung phan trong de thi thu a?', 'Em nen danh khoang 10 phut cho phan tu vung-ngu phap, 25 phut cho doc hieu va de lai 5 phut soat loi nhe.'],
+  ['student-hoa', 'vocab', 'Phan biet tu de nham lan', 'Em hay bi nham giua "affect" va "effect", lam sao de nho a?', null]
+];
+
+async function seedBadges() {
+  for (const [code, name, description, icon, criteriaType, criteriaValue, position] of BADGE_DEFS) {
+    await db.query(
+      `INSERT INTO badges (id, code, name, description, icon, criteria_type, criteria_value, position)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+       ON DUPLICATE KEY UPDATE name = VALUES(name), description = VALUES(description),
+         icon = VALUES(icon), criteria_type = VALUES(criteria_type),
+         criteria_value = VALUES(criteria_value), position = VALUES(position)`,
+      [stableId(`badge:${code}`), code, name, description, icon, criteriaType, criteriaValue, position]
+    );
+  }
+}
+
+async function seedFlashcards() {
+  for (const set of FLASHCARD_DEFS) {
+    const setId = stableId(`flashcard-set:${set.slug}`);
+    await db.query(
+      `INSERT INTO flashcard_sets (id, slug, title, topic, description, position)
+       VALUES (?, ?, ?, ?, ?, ?)
+       ON DUPLICATE KEY UPDATE title = VALUES(title), topic = VALUES(topic),
+         description = VALUES(description), position = VALUES(position)`,
+      [setId, set.slug, set.title, set.topic, set.description, set.position]
+    );
+    for (const [index, card] of set.cards.entries()) {
+      const [front, back, example] = card;
+      await db.query(
+        `INSERT INTO flashcards (id, set_id, front, back, example, position)
+         VALUES (?, ?, ?, ?, ?, ?)
+         ON DUPLICATE KEY UPDATE front = VALUES(front), back = VALUES(back), example = VALUES(example)`,
+        [stableId(`flashcard:${set.slug}:${index + 1}`), setId, front, back, example, index + 1]
+      );
+    }
+  }
+}
+
+async function seedQuestions(users, courses) {
+  for (const [studentKey, courseKey, title, body, answer] of QUESTION_DEFS) {
+    const student = users[studentKey];
+    const course = courses[courseKey];
+    if (!student || !course) continue;
+    const id = stableId(`question:${studentKey}:${courseKey}`);
+    await db.query(
+      `INSERT INTO questions (id, student_id, course_id, teacher_id, title, body, answer, status, answered_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+       ON DUPLICATE KEY UPDATE title = VALUES(title), body = VALUES(body),
+         answer = VALUES(answer), status = VALUES(status), answered_at = VALUES(answered_at)`,
+      [
+        id,
+        student.id,
+        course.id,
+        course.teacherId || null,
+        title,
+        body,
+        answer,
+        answer ? 'answered' : 'open',
+        answer ? toSqlDateTime(daysFromNow(-1)) : null
+      ]
+    );
+  }
+}
+
 async function seedDemoUsers() {
   const users = await seedUsers();
   const courses = await seedCourses(users);
@@ -510,6 +636,9 @@ async function seedDemoUsers() {
   await seedActivities(users, courses);
   await seedNotifications(users);
   await seedMaterialRequests(users, courses);
+  await seedBadges();
+  await seedFlashcards();
+  await seedQuestions(users, courses);
 }
 
 if (require.main === module) {

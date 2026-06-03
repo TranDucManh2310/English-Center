@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const mysql = require('mysql2/promise');
 
 const DB_CONFIG = {
@@ -843,6 +844,239 @@ async function updateMaterialRequest(id, updates) {
   return rows.find(row => row.id === id) || null;
 }
 
+async function markNotificationRead(id, userId) {
+  const params = [id];
+  let scope = '';
+  if (userId) {
+    scope = ' AND (user_id = ? OR user_id IS NULL)';
+    params.push(userId);
+  }
+  const result = await query(`UPDATE notifications SET is_read = 1 WHERE id = ?${scope}`, params);
+  return Number(result.affectedRows || 0) > 0;
+}
+
+async function markAllNotificationsRead(userId) {
+  await query(
+    `UPDATE notifications SET is_read = 1
+      WHERE is_read = 0 AND (user_id = ? OR user_id IS NULL)`,
+    [userId]
+  );
+}
+
+function mapQuestion(row) {
+  return {
+    id: row.id,
+    studentId: row.studentId,
+    studentName: row.studentName,
+    courseId: row.courseId,
+    courseName: row.courseName,
+    teacherId: row.teacherId,
+    teacherName: row.teacherName,
+    title: row.title,
+    body: row.body,
+    answer: row.answer,
+    status: row.status,
+    createdAt: isoDate(row.createdAt),
+    answeredAt: isoDate(row.answeredAt)
+  };
+}
+
+const QUESTION_SELECT = `SELECT q.id, q.student_id AS studentId, s.name AS studentName,
+            q.course_id AS courseId, c.name AS courseName,
+            q.teacher_id AS teacherId, t.name AS teacherName,
+            q.title, q.body, q.answer, q.status,
+            q.created_at AS createdAt, q.answered_at AS answeredAt
+       FROM questions q
+       JOIN users s ON s.id = q.student_id
+       LEFT JOIN courses c ON c.id = q.course_id
+       LEFT JOIN users t ON t.id = q.teacher_id`;
+
+async function findQuestionById(id) {
+  const rows = await query(`${QUESTION_SELECT} WHERE q.id = ? LIMIT 1`, [id]);
+  return rows[0] ? mapQuestion(rows[0]) : null;
+}
+
+async function createQuestion(question) {
+  await query(
+    `INSERT INTO questions (id, student_id, course_id, teacher_id, title, body, status)
+     VALUES (?, ?, ?, ?, ?, ?, 'open')`,
+    [
+      question.id,
+      question.studentId,
+      question.courseId || null,
+      question.teacherId || null,
+      question.title || '',
+      question.body
+    ]
+  );
+  return findQuestionById(question.id);
+}
+
+async function listQuestions(filters = {}) {
+  const where = [];
+  const params = [];
+  if (filters.studentId) {
+    where.push('q.student_id = ?');
+    params.push(filters.studentId);
+  }
+  if (filters.status) {
+    where.push('q.status = ?');
+    params.push(filters.status);
+  }
+  if (filters.teacherId) {
+    where.push('(q.teacher_id = ? OR c.teacher_id = ? OR q.teacher_id IS NULL)');
+    params.push(filters.teacherId, filters.teacherId);
+  }
+  const rows = await query(
+    `${QUESTION_SELECT}
+      ${where.length ? `WHERE ${where.join(' AND ')}` : ''}
+      ORDER BY q.status ASC, q.created_at DESC
+      LIMIT ?`,
+    [...params, Math.min(Number(filters.limit || 100), 500)]
+  );
+  return rows.map(mapQuestion);
+}
+
+async function answerQuestion(id, updates) {
+  const current = await findQuestionById(id);
+  if (!current) return null;
+  await query(
+    `UPDATE questions
+        SET answer = ?, teacher_id = COALESCE(?, teacher_id),
+            status = 'answered', answered_at = CURRENT_TIMESTAMP
+      WHERE id = ?`,
+    [updates.answer, updates.teacherId || null, id]
+  );
+  return findQuestionById(id);
+}
+
+async function listBadges() {
+  return query(
+    `SELECT id, code, name, description, icon, criteria_type AS criteriaType,
+            criteria_value AS criteriaValue, position
+       FROM badges
+      ORDER BY position ASC, criteria_value ASC`
+  );
+}
+
+async function getStudentMetrics(userId) {
+  const rows = await query(
+    `SELECT
+        (SELECT COUNT(*) FROM enrollments WHERE user_id = ? AND status = 'active') AS activeCourses,
+        (SELECT COALESCE(SUM(completed_lessons), 0) FROM enrollments WHERE user_id = ?) AS completedLessons,
+        ((SELECT COALESCE(SUM(xp), 0) FROM enrollments WHERE user_id = ?)
+          + (SELECT COALESCE(SUM(xp), 0) FROM exam_results WHERE user_id = ?)
+          + (SELECT COALESCE(SUM(xp), 0) FROM learning_activities WHERE user_id = ?)) AS totalXp,
+        (SELECT ROUND(COALESCE(AVG(score), 0), 1) FROM exam_results WHERE user_id = ? AND status IN ('graded','returned')) AS averageScore,
+        (SELECT COUNT(*) FROM exam_results WHERE user_id = ?) AS examCount`,
+    [userId, userId, userId, userId, userId, userId, userId]
+  );
+  const m = firstRow(rows);
+  return {
+    xp: toNumber(m.totalXp),
+    completed_lessons: toNumber(m.completedLessons),
+    average_score: toNumber(m.averageScore),
+    active_courses: toNumber(m.activeCourses),
+    exam_count: toNumber(m.examCount)
+  };
+}
+
+async function getStudentBadges(userId) {
+  const [badges, metrics, ownedRows] = await Promise.all([
+    listBadges(),
+    getStudentMetrics(userId),
+    query('SELECT badge_id AS badgeId, unlocked_at AS unlockedAt FROM user_badges WHERE user_id = ?', [userId])
+  ]);
+  const owned = new Map(ownedRows.map(row => [row.badgeId, row.unlockedAt]));
+  const toAward = [];
+  const result = badges.map(badge => {
+    const metricValue = toNumber(metrics[badge.criteriaType]);
+    const target = toNumber(badge.criteriaValue);
+    const meets = target > 0 && metricValue >= target;
+    let unlocked = owned.has(badge.id);
+    let unlockedAt = owned.get(badge.id) || null;
+    if (meets && !unlocked) {
+      unlocked = true;
+      unlockedAt = new Date();
+      toAward.push(badge.id);
+    }
+    return {
+      id: badge.id,
+      code: badge.code,
+      name: badge.name,
+      description: badge.description,
+      icon: badge.icon,
+      criteriaType: badge.criteriaType,
+      target,
+      current: metricValue,
+      progress: target > 0 ? Math.min(100, Math.round((metricValue / target) * 100)) : (unlocked ? 100 : 0),
+      unlocked,
+      unlockedAt: isoDate(unlockedAt)
+    };
+  });
+  for (const badgeId of toAward) {
+    await query(
+      `INSERT INTO user_badges (id, user_id, badge_id)
+       VALUES (?, ?, ?)
+       ON DUPLICATE KEY UPDATE unlocked_at = unlocked_at`,
+      [crypto.randomUUID(), userId, badgeId]
+    );
+  }
+  return result;
+}
+
+async function listFlashcardSets() {
+  const rows = await query(
+    `SELECT fs.id, fs.slug, fs.title, fs.topic, fs.description, fs.position,
+            COUNT(f.id) AS cardCount
+       FROM flashcard_sets fs
+       LEFT JOIN flashcards f ON f.set_id = fs.id
+      GROUP BY fs.id
+      ORDER BY fs.position ASC, fs.title ASC`
+  );
+  return rows.map(row => ({
+    id: row.id,
+    slug: row.slug,
+    title: row.title,
+    topic: row.topic,
+    description: row.description,
+    cardCount: toNumber(row.cardCount)
+  }));
+}
+
+async function getFlashcardSet(idOrSlug) {
+  const setRows = await query(
+    `SELECT id, slug, title, topic, description
+       FROM flashcard_sets
+      WHERE id = ? OR slug = ?
+      LIMIT 1`,
+    [idOrSlug, idOrSlug]
+  );
+  const set = setRows[0];
+  if (!set) return null;
+  const cards = await query(
+    `SELECT id, front, back, example, position
+       FROM flashcards
+      WHERE set_id = ?
+      ORDER BY position ASC`,
+    [set.id]
+  );
+  return {
+    id: set.id,
+    slug: set.slug,
+    title: set.title,
+    topic: set.topic,
+    description: set.description,
+    cards: cards.map(card => ({
+      id: card.id,
+      front: card.front,
+      back: card.back,
+      example: card.example,
+      position: toNumber(card.position)
+    }))
+  };
+}
+
 async function getAdminDashboard() {
   const [
     overviewRows,
@@ -1323,6 +1557,7 @@ async function getStudentDashboard(userId) {
   ]);
 
   const stats = firstRow(statsRows);
+  const badges = await getStudentBadges(userId);
   return {
     stats: {
       activeCourses: toNumber(stats.activeCourses),
@@ -1331,6 +1566,7 @@ async function getStudentDashboard(userId) {
       totalXp: toNumber(stats.totalXp),
       todayXp: toNumber(stats.todayXp)
     },
+    badges,
     courses: courseRows.map(row => ({
       id: row.courseId,
       name: row.name,
@@ -1376,7 +1612,8 @@ async function getStudentDashboard(userId) {
       rank: index + 1,
       id: row.id,
       name: row.name,
-      xp: toNumber(row.xp)
+      xp: toNumber(row.xp),
+      isCurrentUser: row.id === userId
     })),
     notifications: notificationRows.map(row => ({
       id: row.id,
@@ -1671,6 +1908,16 @@ module.exports = {
   createMaterialRequest,
   createNotification,
   listNotifications,
+  markNotificationRead,
+  markAllNotificationsRead,
+  createQuestion,
+  listQuestions,
+  findQuestionById,
+  answerQuestion,
+  listBadges,
+  getStudentBadges,
+  listFlashcardSets,
+  getFlashcardSet,
   listMaterialRequests,
   updateMaterialRequest,
   getAdminDashboard,

@@ -895,6 +895,126 @@ async function handleApi(req, res, pathname) {
     return sendJson(res, 201, { ok: true });
   }
 
+  if (req.method === 'POST' && pathname === '/api/notifications/read-all') {
+    const user = await requireUser(req, res, ['admin', 'teacher', 'student']);
+    if (!user) return;
+    await db.markAllNotificationsRead(user.id);
+    return sendJson(res, 200, { ok: true });
+  }
+
+  const notificationId = idFromPath(pathname, '/api/notifications/');
+  if (req.method === 'PATCH' && notificationId && !notificationId.includes('/')) {
+    const user = await requireUser(req, res, ['admin', 'teacher', 'student']);
+    if (!user) return;
+    const scopeUserId = user.role === 'admin' ? null : user.id;
+    const updated = await db.markNotificationRead(notificationId, scopeUserId);
+    if (!updated) return sendJson(res, 404, { ok: false, message: 'Khong tim thay thong bao.' });
+    return sendJson(res, 200, { ok: true });
+  }
+
+  if (req.method === 'GET' && pathname === '/api/questions') {
+    const user = await requireUser(req, res, ['admin', 'teacher', 'student']);
+    if (!user) return;
+    const url = new URL(req.url, `http://${req.headers.host}`);
+    const filters = {
+      status: url.searchParams.get('status') || '',
+      limit: url.searchParams.get('limit') || 100
+    };
+    if (user.role === 'student') {
+      filters.studentId = user.id;
+    } else if (user.role === 'teacher') {
+      filters.teacherId = user.id;
+    } else if (url.searchParams.get('studentId')) {
+      filters.studentId = url.searchParams.get('studentId');
+    }
+    const questions = await db.listQuestions(filters);
+    return sendJson(res, 200, { ok: true, questions });
+  }
+
+  if (req.method === 'POST' && pathname === '/api/questions') {
+    const user = await requireUser(req, res, ['student', 'admin']);
+    if (!user) return;
+    const body = await parseBody(req);
+    const text = String(body.body || body.question || '').trim();
+    if (!text) return sendJson(res, 400, { ok: false, message: 'Noi dung cau hoi la bat buoc.' });
+    let teacherId = body.teacherId || null;
+    if (body.courseId) {
+      const course = await db.findCourseById(body.courseId);
+      if (!course) return sendJson(res, 404, { ok: false, message: 'Khong tim thay khoa hoc.' });
+      if (!teacherId) teacherId = course.teacherId || null;
+    }
+    const question = await db.createQuestion({
+      id: crypto.randomUUID(),
+      studentId: user.role === 'admin' && body.studentId ? body.studentId : user.id,
+      courseId: body.courseId || null,
+      teacherId,
+      title: String(body.title || '').trim().slice(0, 190),
+      body: text
+    });
+    if (teacherId) {
+      await db.createNotification({
+        id: crypto.randomUUID(),
+        userId: teacherId,
+        title: 'Co cau hoi moi tu hoc vien',
+        body: question.title || text.slice(0, 120),
+        type: 'qa'
+      });
+    }
+    return sendJson(res, 201, { ok: true, question });
+  }
+
+  const questionId = idFromPath(pathname, '/api/questions/');
+  if (req.method === 'PATCH' && questionId && !questionId.includes('/')) {
+    const user = await requireUser(req, res, ['teacher', 'admin']);
+    if (!user) return;
+    const body = await parseBody(req);
+    const answer = String(body.answer || '').trim();
+    if (!answer) return sendJson(res, 400, { ok: false, message: 'Noi dung tra loi la bat buoc.' });
+    const existing = await db.findQuestionById(questionId);
+    if (!existing) return sendJson(res, 404, { ok: false, message: 'Khong tim thay cau hoi.' });
+    const updated = await db.answerQuestion(questionId, { answer, teacherId: user.id });
+    await db.createNotification({
+      id: crypto.randomUUID(),
+      userId: updated.studentId,
+      title: 'Giao vien da tra loi cau hoi cua ban',
+      body: updated.title || updated.body.slice(0, 120),
+      type: 'qa'
+    });
+    return sendJson(res, 200, { ok: true, question: updated });
+  }
+
+  if (req.method === 'GET' && pathname === '/api/badges') {
+    const user = await requireUser(req, res, ['admin', 'teacher', 'student']);
+    if (!user) return;
+    const url = new URL(req.url, `http://${req.headers.host}`);
+    let targetId = user.id;
+    if (user.role !== 'student') {
+      targetId = url.searchParams.get('studentId') || '';
+    }
+    if (!targetId) {
+      const badges = await db.listBadges();
+      return sendJson(res, 200, { ok: true, badges });
+    }
+    const badges = await db.getStudentBadges(targetId);
+    return sendJson(res, 200, { ok: true, badges });
+  }
+
+  if (req.method === 'GET' && pathname === '/api/flashcard-sets') {
+    const user = await requireUser(req, res, ['admin', 'teacher', 'student']);
+    if (!user) return;
+    const sets = await db.listFlashcardSets();
+    return sendJson(res, 200, { ok: true, sets });
+  }
+
+  const flashcardSetId = idFromPath(pathname, '/api/flashcard-sets/');
+  if (req.method === 'GET' && flashcardSetId && !flashcardSetId.includes('/')) {
+    const user = await requireUser(req, res, ['admin', 'teacher', 'student']);
+    if (!user) return;
+    const set = await db.getFlashcardSet(flashcardSetId);
+    if (!set) return sendJson(res, 404, { ok: false, message: 'Khong tim thay bo flashcard.' });
+    return sendJson(res, 200, { ok: true, set });
+  }
+
   return sendJson(res, 404, { ok: false, message: 'API endpoint not found.' });
 }
 

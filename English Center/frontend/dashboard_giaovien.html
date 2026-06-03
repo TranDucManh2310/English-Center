@@ -1316,7 +1316,7 @@ function nav(id, el) {
   if(t) t.style.display = 'block';
   document.querySelectorAll('.sb-item').forEach(function(a){ a.classList.remove('active'); });
   if(el) el.classList.add('active');
-  var fns = {hocsinh:renderSt, baigiang:renderLec, lichdayhoc:renderCal, thongbao:renderNotif, taode:renderDe, phanhoi:function(){ var s=document.getElementById('fbSearch'); if(s) s.value=''; renderFb(); }, ai:renderQA};
+  var fns = {hocsinh:renderSt, baigiang:renderLec, lichdayhoc:renderCal, thongbao:renderNotif, taode:renderDe, phanhoi:function(){ var s=document.getElementById('fbSearch'); if(s) s.value=''; loadTeacherQuestions(); }, ai:renderQA};
   if(fns[id]) fns[id]();
   window.scrollTo(0,0);
 }
@@ -1919,13 +1919,59 @@ function xoaDe(idx) {
 /* ═══════════════════════════════════════════
    PHẢN HỒI
 ═══════════════════════════════════════════ */
-var FB_DATA = [
-  {i:'NA',g:'135deg,#ef4444,#f87171',n:'Nguyễn Văn An',  l:'Ngữ Pháp A',   t:'2 giờ trước', replied:false, pri:'high', q:'Thầy ơi, tại sao câu này dùng "have been doing" mà không dùng "have done"? Em không phân biệt được hai dạng này ạ.'},
-  {i:'LH',g:'135deg,#2563eb,#60a5fa',n:'Lê Thị Hoa',    l:'Luyện Đề B',   t:'4 giờ trước', replied:false, pri:'med', q:'Cô có thể giải thích thêm mệnh đề quan hệ rút gọn không ạ? Em hay nhầm giữa V-ing và V3/ed.'},
-  {i:'TM',g:'135deg,#0891b2,#22d3ee',n:'Trần Quang Minh',l:'Luyện Đề B',  t:'Hôm qua',     replied:false, pri:'high', q:'Em không hiểu tại sao đáp án câu 12 đề THPTQG 2024 là C. Thầy giải thích giúp em ạ?'},
-  {i:'PH',g:'135deg,#059669,#34d399',n:'Phạm Minh Hùng', l:'Ôn Cấp Tốc C',t:'Hôm qua',     replied:false, pri:'med', q:'Đảo ngữ có thường ra thi THPTQG không ạ? Dạng nào hay gặp nhất thầy ơi?'},
-  {i:'VM',g:'135deg,#7c3aed,#a78bfa',n:'Vũ Thị Mai',    l:'Ngữ Pháp A',   t:'2 ngày trước',replied:false, pri:'med', q:'Em vẫn hay nhầm "despite" và "although". Khi nào dùng cái nào ạ?'},
-];
+var FB_DATA = [];
+var FB_GRADIENTS = ['135deg,#ef4444,#f87171','135deg,#2563eb,#60a5fa','135deg,#0891b2,#22d3ee','135deg,#059669,#34d399','135deg,#7c3aed,#a78bfa','135deg,#d97706,#fbbf24'];
+
+async function ecQaFetch(path, options) {
+  var token = localStorage.getItem('ec_auth_token');
+  var opts = options || {};
+  var res = await fetch(path, {
+    method: opts.method || 'GET',
+    headers: Object.assign({ 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }, opts.headers || {}),
+    body: opts.body
+  });
+  return res.json();
+}
+
+function fbInitials(name) {
+  return String(name || 'HS').trim().split(/\s+/).map(function(w){ return w[0]; }).join('').toUpperCase().slice(0, 2);
+}
+
+function fbRelativeTime(iso) {
+  if (!iso) return '';
+  var diff = Date.now() - new Date(iso).getTime();
+  var mins = Math.round(diff / 60000);
+  if (mins < 60) return mins <= 1 ? 'Vừa xong' : mins + ' phút trước';
+  var hours = Math.round(mins / 60);
+  if (hours < 24) return hours + ' giờ trước';
+  var days = Math.round(hours / 24);
+  return days === 1 ? 'Hôm qua' : days + ' ngày trước';
+}
+
+async function loadTeacherQuestions() {
+  try {
+    var data = await ecQaFetch('/api/questions?limit=200');
+    var questions = (data && data.questions) || [];
+    FB_DATA = questions.map(function(q, idx){
+      return {
+        id: q.id,
+        i: fbInitials(q.studentName),
+        g: FB_GRADIENTS[idx % FB_GRADIENTS.length],
+        n: q.studentName || 'Học sinh',
+        l: q.courseName || 'Chưa rõ lớp',
+        t: fbRelativeTime(q.createdAt),
+        replied: q.status === 'answered',
+        pri: 'med',
+        q: (q.title ? q.title + ' — ' : '') + (q.body || ''),
+        replyText: q.answer || ''
+      };
+    });
+    if (typeof renderFb === 'function') renderFb();
+  } catch (error) {
+    console.warn('[Q&A] Không tải được câu hỏi học sinh:', error.message);
+  }
+}
+
 function renderFb() {
   // Xoá giá trị nếu trình duyệt autofill email vào ô tìm kiếm
   var searchEl = document.getElementById('fbSearch');
@@ -2040,13 +2086,30 @@ function exportFeedback(){
   toast('Đang xuất báo cáo phản hồi...','info');
   setTimeout(function(){ toast('Xuất báo cáo thành công!'); },1200);
 }
-function sendFb(idx) {
+async function sendFb(idx) {
   var ta = document.getElementById('fbtx'+idx);
   if(!ta||!ta.value.trim()){ toast('Vui lòng nhập nội dung phản hồi!','error'); return; }
-  FB_DATA[idx].replied = true;
-  FB_DATA[idx].replyText = ta.value;
-  renderFb();
-  toast('Đã gửi phản hồi tới '+FB_DATA[idx].n+'!');
+  var item = FB_DATA[idx];
+  var answer = ta.value.trim();
+  if(!item.id){
+    // Câu hỏi cục bộ (chưa có id) - chỉ cập nhật giao diện
+    item.replied = true; item.replyText = answer; renderFb();
+    toast('Đã gửi phản hồi tới '+item.n+'!');
+    return;
+  }
+  try {
+    var data = await ecQaFetch('/api/questions/'+encodeURIComponent(item.id), {
+      method: 'PATCH',
+      body: JSON.stringify({ answer: answer })
+    });
+    if(!data || !data.ok){ toast('Không gửi được phản hồi. Thử lại nhé.','error'); return; }
+    item.replied = true;
+    item.replyText = answer;
+    renderFb();
+    toast('Đã gửi phản hồi tới '+item.n+'!');
+  } catch (error) {
+    toast('Không gửi được phản hồi. Thử lại nhé.','error');
+  }
 }
 function quickFb(idx, text) {
   var ta = document.getElementById('fbtx'+idx);
@@ -2668,7 +2731,7 @@ document.addEventListener('DOMContentLoaded', function(){
   setTimeout(function(){
     var s = document.getElementById('fbSearch');
     if(s) s.value = '';
-    renderFb();
+    loadTeacherQuestions();
   }, 300);
 });
 

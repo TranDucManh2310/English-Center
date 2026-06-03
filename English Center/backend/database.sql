@@ -271,6 +271,80 @@ CREATE TABLE IF NOT EXISTS learning_activities (
     ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE IF NOT EXISTS questions (
+  id CHAR(36) PRIMARY KEY,
+  student_id CHAR(36) NOT NULL,
+  course_id CHAR(36) NULL,
+  teacher_id CHAR(36) NULL,
+  title VARCHAR(190) NOT NULL DEFAULT '',
+  body TEXT NOT NULL,
+  answer TEXT NULL,
+  status ENUM('open', 'answered') NOT NULL DEFAULT 'open',
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  answered_at TIMESTAMP NULL DEFAULT NULL,
+  INDEX idx_questions_student (student_id, created_at),
+  INDEX idx_questions_status (status),
+  CONSTRAINT fk_questions_student
+    FOREIGN KEY (student_id) REFERENCES users(id)
+    ON DELETE CASCADE,
+  CONSTRAINT fk_questions_course
+    FOREIGN KEY (course_id) REFERENCES courses(id)
+    ON DELETE SET NULL,
+  CONSTRAINT fk_questions_teacher
+    FOREIGN KEY (teacher_id) REFERENCES users(id)
+    ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS badges (
+  id CHAR(36) PRIMARY KEY,
+  code VARCHAR(60) NOT NULL UNIQUE,
+  name VARCHAR(120) NOT NULL,
+  description VARCHAR(255) NOT NULL DEFAULT '',
+  icon VARCHAR(16) NOT NULL DEFAULT '🏅',
+  criteria_type ENUM('xp', 'completed_lessons', 'average_score', 'active_courses', 'exam_count') NOT NULL DEFAULT 'xp',
+  criteria_value DECIMAL(10,2) NOT NULL DEFAULT 0,
+  position INT NOT NULL DEFAULT 1,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS user_badges (
+  id CHAR(36) PRIMARY KEY,
+  user_id CHAR(36) NOT NULL,
+  badge_id CHAR(36) NOT NULL,
+  unlocked_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_user_badges_user_badge (user_id, badge_id),
+  CONSTRAINT fk_user_badges_user
+    FOREIGN KEY (user_id) REFERENCES users(id)
+    ON DELETE CASCADE,
+  CONSTRAINT fk_user_badges_badge
+    FOREIGN KEY (badge_id) REFERENCES badges(id)
+    ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS flashcard_sets (
+  id CHAR(36) PRIMARY KEY,
+  slug VARCHAR(120) NOT NULL UNIQUE,
+  title VARCHAR(190) NOT NULL,
+  topic VARCHAR(120) NOT NULL DEFAULT '',
+  description VARCHAR(255) NOT NULL DEFAULT '',
+  position INT NOT NULL DEFAULT 1,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS flashcards (
+  id CHAR(36) PRIMARY KEY,
+  set_id CHAR(36) NOT NULL,
+  front VARCHAR(255) NOT NULL,
+  back VARCHAR(255) NOT NULL,
+  example TEXT NULL,
+  position INT NOT NULL DEFAULT 1,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_flashcards_set_position (set_id, position),
+  CONSTRAINT fk_flashcards_set
+    FOREIGN KEY (set_id) REFERENCES flashcard_sets(id)
+    ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE IF NOT EXISTS teaching_material_requests (
   id CHAR(36) PRIMARY KEY,
   teacher_id CHAR(36) NOT NULL,
