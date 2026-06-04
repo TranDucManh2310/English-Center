@@ -65,8 +65,8 @@
 
 **Thành phần chính:**
 
-| Thành phần | Công nghệ | Mô tả |
-|-----------|-----------|-------|
+| Thành phần | Công nghệ | 
+|-----------|-----------|
 | Frontend | Vanilla JS + Bootstrap 5 |
 | Backend | Node.js 20 |
 | Database | MySQL 8 | 
