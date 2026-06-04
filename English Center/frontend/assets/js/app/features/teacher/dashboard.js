@@ -1319,37 +1319,462 @@
     )).join("") : `<div style="text-align:center;color:var(--ink4);padding:22px">Chua co hoc sinh.</div>`;
   }
 
+  var LESSON_TEMPLATES = {
+    "relative": {
+      title: "Mệnh đề quan hệ — Relative Clauses",
+      body: function(level, duration, obj) {
+        var mins = parseInt(duration)||90, t=_t(mins);
+        return "GIÁO ÁN: MỆNH ĐỀ QUAN HỆ (RELATIVE CLAUSES)\n" + "=".repeat(52) + "\n\n" +
+"Trình độ  : " + level + "   |   Thời lượng: " + duration + "\n" +
+"Mục tiêu  : " + (obj || "Phân biệt và sử dụng đúng who/which/that/whom/whose") + "\n\n" +
+"I. MỤC TIÊU BÀI HỌC\n" + "─".repeat(44) + "\n" +
+"• Kiến thức: Nắm công thức mệnh đề quan hệ xác định & không xác định\n" +
+"• Kỹ năng  : Viết & điền từ đúng đại từ quan hệ who/which/that/whom/whose\n" +
+"• Luyện thi: Nhận dạng bẫy rút gọn mệnh đề quan hệ trong đề THPTQG\n\n" +
+"II. KIẾN THỨC TRỌNG TÂM\n" + "─".repeat(44) + "\n" +
+"  WHO      → thay thế người (chủ ngữ/tân ngữ)\n" +
+"  WHICH    → thay thế vật, sự vật\n" +
+"  THAT     → thay người & vật (chỉ dùng trong mệnh đề xác định)\n" +
+"  WHOSE    → chỉ sở hữu (người & vật)\n" +
+"  WHOM     → thay người (tân ngữ, văn phong trang trọng)\n\n" +
+"  Xác định   : không có dấu phẩy — The book WHICH I read is great.\n" +
+"  Không xác định: có dấu phẩy  — My sister, WHO lives in HCM, is a doctor.\n\n" +
+"III. TIẾN TRÌNH DẠY HỌC\n" + "─".repeat(44) + "\n\n" +
+"1. KHỞI ĐỘNG (" + t.w + " phút)\n" +
+"   • Chiếu 2 câu: \"The man who I met yesterday is kind.\" &\n" +
+"     \"Ha Long Bay, which is in Quang Ninh, is beautiful.\"\n" +
+"   • Hỏi: 2 câu khác nhau ở điểm nào? → dẫn vào bài\n\n" +
+"2. KIỂM TRA BÀI CŨ (" + t.r + " phút)\n" +
+"   • Gọi HS điền từ: The student ___ got the highest score is Nam.\n" +
+"   • Nhận xét, dẫn dắt sang bài mới\n\n" +
+"3. BÀI MỚI (" + t.m + " phút)\n\n" +
+"   a) Lý thuyết (20 phút)\n" +
+"      • Bảng tổng hợp 5 đại từ quan hệ + chức năng\n" +
+"      • Quy tắc bỏ \"that\" khi có giới từ đứng trước\n" +
+"      • Phân biệt xác định / không xác định qua dấu phẩy\n\n" +
+"   b) Ví dụ đề thi thực tế (" + Math.round(t.m*0.45) + " phút)\n" +
+"      • 2019: The girl ___ father is a professor won the prize.\n" +
+"        → Đáp án: WHOSE (sở hữu của người)\n" +
+"      • 2021: This is the house in ___ Shakespeare was born.\n" +
+"        → Đáp án: WHICH (giới từ + which; không dùng that)\n" +
+"      • Bẫy: Rút gọn V-ing / V-ed (The man standing there = who stands)\n\n" +
+"   c) Luyện tập có hướng dẫn (" + Math.round(t.m*0.3) + " phút)\n" +
+"      • 8 câu điền từ — GV làm cùng, giải thích từng câu\n" +
+"      • Nhấn mạnh: bẫy dấu phẩy & giới từ\n\n" +
+"4. LUYỆN TẬP ĐỘC LẬP (" + t.p + " phút)\n" +
+"   • HS làm 15 câu trắc nghiệm THPTQG (20 phút)\n" +
+"   • GV chữa 5 câu sai nhiều nhất\n\n" +
+"5. CỦNG CỐ & GIAO BÀI (" + t.c + " phút)\n" +
+"   • Sơ đồ: WHO / WHICH / THAT / WHOSE / WHOM\n" +
+"   • Bài về nhà: 20 câu đề thi 2018–2023 chủ đề Relative Clauses\n\n" +
+"IV. GHI CHÚ\n" + "─".repeat(44) + "\n" +
+"• Lỗi phổ biến: dùng THAT trong mệnh đề không xác định (sai)\n" +
+"• Bẫy cao: \",which\" chỉ cả mệnh đề đứng trước (non-defining)\n" +
+"[Giáo án AI English Center]";
+      }
+    },
+    "conditional": {
+      title: "Câu điều kiện — Conditional Sentences",
+      body: function(level, duration, obj) {
+        var mins = parseInt(duration)||90, t=_t(mins);
+        return "GIÁO ÁN: CÂU ĐIỀU KIỆN (CONDITIONAL SENTENCES)\n" + "=".repeat(52) + "\n\n" +
+"Trình độ  : " + level + "   |   Thời lượng: " + duration + "\n" +
+"Mục tiêu  : " + (obj || "Phân biệt và sử dụng đúng 3 loại câu điều kiện") + "\n\n" +
+"I. MỤC TIÊU BÀI HỌC\n" + "─".repeat(44) + "\n" +
+"• Kiến thức: Nắm công thức Type 0, 1, 2, 3 và Mixed\n" +
+"• Kỹ năng  : Chia động từ đúng trong câu điều kiện\n" +
+"• Luyện thi: Nhận dạng dạng đảo ngữ câu điều kiện trong đề THPTQG\n\n" +
+"II. KIẾN THỨC TRỌNG TÂM\n" + "─".repeat(44) + "\n" +
+"  Type 0: If + V(s/es), ... V(s/es)       → Sự thật hiển nhiên\n" +
+"  Type 1: If + V(s/es), ... will + V       → Điều kiện có thể xảy ra\n" +
+"  Type 2: If + V-ed/were, ... would + V    → Giả định ở hiện tại\n" +
+"  Type 3: If + had + V3, ... would have+V3 → Giả định quá khứ\n" +
+"  Mixed : If + had + V3, ... would + V     → QK → hiện tại\n\n" +
+"  Đảo ngữ: Were I → Had I → Should I\n\n" +
+"III. TIẾN TRÌNH DẠY HỌC\n" + "─".repeat(44) + "\n\n" +
+"1. KHỞI ĐỘNG (" + t.w + " phút)\n" +
+"   • Câu hỏi: \"Nếu bạn trúng xổ số, bạn sẽ làm gì?\"\n" +
+"   • HS trả lời → GV viết câu điều kiện lên bảng\n\n" +
+"2. KIỂM TRA BÀI CŨ (" + t.r + " phút)\n" +
+"   • Chia động từ: If she ___(study) harder, she will pass.\n\n" +
+"3. BÀI MỚI (" + t.m + " phút)\n\n" +
+"   a) Lý thuyết — Bảng 4 loại + Mixed + Đảo ngữ (25 phút)\n" +
+"   b) Ví dụ đề THPTQG (" + Math.round(t.m*0.45) + " phút)\n" +
+"      • 2020: If I ___ you, I would study harder.\n" +
+"        → Đáp án: WERE (Type 2, \"were\" dùng cho mọi ngôi)\n" +
+"      • 2022: Had she arrived earlier, she ___ the train.\n" +
+"        → Đáp án: WOULD HAVE CAUGHT (đảo ngữ Type 3)\n" +
+"   c) Luyện tập 8 câu có hướng dẫn (" + Math.round(t.m*0.25) + " phút)\n\n" +
+"4. LUYỆN TẬP ĐỘC LẬP (" + t.p + " phút)\n" +
+"   • 15 câu trắc nghiệm — ưu tiên dạng đảo ngữ & Mixed\n\n" +
+"5. CỦNG CỐ & GIAO BÀI (" + t.c + " phút)\n" +
+"   • Sơ đồ tóm tắt 4 loại + đảo ngữ\n" +
+"   • Bài về nhà: 20 câu đề 2018–2023\n\n" +
+"IV. GHI CHÚ\n" + "─".repeat(44) + "\n" +
+"• Lỗi phổ biến: dùng \"would\" trong mệnh đề IF\n" +
+"• Bẫy: Were it not for... / If it were not for...\n" +
+"[Giáo án AI English Center]";
+      }
+    },
+    "passive": {
+      title: "Câu bị động — Passive Voice",
+      body: function(level, duration, obj) {
+        var mins = parseInt(duration)||90, t=_t(mins);
+        return "GIÁO ÁN: CÂU BỊ ĐỘNG (PASSIVE VOICE)\n" + "=".repeat(52) + "\n\n" +
+"Trình độ  : " + level + "   |   Thời lượng: " + duration + "\n" +
+"Mục tiêu  : " + (obj || "Chuyển đổi chủ động ↔ bị động đúng với mọi thì") + "\n\n" +
+"I. KIẾN THỨC TRỌNG TÂM\n" + "─".repeat(44) + "\n" +
+"  Công thức: S + be (chia thì) + V3/ed (+ by O)\n\n" +
+"  Thì                  | Chủ động          | Bị động\n" +
+"  ─────────────────────|────────────────── |──────────────────────\n" +
+"  Hiện tại đơn         | writes            | is written\n" +
+"  Hiện tại tiếp diễn  | is writing        | is being written\n" +
+"  Hiện tại HT          | has written       | has been written\n" +
+"  Quá khứ đơn          | wrote             | was/were written\n" +
+"  Tương lai đơn        | will write        | will be written\n" +
+"  Modal                | can write         | can be written\n\n" +
+"II. TIẾN TRÌNH DẠY HỌC\n" + "─".repeat(44) + "\n\n" +
+"1. KHỞI ĐỘNG (" + t.w + " phút)\n" +
+"   • Hai câu: \"People speak English worldwide\" vs \"English is spoken worldwide\"\n" +
+"   • Hỏi: câu nào nhấn mạnh hành động? → dẫn vào bài\n\n" +
+"2. KIỂM TRA BÀI CŨ (" + t.r + " phút)\n" +
+"   • Chuyển: \"She cleaned the room\" → bị động\n\n" +
+"3. BÀI MỚI (" + t.m + " phút)\n" +
+"   a) Bảng tổng hợp 6 thì + modal (20 phút)\n" +
+"   b) Dạng đặc biệt (" + Math.round(t.m*0.35) + " phút)\n" +
+"      • Bị động với HAVE/GET: I had my hair cut.\n" +
+"      • Câu hỏi bị động: Was the letter sent?\n" +
+"      • Đề THPTQG 2021: The report ___ by the manager yesterday.\n" +
+"        → Đáp án: WAS WRITTEN\n" +
+"   c) Luyện tập 8 câu hướng dẫn (" + Math.round(t.m*0.3) + " phút)\n\n" +
+"4. LUYỆN TẬP ĐỘC LẬP (" + t.p + " phút)\n" +
+"   • 15 câu trắc nghiệm + 3 câu chuyển đổi\n\n" +
+"5. CỦNG CỐ & GIAO BÀI (" + t.c + " phút)\n" +
+"   • Bảng tóm tắt 8 thì\n" +
+"   • Bài về nhà: 20 câu đề thi liên quan\n\n" +
+"IV. GHI CHÚ\n" + "─".repeat(44) + "\n" +
+"• Lỗi phổ biến: quên chia BE đúng thì / dùng V-ing thay V3\n" +
+"• Bẫy: Stative verb không dùng bị động (know, have, resemble)\n" +
+"[Giáo án AI English Center]";
+      }
+    },
+    "present_perfect": {
+      title: "Thì hiện tại hoàn thành — Present Perfect",
+      body: function(level, duration, obj) {
+        var mins = parseInt(duration)||90, t=_t(mins);
+        return "GIÁO ÁN: THÌ HIỆN TẠI HOÀN THÀNH (PRESENT PERFECT)\n" + "=".repeat(52) + "\n\n" +
+"Trình độ  : " + level + "   |   Thời lượng: " + duration + "\n" +
+"Mục tiêu  : " + (obj || "Phân biệt Present Perfect với Simple Past") + "\n\n" +
+"I. KIẾN THỨC TRỌNG TÂM\n" + "─".repeat(44) + "\n" +
+"  (+) S + have/has + V3/ed\n" +
+"  (-) S + have/has + not + V3/ed\n" +
+"  (?) Have/Has + S + V3/ed?\n\n" +
+"  Dấu hiệu nhận biết:\n" +
+"  already, yet, just, ever, never, so far, recently,\n" +
+"  for + khoảng thời gian, since + mốc thời gian\n\n" +
+"  Phân biệt PP vs Past Simple:\n" +
+"  • PP : kết quả còn liên quan hiện tại / không rõ thời điểm\n" +
+"  • PS : hành động đã hoàn toàn kết thúc / có mốc thời gian cụ thể\n\n" +
+"II. TIẾN TRÌNH DẠY HỌC\n" + "─".repeat(44) + "\n\n" +
+"1. KHỞI ĐỘNG (" + t.w + " phút)\n" +
+"   • \"Have you ever eaten sushi?\" → HS trả lời → phân tích cấu trúc\n\n" +
+"2. KIỂM TRA BÀI CŨ (" + t.r + " phút)\n" +
+"   • Chia: I ___(not/see) that film yet.\n\n" +
+"3. BÀI MỚI (" + t.m + " phút)\n" +
+"   a) Cấu trúc + dấu hiệu nhận biết (20 phút)\n" +
+"   b) Ví dụ đề thi (" + Math.round(t.m*0.4) + " phút)\n" +
+"      • 2020: She ___(live) here since 2010.\n" +
+"        → HAS LIVED (since → present perfect)\n" +
+"      • 2022: They ___(finish) the project last week.\n" +
+"        → FINISHED (last week → past simple)\n" +
+"   c) 8 câu luyện tập hướng dẫn (" + Math.round(t.m*0.3) + " phút)\n\n" +
+"4. LUYỆN TẬP ĐỘC LẬP (" + t.p + " phút)\n" +
+"   • 15 câu trắc nghiệm\n\n" +
+"5. CỦNG CỐ & GIAO BÀI (" + t.c + " phút)\n" +
+"   • Bảng so sánh PP / Past Simple\n" +
+"   • Bài về nhà: 20 câu đề 2018–2023\n\n" +
+"IV. GHI CHÚ\n" + "─".repeat(44) + "\n" +
+"• Lỗi: dùng PP với \"yesterday/ago/last\" (phải dùng Past Simple)\n" +
+"• Bẫy: FOR vs SINCE (for + khoảng; since + mốc)\n" +
+"[Giáo án AI English Center]";
+      }
+    },
+    "reading": {
+      title: "Đọc hiểu — Reading Comprehension",
+      body: function(level, duration, obj) {
+        var mins = parseInt(duration)||90, t=_t(mins);
+        return "GIÁO ÁN: ĐỌC HIỂU (READING COMPREHENSION)\n" + "=".repeat(52) + "\n\n" +
+"Trình độ  : " + level + "   |   Thời lượng: " + duration + "\n" +
+"Mục tiêu  : " + (obj || "Kỹ năng skimming, scanning và inference trong đề THPTQG") + "\n\n" +
+"I. CÁC DẠNG CÂU HỎI ĐỌC HIỂU THPTQG\n" + "─".repeat(44) + "\n" +
+"  1. Main idea (ý chính đoạn văn)\n" +
+"  2. True/False/Not Given\n" +
+"  3. Vocabulary in context (nghĩa từ theo ngữ cảnh)\n" +
+"  4. Inference (suy luận — KHÔNG có đáp án trực tiếp)\n" +
+"  5. Reference (đại từ thay thế cho gì)\n" +
+"  6. Title/Purpose (tiêu đề phù hợp)\n\n" +
+"II. CHIẾN LƯỢC LÀM BÀI\n" + "─".repeat(44) + "\n" +
+"  Bước 1: Đọc câu hỏi TRƯỚC khi đọc bài (30 giây/câu)\n" +
+"  Bước 2: Skimming — đọc lướt lấy ý chính (2 phút)\n" +
+"  Bước 3: Scanning — tìm từ khóa vị trí câu trả lời\n" +
+"  Bước 4: Đọc kỹ đoạn chứa đáp án\n" +
+"  Bước 5: Loại trừ đáp án sai\n\n" +
+"III. TIẾN TRÌNH DẠY HỌC\n" + "─".repeat(44) + "\n\n" +
+"1. KHỞI ĐỘNG (" + t.w + " phút)\n" +
+"   • Mini test: 1 đoạn 150 từ + 3 câu hỏi (5 phút)\n" +
+"   • Chữa → phân tích lỗi sai phổ biến\n\n" +
+"2. LÝ THUYẾT CHIẾN LƯỢC (" + t.r + " phút)\n" +
+"   • Hướng dẫn 5 bước làm bài\n" +
+"   • Kỹ năng nhận dạng từng dạng câu hỏi\n\n" +
+"3. THỰC HÀNH CÓ HƯỚNG DẪN (" + t.m + " phút)\n" +
+"   • Đoạn 1 (200 từ, topic: Education) — GV làm mẫu từng bước\n" +
+"   • Đoạn 2 (220 từ, topic: Environment) — HS làm, GV hỗ trợ\n" +
+"   • Phân tích bẫy câu Inference & Vocabulary in context\n\n" +
+"4. LUYỆN TẬP ĐỘC LẬP (" + t.p + " phút)\n" +
+"   • 1 đoạn đề thi 2022 (8 câu hỏi) — làm hoàn toàn độc lập\n\n" +
+"5. CỦNG CỐ & GIAO BÀI (" + t.c + " phút)\n" +
+"   • Tổng kết 6 dạng câu hỏi + chiến lược\n" +
+"   • Bài về nhà: 2 đoạn đề thi 2021\n\n" +
+"IV. GHI CHÚ\n" + "─".repeat(44) + "\n" +
+"• Câu Inference: đáp án KHÔNG có trong bài, cần suy luận logic\n" +
+"• Bẫy: đáp án đúng thường paraphrase (viết lại bằng từ khác)\n" +
+"[Giáo án AI English Center]";
+      }
+    },
+    "writing": {
+      title: "Viết luận — Writing Task",
+      body: function(level, duration, obj) {
+        var mins = parseInt(duration)||90, t=_t(mins);
+        return "GIÁO ÁN: VIẾT LUẬN (WRITING TASK — THPTQG)\n" + "=".repeat(52) + "\n\n" +
+"Trình độ  : " + level + "   |   Thời lượng: " + duration + "\n" +
+"Mục tiêu  : " + (obj || "Viết đoạn văn 150–200 từ đúng cấu trúc, đủ ý, đạt điểm 8+") + "\n\n" +
+"I. CẤU TRÚC BÀI VIẾT CHUẨN THPTQG\n" + "─".repeat(44) + "\n" +
+"  Opening   : Giới thiệu chủ đề (2–3 câu)\n" +
+"  Body P1   : Luận điểm 1 + ví dụ/giải thích (3–4 câu)\n" +
+"  Body P2   : Luận điểm 2 + ví dụ/giải thích (3–4 câu)\n" +
+"  Conclusion: Tóm tắt + ý kiến cá nhân (2 câu)\n\n" +
+"  Linking words cần có:\n" +
+"  • Thêm ý  : Furthermore, Moreover, In addition\n" +
+"  • Đối lập : However, On the other hand, Nevertheless\n" +
+"  • Kết luận: In conclusion, To sum up, Overall\n\n" +
+"II. TIẾN TRÌNH DẠY HỌC\n" + "─".repeat(44) + "\n\n" +
+"1. KHỞI ĐỘNG (" + t.w + " phút)\n" +
+"   • Cho HS xem 1 bài viết mẫu — nhận xét cấu trúc\n\n" +
+"2. LÝ THUYẾT CẤU TRÚC (" + t.r + " phút)\n" +
+"   • Sơ đồ 4 phần + từ nối quan trọng\n" +
+"   • Tiêu chí chấm điểm: task fulfillment, coherence, vocabulary, grammar\n\n" +
+"3. BÀI MỚI (" + t.m + " phút)\n" +
+"   a) Phân tích đề mẫu (" + Math.round(t.m*0.3) + " phút)\n" +
+"      • Đề 2022: \"Write about the advantages of learning English\"\n" +
+"      • Lập outline cùng HS → viết câu mở đoạn\n" +
+"   b) Viết có hướng dẫn (" + Math.round(t.m*0.4) + " phút)\n" +
+"      • HS viết Body P1 — GV đi xem & nhận xét trực tiếp\n" +
+"   c) Chữa lỗi thường gặp (" + Math.round(t.m*0.3) + " phút)\n" +
+"      • Grammar, linking words, word choice\n\n" +
+"4. LUYỆN TẬP ĐỘC LẬP (" + t.p + " phút)\n" +
+"   • HS viết hoàn chỉnh bài 150 từ — đề mới\n\n" +
+"5. CỦNG CỐ & GIAO BÀI (" + t.c + " phút)\n" +
+"   • Checklist tự chấm: cấu trúc, từ nối, độ dài\n" +
+"   • Bài về nhà: 1 bài viết hoàn chỉnh nộp buổi sau\n\n" +
+"IV. GHI CHÚ\n" + "─".repeat(44) + "\n" +
+"• Lỗi phổ biến: câu quá dài, thiếu dấu câu, lặp từ\n" +
+"• Nhắc HS đếm số từ trước khi nộp bài (>= 140 từ)\n" +
+"[Giáo án AI English Center]";
+      }
+    },
+    "vocabulary": {
+      title: "Từ vựng theo chủ đề — Topic Vocabulary",
+      body: function(level, duration, obj) {
+        var mins = parseInt(duration)||90, t=_t(mins);
+        return "GIÁO ÁN: TỪ VỰNG THEO CHỦ ĐỀ (TOPIC VOCABULARY)\n" + "=".repeat(52) + "\n\n" +
+"Trình độ  : " + level + "   |   Thời lượng: " + duration + "\n" +
+"Mục tiêu  : " + (obj || "Mở rộng từ vựng 8 chủ đề thường gặp trong đề THPTQG") + "\n\n" +
+"I. 8 CHỦ ĐỀ TỪ VỰNG TRỌNG TÂM THPTQG\n" + "─".repeat(44) + "\n" +
+"  1. Education       — curriculum, scholarship, compulsory\n" +
+"  2. Environment     — greenhouse, deforestation, sustainable\n" +
+"  3. Technology      — artificial intelligence, digital, innovation\n" +
+"  4. Health          — epidemic, vaccination, mental health\n" +
+"  5. Society         — urbanization, gender equality, poverty\n" +
+"  6. Economy         — inflation, unemployment, globalization\n" +
+"  7. Culture         — heritage, tradition, multicultural\n" +
+"  8. Science         — experiment, hypothesis, breakthrough\n\n" +
+"II. PHƯƠNG PHÁP GHI NHỚ TỪ VỰNG\n" + "─".repeat(44) + "\n" +
+"  • Mind map theo chủ đề\n" +
+"  • Word family: educate → education → educational → educator\n" +
+"  • Collocations: make a breakthrough, tackle a problem\n" +
+"  • Flashcard với ví dụ câu (không học từ đơn lẻ)\n\n" +
+"III. TIẾN TRÌNH DẠY HỌC\n" + "─".repeat(44) + "\n\n" +
+"1. KHỞI ĐỘNG (" + t.w + " phút)\n" +
+"   • Kahoot/wordwall: đoán nghĩa 10 từ vựng nhanh\n\n" +
+"2. KIỂM TRA BÀI CŨ (" + t.r + " phút)\n" +
+"   • Điền từ: The government needs to ___ climate change.\n" +
+"     (tackle/address/deal with)\n\n" +
+"3. BÀI MỚI — 2 CHỦ ĐỀ (" + t.m + " phút)\n" +
+"   a) Từ vựng chủ đề 1 (" + Math.round(t.m*0.5) + " phút)\n" +
+"      • 12–15 từ + định nghĩa + collocations + câu ví dụ\n" +
+"      • Mini drill: HS đặt câu với 3 từ mới\n" +
+"   b) Từ vựng chủ đề 2 (" + Math.round(t.m*0.5) + " phút)\n" +
+"      • Phân tích word family, prefix/suffix phổ biến\n\n" +
+"4. LUYỆN TẬP ĐỘC LẬP (" + t.p + " phút)\n" +
+"   • 15 câu điền từ + cloze test từ đề thi thực tế\n\n" +
+"5. CỦNG CỐ & GIAO BÀI (" + t.c + " phút)\n" +
+"   • Flashcard bộ 30 từ — ôn qua app Quizlet\n" +
+"   • Bài về nhà: 20 câu đề dạng word choice 2019–2023\n\n" +
+"IV. GHI CHÚ\n" + "─".repeat(44) + "\n" +
+"• Ưu tiên collocations & phrasal verbs hay gặp trong đề\n" +
+"• Nhắc HS học theo ngữ cảnh, không học từng từ riêng lẻ\n" +
+"[Giáo án AI English Center]";
+      }
+    },
+    "pronunciation": {
+      title: "Phát âm & Trọng âm — Pronunciation",
+      body: function(level, duration, obj) {
+        var mins = parseInt(duration)||90, t=_t(mins);
+        return "GIÁO ÁN: PHÁT ÂM & TRỌNG ÂM (PRONUNCIATION & STRESS)\n" + "=".repeat(52) + "\n\n" +
+"Trình độ  : " + level + "   |   Thời lượng: " + duration + "\n" +
+"Mục tiêu  : " + (obj || "Xác định đúng trọng âm từ 2–3 âm tiết và âm /ɪ/ vs /iː/") + "\n\n" +
+"I. QUY TẮC TRỌNG ÂM TRỌNG TÂM THPTQG\n" + "─".repeat(44) + "\n" +
+"  Từ 2 âm tiết:\n" +
+"  • Danh từ/Tính từ: trọng âm thường ở âm 1 (PREsent, TAble)\n" +
+"  • Động từ        : trọng âm thường ở âm 2 (preSENT, rePLY)\n\n" +
+"  Từ 3+ âm tiết:\n" +
+"  • -tion/-sion/-ic/-ical/-ity: trọng âm âm NGAY TRƯỚC hậu tố\n" +
+"  • -ment/-ness/-ful/-less    : giữ trọng âm của từ gốc\n\n" +
+"  Âm câm & phân biệt âm:\n" +
+"  • /ɪ/ ngắn: bit, sit, this   vs  /iː/ dài: beat, seat, these\n" +
+"  • /æ/ : cat, bad              vs  /ʌ/     : cut, bud\n" +
+"  • /θ/ : think, three          vs  /ð/     : this, there\n\n" +
+"II. TIẾN TRÌNH DẠY HỌC\n" + "─".repeat(44) + "\n\n" +
+"1. KHỞI ĐỘNG (" + t.w + " phút)\n" +
+"   • Nghe 5 từ — HS đánh dấu trọng âm trên bảng phiên âm\n\n" +
+"2. KIỂM TRA BÀI CŨ (" + t.r + " phút)\n" +
+"   • Chọn từ trọng âm khác: A.career B.canteen C.enter D.forget\n\n" +
+"3. BÀI MỚI (" + t.m + " phút)\n" +
+"   a) Quy tắc trọng âm + ví dụ (25 phút)\n" +
+"   b) Ví dụ đề THPTQG (" + Math.round(t.m*0.4) + " phút)\n" +
+"      • Dạng 1: Chọn từ có trọng âm khác vị trí\n" +
+"      • Dạng 2: Chọn từ có phần gạch chân phát âm khác\n" +
+"      • Đề 2023: A.finished B.watched C.looked D.needed\n" +
+"        → Đáp án: D (needed: /ɪd/ còn lại: /t/ hoặc /d/)\n" +
+"   c) 8 câu luyện tập hướng dẫn (" + Math.round(t.m*0.25) + " phút)\n\n" +
+"4. LUYỆN TẬP ĐỘC LẬP (" + t.p + " phút)\n" +
+"   • 15 câu: 8 câu trọng âm + 7 câu phân biệt âm\n\n" +
+"5. CỦNG CỐ & GIAO BÀI (" + t.c + " phút)\n" +
+"   • Bảng quy tắc trọng âm theo hậu tố\n" +
+"   • Bài về nhà: 20 câu đề 2018–2023\n\n" +
+"IV. GHI CHÚ\n" + "─".repeat(44) + "\n" +
+"• Dạng phát âm: đuôi -ed (/t/ /d/ /ɪd/) — hay gặp, dễ sai\n" +
+"• Bẫy: compound noun thường nhấn âm đầu (BLACKboard ≠ black BOARD)\n" +
+"[Giáo án AI English Center]";
+      }
+    }
+  };
+
+  function _t(mins) {
+    var w=Math.round(mins*.1), r=Math.round(mins*.1), m=Math.round(mins*.55), p=Math.round(mins*.2);
+    return { w:w, r:r, m:m, p:p, c:mins-w-r-m-p };
+  }
+
+  function generateLocalLessonPlan(topic, level, duration, objective) {
+    var norm = topic.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");
+    var key = null;
+    if (norm.includes("relative") || norm.includes("menh de quan he") || norm.includes("quan he")) key = "relative";
+    else if (norm.includes("conditional") || norm.includes("dieu kien") || norm.includes("điều kiện")) key = "conditional";
+    else if (norm.includes("passive") || norm.includes("bi dong") || norm.includes("bị động")) key = "passive";
+    else if (norm.includes("perfect") || norm.includes("hoan thanh") || norm.includes("hoàn thành")) key = "present_perfect";
+    else if (norm.includes("reading") || norm.includes("doc hieu") || norm.includes("đọc hiểu")) key = "reading";
+    else if (norm.includes("writing") || norm.includes("viet luan") || norm.includes("viết")) key = "writing";
+    else if (norm.includes("vocabulary") || norm.includes("tu vung") || norm.includes("từ vựng")) key = "vocabulary";
+    else if (norm.includes("pronunciation") || norm.includes("phat am") || norm.includes("trong am") || norm.includes("phát âm")) key = "pronunciation";
+
+    if (key && LESSON_TEMPLATES[key]) return LESSON_TEMPLATES[key].body(level, duration, objective);
+
+    // Generic fallback cho chủ đề khác
+    var obj = objective || "Ôn tập và thực hành " + topic;
+    var mins = parseInt(duration)||90, t=_t(mins);
+    return "GIÁO ÁN TIẾNG ANH\n" + "=".repeat(48) + "\n\n" +
+"Chủ đề    : " + topic + "\nTrình độ  : " + level + "\nThời lượng: " + duration + "\nMục tiêu  : " + obj + "\n\n" +
+"I. MỤC TIÊU BÀI HỌC\n" + "─".repeat(40) + "\n" +
+"• Kiến thức: Nắm vững lý thuyết và cấu trúc " + topic + "\n" +
+"• Kỹ năng  : Vận dụng trong giao tiếp và làm bài thi THPTQG\n" +
+"• Thái độ  : Tích cực, chủ động luyện tập\n\n" +
+"II. TIẾN TRÌNH DẠY HỌC\n" + "─".repeat(40) + "\n\n" +
+"1. KHỞI ĐỘNG (" + t.w + " phút)\n   • Câu hỏi dẫn nhập liên quan đến " + topic + "\n\n" +
+"2. KIỂM TRA BÀI CŨ (" + t.r + " phút)\n   • Gọi 2–3 HS trả lời, nhận xét\n\n" +
+"3. BÀI MỚI — " + topic.toUpperCase() + " (" + t.m + " phút)\n" +
+"   a) Lý thuyết & cấu trúc (20 phút)\n" +
+"   b) Ví dụ từ đề thi THPTQG (" + Math.round(t.m*.45) + " phút)\n" +
+"   c) Luyện tập có hướng dẫn (" + Math.round(t.m*.3) + " phút)\n\n" +
+"4. LUYỆN TẬP ĐỘC LẬP (" + t.p + " phút)\n   • 15–20 câu trắc nghiệm\n\n" +
+"5. CỦNG CỐ & GIAO BÀI (" + t.c + " phút)\n   • Bài về nhà: 20 câu đề liên quan đến " + topic + "\n\n" +
+"IV. GHI CHÚ\n" + "─".repeat(40) + "\n" +
+"• Lưu ý lỗi thường gặp với trình độ " + level + "\n" +
+"[Giáo án AI English Center]";
+  }
+
   function renderAiSuggestions() {
     const list = document.getElementById("qaList");
     if (!list) return;
-    const suggestions = ["Relative Clauses", "Conditional Sentences", "Reading Inference", "Writing Task 2"];
-    list.innerHTML = suggestions.map(text => `<button class="qa" type="button" data-ai-topic="${escapeHtml(text)}"><i class="bi bi-stars" style="color:var(--purple)"></i><span style="font-size:13px;font-weight:700">${escapeHtml(text)}</span></button>`).join("");
+    const sel = document.getElementById("aiCourseSelect");
+    if (sel && state.courses.length) {
+      sel.innerHTML = '<option value="">-- Chọn lớp để lưu --</option>' +
+        state.courses.map(c => `<option value="${escapeHtml(c.id)}">${escapeHtml(c.name)}</option>`).join("");
+    }
+    const topics = [
+      "Mệnh đề quan hệ — Relative Clauses",
+      "Câu điều kiện — Conditional Sentences",
+      "Thì hiện tại hoàn thành — Present Perfect",
+      "Câu bị động — Passive Voice",
+      "Đọc hiểu — Reading Comprehension",
+      "Viết luận — Writing Task",
+      "Từ vựng chủ đề — Topic Vocabulary",
+      "Phát âm & Trọng âm — Pronunciation"
+    ];
+    list.innerHTML = topics.map(text =>
+      `<button class="qa" type="button" onclick="EC_TEACHER.quickTopic('${escapeHtml(text)}')">`+
+      `<i class="bi bi-stars" style="color:var(--purple)"></i>`+
+      `<span style="font-size:13px;font-weight:700">${escapeHtml(text)}</span></button>`
+    ).join("");
+  }
+
+  function quickTopic(text) {
+    const input = document.getElementById("aiTopic");
+    if (input) { input.value = text; input.focus(); }
   }
 
   async function genAI() {
     const topic = (document.getElementById("aiTopic")?.value || "").trim();
-    const level = document.getElementById("aiLv")?.value || "";
-    const duration = document.getElementById("aiDur")?.value || "";
-    const objective = document.querySelector("#s-ai input[placeholder*='Phan'], #s-ai input[placeholder*='PhÃ¢n']")?.value || "";
-    if (!topic) return notify("Vui long nhap chu de bai giang.", "error");
+    const level = document.getElementById("aiLv")?.value || "Trung bình";
+    const duration = document.getElementById("aiDur")?.value || "90 phút";
+    const objective = (document.getElementById("aiObjective")?.value || "").trim();
+    if (!topic) return notify("Vui lòng nhập chủ đề bài giảng.", "error");
+
     const box = document.getElementById("aiBox");
     const out = document.getElementById("aiOut");
+    const genBtn = document.getElementById("aiGenBtn");
     if (box) box.style.display = "block";
-    if (out) out.textContent = "Dang tao giao an...";
-    const res = await request("/api/chat", {
-      method: "POST",
-      body: JSON.stringify({
-        system: "Ban la tro ly soan giao an tieng Anh cho giao vien.",
-        messages: [{ role: "user", content: `Tao giao an ${duration} cho chu de ${topic}, trinh do ${level}. Muc tieu: ${objective || "on tap va thuc hanh"}.` }],
-        context: { role: "teacher" }
-      })
-    });
-    state.aiDraft = (res.content && res.content[0] && res.content[0].text) || "";
-    if (out) out.innerHTML = escapeHtml(state.aiDraft).replace(/\n/g, "<br>");
-    ["aiCopyBtn", "aiSaveBtn"].forEach(id => {
-      const btn = document.getElementById(id);
-      if (btn) btn.style.display = "inline-flex";
-    });
+    if (out) out.innerHTML = '<div style="display:flex;align-items:center;gap:10px;color:var(--purple);padding:24px 0"><span style="width:18px;height:18px;border:2.5px solid var(--purple);border-top-color:transparent;border-radius:50%;display:inline-block;animation:spin .7s linear infinite"></span><span>AI đang soạn giáo án...</span></div><style>@keyframes spin{to{transform:rotate(360deg)}}</style>';
+    if (genBtn) { genBtn.disabled = true; genBtn.textContent = "Đang tạo..."; }
+    ["aiCopyBtn", "aiExportBtn", "aiSaveBtn"].forEach(id => { const b = document.getElementById(id); if (b) b.style.display = "none"; });
+    state.aiDraft = "";
+
+    try {
+      const res = await request("/api/ai/generate-lesson-plan", {
+        method: "POST",
+        body: JSON.stringify({ topic, level, duration, objective })
+      });
+      state.aiDraft = (res.lessonPlan || "").trim();
+    } catch (_) {
+      notify("AI chưa phản hồi — hiển thị mẫu giáo án chuẩn.", "warning");
+    }
+
+    if (!state.aiDraft) state.aiDraft = generateLocalLessonPlan(topic, level, duration, objective);
+
+    if (out) out.textContent = state.aiDraft;
+    if (genBtn) { genBtn.disabled = false; genBtn.innerHTML = '<i class="bi bi-robot"></i> Tạo lại'; }
+    const sel = document.getElementById("aiCourseSelect");
+    if (sel) sel.style.display = "";
+    ["aiCopyBtn", "aiExportBtn", "aiSaveBtn"].forEach(id => { const b = document.getElementById(id); if (b) b.style.display = "inline-flex"; });
   }
 
   async function copyAI() {
@@ -1359,25 +1784,43 @@
     } catch {
       const ta = document.createElement("textarea");
       ta.value = state.aiDraft;
-      document.body.appendChild(ta);
-      ta.select();
-      document.execCommand("copy");
-      ta.remove();
+      document.body.appendChild(ta); ta.select();
+      document.execCommand("copy"); ta.remove();
     }
-    notify("Da sao chep giao an.");
+    notify("Đã sao chép giáo án vào clipboard.");
+  }
+
+  function exportAILesson() {
+    if (!state.aiDraft) return notify("Chưa có giáo án để tải.", "error");
+    const topic = (document.getElementById("aiTopic")?.value || "giao-an").trim().replace(/\s+/g, "-");
+    const blob = new Blob([state.aiDraft], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = `giao-an-${topic}.txt`;
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+    notify("Đã tải giáo án xuống.");
   }
 
   async function saveAILesson() {
-    if (!state.aiDraft) return notify("Chua co giao an AI de luu.", "error");
-    const topic = (document.getElementById("aiTopic")?.value || "Giao an AI").trim();
-    const courseId = state.courses[0]?.id || "";
-    if (!courseId) return notify("Can co lop hoc truoc khi luu giao an.", "error");
-    await request("/api/material-requests", {
-      method: "POST",
-      body: JSON.stringify({ title: topic, courseId, type: "lesson", status: "pending", description: state.aiDraft })
-    });
-    notify("Da luu giao an AI vao ban nhap.");
-    await refresh();
+    if (!state.aiDraft) return notify("Chưa có giáo án AI để lưu.", "error");
+    const topic = (document.getElementById("aiTopic")?.value || "Giáo án AI").trim();
+    const courseId = document.getElementById("aiCourseSelect")?.value || state.courses[0]?.id || "";
+    if (!courseId) return notify("Vui lòng chọn lớp học trước khi lưu.", "error");
+    const btn = document.getElementById("aiSaveBtn");
+    if (btn) { btn.disabled = true; btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Đang lưu...'; }
+    try {
+      await request("/api/material-requests", {
+        method: "POST",
+        body: JSON.stringify({ title: topic, courseId, type: "lesson", status: "pending", description: state.aiDraft })
+      });
+      notify("Đã lưu giáo án — chờ admin duyệt.", "success");
+      await refresh();
+    } catch (err) {
+      notify(err.message || "Lưu thất bại.", "error");
+    } finally {
+      if (btn) { btn.disabled = false; btn.innerHTML = '<i class="bi bi-floppy-fill"></i> Lưu & Nộp duyệt'; }
+    }
   }
 
   function setRptPeriod(el, period) {

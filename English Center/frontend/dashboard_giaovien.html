@@ -777,10 +777,18 @@
  <div class="fr" style="flex:1"><label>Trình độ lớp</label><select id="aiLv"><option>Cơ bản</option><option selected>Trung bình</option><option>Nâng cao</option></select></div>
  <div class="fr" style="flex:1"><label>Thời lượng</label><select id="aiDur"><option>45 phút</option><option selected>90 phút</option><option>120 phút</option></select></div>
  </div>
- <div class="fr"><label>Mục tiêu cụ thể (tuỳ chọn)</label><input type="text" placeholder="VD: Phân biệt who/which/that..."></div>
- <button onclick="genAI()" class="btn-pg" style="justify-content:center;padding:12px"><i class="bi bi-robot"></i> Tạo giáo án với AI</button>
+ <div class="fr"><label>Mục tiêu cụ thể (tuỳ chọn)</label><input id="aiObjective" type="text" placeholder="VD: Phân biệt who/which/that, ôn tập trước thi..."></div>
+ <button onclick="genAI()" id="aiGenBtn" class="btn-pg" style="justify-content:center;padding:12px"><i class="bi bi-robot"></i> Tạo giáo án với AI</button>
  </div>
- <div class="air" id="aiBox"><div style="font-size:12px;font-weight:700;color:var(--purple);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px"> Gợi ý giáo án</div><div id="aiOut" style="font-size:13px;color:var(--ink2);line-height:1.8"></div><div style="display:flex;gap:8px;margin-top:14px"><button id="aiCopyBtn" onclick="copyAI()" style="display:none;align-items:center;gap:6px;background:#f1f5f9;color:var(--ink2);border:1px solid var(--line);border-radius:6px;padding:7px 14px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit"><i class="bi bi-clipboard-fill"></i> Sao chép</button><button id="aiSaveBtn" onclick="saveAILesson()" style="display:none;align-items:center;gap:6px;background:var(--purple-lt);color:var(--purple);border:1.5px solid #ddd6fe;border-radius:6px;padding:7px 14px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit"><i class="bi bi-floppy-fill"></i> Lưu giáo án</button></div></div>
+ <div class="air" id="aiBox"><div style="font-size:12px;font-weight:700;color:var(--purple);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px">Gợi ý giáo án</div><div id="aiOut" style="font-size:13px;color:var(--ink2);line-height:1.8;white-space:pre-wrap"></div>
+ <div style="display:flex;flex-direction:column;gap:8px;margin-top:14px">
+  <select id="aiCourseSelect" style="font-size:12.5px;border:1px solid var(--line);border-radius:6px;padding:7px 10px;color:var(--ink2);background:#f8fafc;font-family:inherit;display:none"><option value="">-- Chọn lớp để lưu --</option></select>
+  <div style="display:flex;gap:8px;flex-wrap:wrap">
+   <button id="aiCopyBtn" onclick="copyAI()" style="display:none;align-items:center;gap:6px;background:#f1f5f9;color:var(--ink2);border:1px solid var(--line);border-radius:6px;padding:7px 14px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit"><i class="bi bi-clipboard-fill"></i> Sao chép</button>
+   <button id="aiExportBtn" onclick="exportAILesson()" style="display:none;align-items:center;gap:6px;background:#f0fdf4;color:#16a34a;border:1.5px solid #bbf7d0;border-radius:6px;padding:7px 14px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit"><i class="bi bi-download"></i> Tải xuống</button>
+   <button id="aiSaveBtn" onclick="saveAILesson()" style="display:none;align-items:center;gap:6px;background:var(--purple-lt);color:var(--purple);border:1.5px solid #ddd6fe;border-radius:6px;padding:7px 14px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit"><i class="bi bi-floppy-fill"></i> Lưu & Nộp duyệt</button>
+  </div>
+ </div></div>
  </div></div></div>
  <div class="col-lg-6"><div class="cv"><div class="cb">
  <div class="ct"><div class="ct-ico" style="background:#ede9fe"><i class="bi bi-stars" style="color:var(--purple)"></i></div>Gợi ý nhanh</div>

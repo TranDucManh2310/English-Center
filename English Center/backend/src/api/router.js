@@ -471,6 +471,31 @@ Phân tích và trả về JSON như hướng dẫn.`;
     return sendJson(res, 200, { ok: true, review, material: { id: material.id, title: material.title, type: material.type } });
   }
 
+  if (req.method === 'POST' && pathname === '/api/ai/generate-lesson-plan') {
+    const user = await requireUser(req, res, ['teacher', 'admin']);
+    if (!user) return;
+    const body = await parseBody(req);
+    const topic = String(body.topic || '').trim();
+    const level = String(body.level || 'Trung bình').trim();
+    const duration = String(body.duration || '90 phút').trim();
+    const objective = String(body.objective || '').trim();
+    if (!topic) return sendJson(res, 400, { ok: false, message: 'topic là bắt buộc.' });
+
+    let lessonPlan = '';
+    try {
+      const systemPrompt = `Bạn là chuyên gia soạn giáo án tiếng Anh THPTQG Việt Nam.
+Hãy tạo giáo án chi tiết, thực tế, đúng chuẩn cho giáo viên luyện thi.
+Cấu trúc bắt buộc: Thông tin chung → Mục tiêu → Phương tiện → Tiến trình (Khởi động/Kiểm tra bài cũ/Bài mới/Luyện tập/Củng cố) → Ghi chú.
+Trả lời bằng tiếng Việt. Văn phong chuyên nghiệp. Có ví dụ câu cụ thể. Không dùng markdown heading.`;
+      const userPrompt = `Soạn giáo án:\nChủ đề: ${topic}\nTrình độ: ${level}\nThời lượng: ${duration}${objective ? '\nMục tiêu đặc biệt: ' + objective : ''}`;
+      lessonPlan = await callDeepSeek(systemPrompt, [{ role: 'user', content: userPrompt }]);
+    } catch (err) {
+      console.warn('[ai/generate-lesson-plan] error:', err.message);
+    }
+
+    return sendJson(res, 200, { ok: true, lessonPlan: lessonPlan || '' });
+  }
+
   if (req.method === 'POST' && pathname === '/api/speaking-submissions') {
     const user = await requireUser(req, res, ['student', 'admin']);
     if (!user) return;
