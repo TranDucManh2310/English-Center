@@ -1,8 +1,8 @@
 const crypto = require('crypto');
 const db = require('../repositories');
 const { sendJson, parseBody, getBearerToken, idFromPath } = require('../http/request');
-const { createUserRecord, normalizeEmail, publicUser, slugify, verifyPassword } = require('../services/user-service');
-const { assistantFallbackReply, callAssistantService } = require('../services/assistant-service');
+const { createUserRecord, hashPassword, normalizeEmail, publicUser, slugify, verifyPassword } = require('../services/user-service');
+const { assistantFallbackReply, callAssistantService, callDeepSeek } = require('../services/assistant-service');
 const { createSession } = require('../services/session-service');
 
 async function findSessionUser(req) {
@@ -22,6 +22,31 @@ async function requireUser(req, res, roles) {
     return null;
   }
   return user;
+}
+
+async function isStudentEnrolled(userId, courseId) {
+  if (!userId || !courseId) return false;
+  const rows = await db.listEnrollments({ userId, courseId, limit: 1 });
+  return rows.some(row => ['active', 'completed'].includes(row.status));
+}
+
+async function teacherCanAccessStudent(teacherId, studentId) {
+  if (!teacherId || !studentId) return false;
+  const rows = await db.listEnrollments({ teacherId, userId: studentId, limit: 1 });
+  return rows.length > 0;
+}
+
+async function requireTeacherCourse(user, res, courseId, message) {
+  const course = await db.findCourseById(courseId);
+  if (!course) {
+    sendJson(res, 404, { ok: false, message: 'Khong tim thay khoa hoc.' });
+    return null;
+  }
+  if (user.role === 'teacher' && course.teacherId !== user.id) {
+    sendJson(res, 403, { ok: false, message: message || 'Giao vien chi duoc thao tac voi lop cua minh.' });
+    return null;
+  }
+  return course;
 }
 
 async function handleApi(req, res, pathname) {
@@ -148,6 +173,35 @@ async function handleApi(req, res, pathname) {
     return sendJson(res, 200, { ok: true });
   }
 
+  if (req.method === 'PATCH' && pathname === '/api/profile') {
+    const user = await requireUser(req, res, ['admin', 'teacher', 'student']);
+    if (!user) return;
+    const body = await parseBody(req);
+    const updates = {};
+    ['name', 'phone', 'education', 'experience', 'motivation', 'schedule', 'newsletter'].forEach(key => {
+      if (Object.prototype.hasOwnProperty.call(body, key)) updates[key] = body[key];
+    });
+    if (!Object.keys(updates).length) return sendJson(res, 400, { ok: false, message: 'Khong co du lieu can cap nhat.' });
+    const updated = await db.updateUser(user.id, updates);
+    return sendJson(res, 200, { ok: true, user: publicUser(updated) });
+  }
+
+  if (req.method === 'PATCH' && pathname === '/api/profile/password') {
+    const user = await requireUser(req, res, ['admin', 'teacher', 'student']);
+    if (!user) return;
+    const body = await parseBody(req);
+    const currentPassword = String(body.currentPassword || '');
+    const newPassword = String(body.newPassword || '');
+    if (!verifyPassword(currentPassword, user.passwordHash)) {
+      return sendJson(res, 400, { ok: false, message: 'Mat khau hien tai khong dung.' });
+    }
+    if (newPassword.length < 6) {
+      return sendJson(res, 400, { ok: false, message: 'Mat khau moi phai co it nhat 6 ky tu.' });
+    }
+    const updated = await db.updateUser(user.id, { passwordHash: hashPassword(newPassword) });
+    return sendJson(res, 200, { ok: true, user: publicUser(updated) });
+  }
+
   if (req.method === 'POST' && pathname === '/api/contact') {
     const body = await parseBody(req);
     await db.createSubmission({
@@ -161,35 +215,136 @@ async function handleApi(req, res, pathname) {
   if (req.method === 'POST' && pathname === '/api/chat') {
     const body = await parseBody(req);
     const messages = Array.isArray(body.messages) ? body.messages : [];
-    const payload = {
-      system: body.system || '',
-      messages,
-      context: body.context || {},
-      source: 'english-center-web'
-    };
     let reply = '';
-    let source = 'service';
+    let source = 'deepseek';
+
     try {
-      reply = await callAssistantService(payload);
+      // Build context-aware system prompt from DB
+      const courses = await db.listCourses({ status: 'active' }).catch(() => []);
+      const courseList = courses.slice(0, 12).map(c => {
+        const price = c.price ? `${Math.round(Number(c.price) / 1000)}k` : 'Miễn phí';
+        const weeks = c.durationWeeks ? `${c.durationWeeks} tuần` : '';
+        const teacher = c.teacherName ? `, GV: ${c.teacherName}` : '';
+        const level = c.level ? ` [${c.level}]` : '';
+        return `- ${c.name}${level}: ${price}${weeks ? '/' + weeks : ''}${teacher}`;
+      }).join('\n');
+
+      const systemPrompt = `Bạn là trợ lý AI của English Center - trung tâm luyện thi tiếng Anh THPTQG.
+
+NHIỆM VỤ: Tư vấn và giải đáp mọi thắc mắc của học viên về khóa học, đăng ký, lịch học, học phí và các dịch vụ của trung tâm.
+
+CÁC KHÓA HỌC HIỆN TẠI:
+${courseList || '- Đang cập nhật, vui lòng liên hệ admin để biết thêm'}
+
+QUY TRÌNH ĐĂNG KÝ:
+1. Vào website → Nhấn "Đăng ký" → Tạo tài khoản học sinh
+2. Chọn khóa học phù hợp trong trang "Chọn khóa học"
+3. Xác nhận ghi danh → Truy cập Dashboard để bắt đầu học
+
+DỊCH VỤ:
+- Dashboard học sinh: Theo dõi tiến độ, nộp bài tập, nhận thông báo
+- Đề thi thử: Luyện tập với đề thi thực tế (miễn phí)
+- Tài liệu ôn thi: Download tài liệu học tập
+- Hỏi & Đáp: Đặt câu hỏi trực tiếp cho giáo viên phụ trách
+- Flashcard: Công cụ ôn từ vựng thông minh
+- Huy hiệu & Bảng xếp hạng: Gamification khuyến khích học tập
+
+HƯỚNG DẪN TRẢ LỜI:
+- Luôn dùng tiếng Việt, thân thiện và chuyên nghiệp
+- Trả lời ngắn gọn, tối đa 180 từ
+- Không bịa đặt thông tin không có trong dữ liệu trên
+- Nếu không biết, hướng dẫn học viên liên hệ qua trang Liên hệ hoặc nhắn tin cho admin`;
+
+      reply = await callDeepSeek(systemPrompt, messages);
     } catch (error) {
-      console.warn('[assistant] service unavailable:', error.message);
+      console.warn('[chat] DeepSeek failed:', error.message);
+    }
+
+    if (!reply) {
+      try {
+        reply = await callAssistantService({ messages, system: '', context: {}, source: 'english-center-web' });
+        source = 'service';
+      } catch (_) {}
     }
     if (!reply) {
       reply = assistantFallbackReply(messages);
       source = 'fallback';
     }
+
     await db.createSubmission({
       id: crypto.randomUUID(),
       type: 'chat',
       data: {
         source,
-        system: payload.system,
         messages,
         reply,
         createdAt: new Date().toISOString()
       }
     }).catch(error => console.warn('[assistant] log failed:', error.message));
     return sendJson(res, 200, { ok: true, content: [{ text: reply }] });
+  }
+
+  if (req.method === 'POST' && pathname === '/api/ai/review-material') {
+    const user = await requireUser(req, res, ['admin']);
+    if (!user) return;
+    const body = await parseBody(req);
+    const materialId = String(body.materialId || '').trim();
+    if (!materialId) return sendJson(res, 400, { ok: false, message: 'materialId la bat buoc.' });
+
+    const materials = await db.listMaterialRequests({ limit: 500 });
+    const material = materials.find(m => m.id === materialId);
+    if (!material) return sendJson(res, 404, { ok: false, message: 'Khong tim thay bai giang.' });
+
+    const typeLabel = material.type === 'lesson' ? 'Bài giảng' : material.type === 'exam' ? 'Đề thi' : 'Tài liệu';
+    const hasVideo = material.videoUrl ? 'Có' : 'Không';
+    const hasDoc = material.documentUrl ? 'Có' : 'Không';
+    const descText = material.description ? material.description.slice(0, 600) : 'Không có mô tả';
+
+    const systemPrompt = `Bạn là AI hỗ trợ quản trị viên của English Center duyệt nội dung giảng dạy do giáo viên nộp.
+Nhiệm vụ: Phân tích bài nộp và đưa ra khuyến nghị CHÍNH XÁC dưới dạng JSON.
+Quy tắc:
+- "approve" nếu tiêu đề rõ ràng, mô tả đầy đủ, có đính kèm (video hoặc tài liệu), phù hợp khóa học
+- "reject" nếu thiếu mô tả, tiêu đề chung chung, không có file đính kèm, nội dung không phù hợp
+- "review" nếu cần bổ sung thêm nhưng không có vấn đề nghiêm trọng
+Trả về JSON thuần (không markdown, không code block):
+{"recommendation":"approve|reject|review","confidence":"high|medium|low","qualityScore":1-10,"summary":"...","reason":"...","adminNote":"..."}`;
+
+    const userPrompt = `THÔNG TIN BÀI NỘP:
+Loại: ${typeLabel}
+Tiêu đề: ${material.title}
+Giáo viên: ${material.teacherName || 'Không rõ'}
+Khóa học: ${material.courseName || 'Không gắn khóa'}
+Mô tả: ${descText}
+Video đính kèm: ${hasVideo}
+Tài liệu đính kèm: ${hasDoc}
+Trạng thái hiện tại: ${material.status}
+
+Phân tích và trả về JSON như hướng dẫn.`;
+
+    let review = null;
+    try {
+      const raw = await callDeepSeek(systemPrompt, [{ role: 'user', content: userPrompt }]);
+      const jsonStr = raw.replace(/```json|```/g, '').trim();
+      try { review = JSON.parse(jsonStr); } catch (_) {
+        const match = jsonStr.match(/\{[\s\S]*\}/);
+        if (match) review = JSON.parse(match[0]);
+      }
+    } catch (err) {
+      console.warn('[ai/review-material] DeepSeek error:', err.message);
+    }
+
+    if (!review || typeof review !== 'object') {
+      review = {
+        recommendation: 'review',
+        confidence: 'low',
+        qualityScore: 5,
+        summary: 'AI không phân tích được lúc này.',
+        reason: 'Không nhận được phản hồi từ AI.',
+        adminNote: ''
+      };
+    }
+
+    return sendJson(res, 200, { ok: true, review, material: { id: material.id, title: material.title, type: material.type } });
   }
 
   if (req.method === 'POST' && pathname === '/api/speaking-submissions') {
@@ -307,6 +462,16 @@ async function handleApi(req, res, pathname) {
     if (!exam) {
       return sendJson(res, 404, { ok: false, message: 'Exam not found' });
     }
+    if (user.role === 'teacher' && exam.teacherId !== user.id) {
+      return sendJson(res, 403, { ok: false, message: 'Giao vien chi duoc xem de cua lop minh.' });
+    }
+    if (user.role === 'student') {
+      if (exam.status !== 'published') {
+        return sendJson(res, 403, { ok: false, message: 'De thi chua duoc mo cho hoc sinh.' });
+      }
+      const enrolled = await isStudentEnrolled(user.id, exam.courseId);
+      if (!enrolled) return sendJson(res, 403, { ok: false, message: 'Hoc sinh chi duoc lam de cua khoa da ghi danh.' });
+    }
     return sendJson(res, 200, { ok: true, exam });
   }
 
@@ -415,11 +580,16 @@ async function handleApi(req, res, pathname) {
   }
 
   if (req.method === 'GET' && pathname === '/api/courses') {
+    const user = await requireUser(req, res, ['admin', 'teacher', 'student']);
+    if (!user) return;
     const url = new URL(req.url, `http://${req.headers.host}`);
-    const courses = await db.listCourses({
+    const filters = {
       status: url.searchParams.get('status') || '',
       teacherId: url.searchParams.get('teacherId') || ''
-    });
+    };
+    if (user.role === 'teacher') filters.teacherId = user.id;
+    if (user.role === 'student') filters.studentId = user.id;
+    const courses = await db.listCourses(filters);
     return sendJson(res, 200, { ok: true, courses });
   }
 
@@ -449,8 +619,16 @@ async function handleApi(req, res, pathname) {
 
   const courseId = idFromPath(pathname, '/api/courses/');
   if (req.method === 'GET' && courseId && !courseId.includes('/')) {
+    const user = await requireUser(req, res, ['admin', 'teacher', 'student']);
+    if (!user) return;
     const course = await db.findCourseById(courseId);
     if (!course) return sendJson(res, 404, { ok: false, message: 'Khong tim thay khoa hoc.' });
+    if (user.role === 'teacher' && course.teacherId !== user.id) {
+      return sendJson(res, 403, { ok: false, message: 'Giao vien chi duoc xem khoa hoc cua minh.' });
+    }
+    if (user.role === 'student' && !(await isStudentEnrolled(user.id, course.id))) {
+      return sendJson(res, 403, { ok: false, message: 'Hoc sinh chi duoc xem khoa hoc da ghi danh.' });
+    }
     return sendJson(res, 200, { ok: true, course });
   }
 
@@ -499,6 +677,11 @@ async function handleApi(req, res, pathname) {
     if (!userId || !courseId) {
       return sendJson(res, 400, { ok: false, message: 'Thieu userId hoac courseId.' });
     }
+    const course = await db.findCourseById(courseId);
+    if (!course) return sendJson(res, 404, { ok: false, message: 'Khong tim thay khoa hoc.' });
+    if (user.role === 'student' && course.status !== 'active') {
+      return sendJson(res, 403, { ok: false, message: 'Chi co the dang ky khoa hoc dang mo.' });
+    }
     const enrollment = await db.enrollUser({
       id: crypto.randomUUID(),
       userId,
@@ -542,6 +725,10 @@ async function handleApi(req, res, pathname) {
       limit: url.searchParams.get('limit') || 200
     };
     if (user.role === 'teacher') filters.teacherId = user.id;
+    if (user.role === 'student') {
+      filters.studentId = user.id;
+      filters.status = 'published';
+    }
     const exams = await db.listExams(filters);
     return sendJson(res, 200, { ok: true, exams });
   }
@@ -553,11 +740,8 @@ async function handleApi(req, res, pathname) {
     const title = String(body.title || '').trim();
     if (!title) return sendJson(res, 400, { ok: false, message: 'Ten de kiem tra la bat buoc.' });
     if (!body.courseId) return sendJson(res, 400, { ok: false, message: 'Vui long chon khoa hoc.' });
-    const course = await db.findCourseById(body.courseId);
-    if (!course) return sendJson(res, 404, { ok: false, message: 'Khong tim thay khoa hoc.' });
-    if (user.role === 'teacher' && course.teacherId !== user.id) {
-      return sendJson(res, 403, { ok: false, message: 'Giao vien chi duoc tao de cho lop cua minh.' });
-    }
+    const course = await requireTeacherCourse(user, res, body.courseId, 'Giao vien chi duoc tao de cho lop cua minh.');
+    if (!course) return;
     const typeMap = {
       'Trac nghiem': 'quiz',
       'Tu luan': 'homework',
@@ -574,7 +758,8 @@ async function handleApi(req, res, pathname) {
       totalScore: Number(body.totalScore || 10),
       durationMinutes: Number(body.durationMinutes || body.duration || 60),
       status: body.status || 'published',
-      dueAt: body.dueAt || body.due_at || null
+      dueAt: body.dueAt || body.due_at || null,
+      questions: Array.isArray(body.questions) ? body.questions : []
     });
     return sendJson(res, 201, { ok: true, exam });
   }
@@ -604,11 +789,8 @@ async function handleApi(req, res, pathname) {
     if (!body.courseId || !body.title || !body.startAt || !body.endAt) {
       return sendJson(res, 400, { ok: false, message: 'Thieu khoa hoc, tieu de hoac thoi gian lich hoc.' });
     }
-    const course = await db.findCourseById(body.courseId);
-    if (!course) return sendJson(res, 404, { ok: false, message: 'Khong tim thay khoa hoc.' });
-    if (user.role === 'teacher' && course.teacherId !== user.id) {
-      return sendJson(res, 403, { ok: false, message: 'Giao vien chi duoc them lich cho lop cua minh.' });
-    }
+    const course = await requireTeacherCourse(user, res, body.courseId, 'Giao vien chi duoc them lich cho lop cua minh.');
+    if (!course) return;
     const session = await db.createClassSession({
       id: crypto.randomUUID(),
       courseId: body.courseId,
@@ -677,6 +859,18 @@ async function handleApi(req, res, pathname) {
     if (!userId || !body.examId) {
       return sendJson(res, 400, { ok: false, message: 'Thieu userId hoac examId.' });
     }
+    const exam = await db.findExamById(body.examId);
+    if (!exam) return sendJson(res, 404, { ok: false, message: 'Khong tim thay de thi.' });
+    if (user.role === 'teacher' && exam.teacherId !== user.id) {
+      return sendJson(res, 403, { ok: false, message: 'Giao vien chi duoc tao/cham bai cua lop minh.' });
+    }
+    if (user.role === 'student') {
+      if (exam.status !== 'published') return sendJson(res, 403, { ok: false, message: 'De thi chua duoc mo.' });
+      const enrolled = await isStudentEnrolled(user.id, exam.courseId);
+      if (!enrolled) return sendJson(res, 403, { ok: false, message: 'Hoc sinh chi duoc nop bai cua khoa da ghi danh.' });
+    } else if (user.role === 'teacher' && !(await isStudentEnrolled(userId, exam.courseId))) {
+      return sendJson(res, 403, { ok: false, message: 'Hoc sinh khong thuoc lop cua de thi nay.' });
+    }
     await db.createExamResult({
       id: crypto.randomUUID(),
       examId: body.examId,
@@ -737,6 +931,14 @@ async function handleApi(req, res, pathname) {
     if (!body.sessionId || !body.userId) {
       return sendJson(res, 400, { ok: false, message: 'Thieu sessionId hoac userId.' });
     }
+    const session = await db.findClassSessionById(body.sessionId);
+    if (!session) return sendJson(res, 404, { ok: false, message: 'Khong tim thay buoi hoc.' });
+    if (user.role === 'teacher' && session.teacherId !== user.id) {
+      return sendJson(res, 403, { ok: false, message: 'Giao vien chi duoc diem danh buoi hoc cua minh.' });
+    }
+    if (!(await isStudentEnrolled(body.userId, session.courseId))) {
+      return sendJson(res, 403, { ok: false, message: 'Hoc sinh khong thuoc lop cua buoi hoc nay.' });
+    }
     await db.markAttendance({
       id: crypto.randomUUID(),
       sessionId: body.sessionId,
@@ -778,10 +980,10 @@ async function handleApi(req, res, pathname) {
     let teacherId = user.id;
     if (user.role === 'admin' && body.teacherId) teacherId = body.teacherId;
     if (body.courseId) {
-      const course = await db.findCourseById(body.courseId);
-      if (!course) return sendJson(res, 404, { ok: false, message: 'Khong tim thay khoa hoc.' });
-      if (user.role === 'teacher' && course.teacherId !== user.id) {
-        return sendJson(res, 403, { ok: false, message: 'Giao vien chi duoc gui noi dung cho lop cua minh.' });
+      const course = await requireTeacherCourse(user, res, body.courseId, 'Giao vien chi duoc gui noi dung cho lop cua minh.');
+      if (!course) return;
+      if (user.role === 'admin' && teacherId && course.teacherId && course.teacherId !== teacherId) {
+        return sendJson(res, 403, { ok: false, message: 'Giao vien khong phu trach khoa hoc nay.' });
       }
     }
     const request = await db.createMaterialRequest({
@@ -846,6 +1048,13 @@ async function handleApi(req, res, pathname) {
     if (!user) return;
     const body = await parseBody(req);
     if (!body.title) return sendJson(res, 400, { ok: false, message: 'Tieu de thong bao la bat buoc.' });
+    if (user.role === 'teacher') {
+      if (!body.userId) {
+        return sendJson(res, 403, { ok: false, message: 'Giao vien chi duoc gui thong bao den hoc sinh trong lop minh.' });
+      }
+      const allowed = await teacherCanAccessStudent(user.id, body.userId);
+      if (!allowed) return sendJson(res, 403, { ok: false, message: 'Hoc sinh khong thuoc lop cua giao vien.' });
+    }
     await db.createNotification({
       id: crypto.randomUUID(),
       userId: body.userId || null,
@@ -902,6 +1111,13 @@ async function handleApi(req, res, pathname) {
     if (body.courseId) {
       const course = await db.findCourseById(body.courseId);
       if (!course) return sendJson(res, 404, { ok: false, message: 'Khong tim thay khoa hoc.' });
+      const studentId = user.role === 'admin' && body.studentId ? body.studentId : user.id;
+      if (user.role === 'student' && !(await isStudentEnrolled(user.id, body.courseId))) {
+        return sendJson(res, 403, { ok: false, message: 'Hoc sinh chi duoc hoi dap trong khoa da ghi danh.' });
+      }
+      if (user.role === 'admin' && body.studentId && !(await isStudentEnrolled(studentId, body.courseId))) {
+        return sendJson(res, 403, { ok: false, message: 'Hoc sinh khong thuoc khoa hoc nay.' });
+      }
       if (!teacherId) teacherId = course.teacherId || null;
     }
     const question = await db.createQuestion({
@@ -933,6 +1149,19 @@ async function handleApi(req, res, pathname) {
     if (!answer) return sendJson(res, 400, { ok: false, message: 'Noi dung tra loi la bat buoc.' });
     const existing = await db.findQuestionById(questionId);
     if (!existing) return sendJson(res, 404, { ok: false, message: 'Khong tim thay cau hoi.' });
+    if (user.role === 'teacher') {
+      if (existing.teacherId && existing.teacherId !== user.id) {
+        return sendJson(res, 403, { ok: false, message: 'Cau hoi da duoc gan cho giao vien khac.' });
+      }
+      if (existing.courseId) {
+        const course = await db.findCourseById(existing.courseId);
+        if (!course || course.teacherId !== user.id) {
+          return sendJson(res, 403, { ok: false, message: 'Giao vien chi duoc tra loi cau hoi cua lop minh.' });
+        }
+      } else if (!(await teacherCanAccessStudent(user.id, existing.studentId))) {
+        return sendJson(res, 403, { ok: false, message: 'Hoc sinh khong thuoc lop cua giao vien.' });
+      }
+    }
     const updated = await db.answerQuestion(questionId, { answer, teacherId: user.id });
     await db.createNotification({
       id: crypto.randomUUID(),

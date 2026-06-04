@@ -243,7 +243,8 @@ async function updateUser(id, updates) {
     experience: 'experience',
     motivation: 'motivation',
     schedule: 'preferred_schedule',
-    newsletter: 'newsletter'
+    newsletter: 'newsletter',
+    passwordHash: 'password_hash'
   };
   const sets = [];
   const params = [];
@@ -269,6 +270,15 @@ async function listCourses(filters = {}) {
   if (filters.teacherId) {
     where.push('c.teacher_id = ?');
     params.push(filters.teacherId);
+  }
+  if (filters.studentId) {
+    where.push(`EXISTS (
+      SELECT 1 FROM enrollments se
+       WHERE se.course_id = c.id
+         AND se.user_id = ?
+         AND se.status IN ('active', 'completed')
+    )`);
+    params.push(filters.studentId);
   }
 
   return query(
@@ -672,6 +682,15 @@ async function listExams(filters = {}) {
     where.push('ex.course_id = ?');
     params.push(filters.courseId);
   }
+  if (filters.studentId) {
+    where.push(`EXISTS (
+      SELECT 1 FROM enrollments se
+       WHERE se.course_id = ex.course_id
+         AND se.user_id = ?
+         AND se.status IN ('active', 'completed')
+    )`);
+    params.push(filters.studentId);
+  }
   if (filters.status) {
     where.push('ex.status = ?');
     params.push(filters.status);
@@ -713,6 +732,35 @@ async function createExam(exam) {
       exam.dueAt || null
     ]
   );
+  if (Array.isArray(exam.questions) && exam.questions.length) {
+    const typeMap = {
+      multiple_choice: 'multiple_choice',
+      true_false: 'true_false',
+      essay: 'essay',
+      tn: 'multiple_choice',
+      tl: 'essay'
+    };
+    for (let index = 0; index < exam.questions.length; index += 1) {
+      const question = exam.questions[index] || {};
+      const content = String(question.content || question.body || '').trim();
+      if (!content) continue;
+      await query(
+        `INSERT INTO exam_questions
+          (id, exam_id, question_no, content, type, options, correct_answer, explanation)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          question.id || crypto.randomUUID(),
+          exam.id,
+          Number(question.questionNo || index + 1),
+          content,
+          typeMap[question.type] || 'multiple_choice',
+          question.options ? JSON.stringify(question.options) : null,
+          question.correctAnswer || question.correct_answer || '',
+          question.explanation || ''
+        ]
+      );
+    }
+  }
   return findExamById(exam.id);
 }
 
@@ -1042,7 +1090,7 @@ async function listQuestions(filters = {}) {
     params.push(filters.status);
   }
   if (filters.teacherId) {
-    where.push('(q.teacher_id = ? OR c.teacher_id = ? OR q.teacher_id IS NULL)');
+    where.push('(q.teacher_id = ? OR c.teacher_id = ?)');
     params.push(filters.teacherId, filters.teacherId);
   }
   const rows = await query(
@@ -1971,10 +2019,13 @@ async function getTeacherDashboard(teacherId) {
 async function getExamDetail(examId) {
   const [examRows, questionRows] = await Promise.all([
     query(
-      `SELECT id, title, type, total_score AS totalScore, duration_minutes AS durationMinutes,
-              status, published_at AS publishedAt, due_at AS dueAt, course_id AS courseId
-         FROM exams
-        WHERE id = ?
+      `SELECT ex.id, ex.title, ex.type, ex.total_score AS totalScore,
+              ex.duration_minutes AS durationMinutes, ex.status,
+              ex.published_at AS publishedAt, ex.due_at AS dueAt,
+              ex.course_id AS courseId, c.teacher_id AS teacherId
+         FROM exams ex
+         LEFT JOIN courses c ON c.id = ex.course_id
+        WHERE ex.id = ?
         LIMIT 1`,
       [examId]
     ),
@@ -2001,6 +2052,7 @@ async function getExamDetail(examId) {
     publishedAt: isoDate(exam.publishedAt),
     dueAt: isoDate(exam.dueAt),
     courseId: exam.courseId,
+    teacherId: exam.teacherId,
     questions: questionRows.map(q => {
       let options = [];
       try {
@@ -2049,6 +2101,7 @@ module.exports = {
   listEnrollments,
   updateEnrollment,
   listClassSessions,
+  findClassSessionById,
   createClassSession,
   updateClassSession,
   deleteClassSession,

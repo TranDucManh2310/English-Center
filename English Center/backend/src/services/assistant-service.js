@@ -1,26 +1,26 @@
 function normalizeTextForChat(value) {
   return String(value || '')
     .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/Ä‘/g, 'd')
-    .replace(/Ä/g, 'd')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/Ä'/g, 'd')
+    .replace(/Ä/g, 'd')
     .toLowerCase();
 }
 
 function assistantFallbackReply(messages) {
   const last = messages.slice().reverse().find(item => item && item.role === 'user');
   const text = normalizeTextForChat(last ? last.content : '');
-  let reply = 'Minh chua hieu ro cau hoi nay. Ban co the hoi ve khoa hoc, hoc phi, giao vien, lich hoc hoac dang ky de minh tu van nhanh hon.';
+  let reply = 'Xin chào! Tôi chưa hiểu rõ câu hỏi. Bạn có thể hỏi về khóa học, học phí, giáo viên, lịch học hoặc đăng ký để tôi tư vấn nhanh hơn.';
   if (text.includes('hoc phi') || text.includes('gia') || text.includes('phi')) {
-    reply = 'Hoc phi tuy theo khoa hoc. Ban co the xem trang Hoc phi hoac noi muc tieu diem so, minh se goi y khoa phu hop.';
+    reply = 'Học phí tùy theo khóa học. Bạn có thể xem trang Học phí hoặc nói mục tiêu điểm số, tôi sẽ gợi ý khóa phù hợp.';
   } else if (text.includes('giao vien') || text.includes('teacher') || text.includes('thay') || text.includes('co ')) {
-    reply = 'English Center co doi ngu giao vien luyen thi THPTQG theo tung muc tieu diem. Ban co the xem trang Giao vien de chon giao vien phu hop.';
+    reply = 'English Center có đội ngũ giáo viên luyện thi THPTQG theo từng mục tiêu điểm. Bạn có thể xem trang Giáo viên để chọn giáo viên phù hợp.';
   } else if (text.includes('dang ky') || text.includes('register') || text.includes('enroll')) {
-    reply = 'Ban bam Dang Ky, tao tai khoan hoc sinh, sau do chon khoa hoc va xac nhan ghi danh. He thong se dua ban vao dashboard hoc sinh.';
+    reply = 'Bạn nhấn Đăng Ký, tạo tài khoản học sinh, sau đó chọn khóa học và xác nhận ghi danh. Hệ thống sẽ đưa bạn vào dashboard học sinh.';
   } else if (text.includes('test') || text.includes('trinh do') || text.includes('kiem tra')) {
-    reply = 'TEST_START';
+    reply = 'English Center có hệ thống đề thi thử online để kiểm tra trình độ. Bạn có thể vào trang Đề thi thử để làm bài miễn phí.';
   } else if (text.includes('khoa') || text.includes('course')) {
-    reply = 'English Center co cac khoa nen tang, luyen de, cap toc, tu vung, phat am AI va nang cao. Hay noi muc tieu diem hien tai de minh goi y.';
+    reply = 'English Center có các khóa: Nền tảng, Luyện đề, Cấp tốc, Từ vựng theo chủ đề, Phát âm AI và Nâng cao. Hãy nói mục tiêu điểm hiện tại để tôi gợi ý!';
   }
   return reply;
 }
@@ -66,8 +66,46 @@ async function callAssistantService(payload) {
     let data = text;
     try {
       data = JSON.parse(text);
-    } catch {}
+    } catch (_) {}
     return extractAssistantText(data);
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+async function callDeepSeek(systemPrompt, messages) {
+  const key = process.env.DEEPSEEK_API_KEY || '';
+  if (!key || key === 'your_deepseek_api_key_here') return '';
+  const model = process.env.DEEPSEEK_MODEL || 'deepseek-chat';
+  const url = process.env.DEEPSEEK_API_URL || 'https://api.deepseek.com/v1/chat/completions';
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 25000);
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${key}`
+      },
+      body: JSON.stringify({
+        model,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          ...messages.map(m => ({ role: m.role === 'assistant' ? 'assistant' : 'user', content: String(m.content || '') }))
+        ],
+        max_tokens: 600,
+        temperature: 0.7,
+        stream: false
+      }),
+      signal: controller.signal
+    });
+    const text = await response.text();
+    if (!response.ok) throw new Error(`DeepSeek ${response.status}: ${text.slice(0, 300)}`);
+    const data = JSON.parse(text);
+    return (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content || '').trim();
+  } catch (err) {
+    console.warn('[DeepSeek] error:', err.message);
+    return '';
   } finally {
     clearTimeout(timeout);
   }
@@ -76,5 +114,6 @@ async function callAssistantService(payload) {
 module.exports = {
   assistantFallbackReply,
   callAssistantService,
-  extractAssistantText
+  extractAssistantText,
+  callDeepSeek
 };

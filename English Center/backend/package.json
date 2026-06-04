@@ -25,6 +25,7 @@
   "author": "English Center",
   "license": "UNLICENSED",
   "dependencies": {
+    "dotenv": "^17.4.2",
     "mysql2": "^3.22.3"
   }
 }
