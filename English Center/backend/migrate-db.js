@@ -56,6 +56,24 @@ async function migrateDatabase() {
            ADD INDEX idx_sessions_last_active (last_active_at)`
       );
     }
+    if (!(await columnExists(connection, 'teaching_material_requests', 'description'))) {
+      await connection.execute(
+        `ALTER TABLE teaching_material_requests
+           ADD COLUMN description TEXT NULL AFTER status`
+      );
+    }
+    if (!(await columnExists(connection, 'teaching_material_requests', 'video_url'))) {
+      await connection.execute(
+        `ALTER TABLE teaching_material_requests
+           ADD COLUMN video_url VARCHAR(500) NOT NULL DEFAULT '' AFTER description`
+      );
+    }
+    if (!(await columnExists(connection, 'teaching_material_requests', 'document_url'))) {
+      await connection.execute(
+        `ALTER TABLE teaching_material_requests
+           ADD COLUMN document_url VARCHAR(500) NOT NULL DEFAULT '' AFTER video_url`
+      );
+    }
   } finally {
     await connection.end();
   }

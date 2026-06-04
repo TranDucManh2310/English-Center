@@ -133,6 +133,67 @@ async function createSubmission(submission) {
   );
 }
 
+function parsePayload(value) {
+  if (!value) return {};
+  if (typeof value === 'object') return value;
+  try {
+    return JSON.parse(value);
+  } catch {
+    return {};
+  }
+}
+
+async function findSubmissionById(id) {
+  const rows = await query(
+    `SELECT id, type, payload, created_at AS createdAt
+       FROM submissions
+      WHERE id = ?
+      LIMIT 1`,
+    [id]
+  );
+  const row = rows[0];
+  if (!row) return null;
+  return { id: row.id, type: row.type, createdAt: row.createdAt, payload: parsePayload(row.payload) };
+}
+
+async function listSubmissions(filters = {}) {
+  const where = [];
+  const params = [];
+  if (filters.type) {
+    where.push('type = ?');
+    params.push(filters.type);
+  }
+  if (filters.userId) {
+    where.push("JSON_UNQUOTE(JSON_EXTRACT(payload, '$.userId')) = ?");
+    params.push(filters.userId);
+  }
+  const rows = await query(
+    `SELECT id, type, payload, created_at AS createdAt
+       FROM submissions
+      ${where.length ? `WHERE ${where.join(' AND ')}` : ''}
+      ORDER BY created_at DESC
+      LIMIT ?`,
+    [...params, Math.min(Number(filters.limit || 100), 500)]
+  );
+  return rows.map(row => ({
+    id: row.id,
+    type: row.type,
+    createdAt: row.createdAt,
+    payload: parsePayload(row.payload)
+  }));
+}
+
+async function updateSubmission(id, patch = {}) {
+  const current = await findSubmissionById(id);
+  if (!current) return null;
+  const payload = { ...current.payload, ...patch };
+  await query(
+    'UPDATE submissions SET payload = ? WHERE id = ?',
+    [JSON.stringify(payload), id]
+  );
+  return findSubmissionById(id);
+}
+
 function firstRow(rows, fallback = {}) {
   return rows[0] || fallback;
 }
@@ -700,6 +761,44 @@ async function findExamResultById(id) {
   return rows[0] || null;
 }
 
+async function listExamResults(filters = {}) {
+  const where = [];
+  const params = [];
+  if (filters.userId) {
+    where.push('er.user_id = ?');
+    params.push(filters.userId);
+  }
+  if (filters.examId) {
+    where.push('er.exam_id = ?');
+    params.push(filters.examId);
+  }
+  if (filters.status) {
+    where.push('er.status = ?');
+    params.push(filters.status);
+  }
+  if (filters.courseTeacherId) {
+    where.push('c.teacher_id = ?');
+    params.push(filters.courseTeacherId);
+  }
+  const rows = await query(
+    `SELECT er.id, er.exam_id AS examId, ex.title, ex.type,
+            er.user_id AS userId, u.name AS studentName, u.email AS studentEmail,
+            er.teacher_id AS teacherId, c.teacher_id AS courseTeacherId,
+            c.id AS courseId, c.name AS courseName,
+            er.score, er.status, er.feedback, er.xp,
+            er.submitted_at AS submittedAt, er.graded_at AS gradedAt
+       FROM exam_results er
+       JOIN exams ex ON ex.id = er.exam_id
+       LEFT JOIN courses c ON c.id = ex.course_id
+       JOIN users u ON u.id = er.user_id
+      ${where.length ? `WHERE ${where.join(' AND ')}` : ''}
+      ORDER BY er.submitted_at DESC
+      LIMIT ?`,
+    [...params, Math.min(Number(filters.limit || 100), 500)]
+  );
+  return rows;
+}
+
 async function gradeExamResult(id, updates) {
   const current = await findExamResultById(id);
   if (!current) return null;
@@ -731,8 +830,8 @@ async function markAttendance(record) {
 async function createMaterialRequest(request) {
   await query(
     `INSERT INTO teaching_material_requests
-      (id, teacher_id, course_id, title, type, status, admin_note, submitted_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      (id, teacher_id, course_id, title, type, status, description, video_url, document_url, admin_note, submitted_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       request.id,
       request.teacherId,
@@ -740,6 +839,9 @@ async function createMaterialRequest(request) {
       request.title,
       request.type || 'lesson',
       request.status || 'submitted',
+      request.description || null,
+      request.videoUrl || '',
+      request.documentUrl || '',
       request.adminNote || null,
       request.submittedAt || new Date()
     ]
@@ -805,11 +907,22 @@ async function listMaterialRequests(filters = {}) {
     where.push('mr.status = ?');
     params.push(filters.status);
   }
+  if (filters.studentId) {
+    where.push(`mr.status = 'approved'`);
+    where.push(`EXISTS (
+      SELECT 1 FROM enrollments se
+       WHERE se.course_id = mr.course_id
+         AND se.user_id = ?
+         AND se.status IN ('active', 'completed')
+    )`);
+    params.push(filters.studentId);
+  }
 
   return query(
     `SELECT mr.id, mr.teacher_id AS teacherId, t.name AS teacherName,
             mr.course_id AS courseId, c.name AS courseName,
             mr.title, mr.type, mr.status, mr.admin_note AS adminNote,
+            mr.description, mr.video_url AS videoUrl, mr.document_url AS documentUrl,
             mr.submitted_at AS submittedAt, mr.created_at AS createdAt
        FROM teaching_material_requests mr
        JOIN users t ON t.id = mr.teacher_id
@@ -824,6 +937,11 @@ async function listMaterialRequests(filters = {}) {
 async function updateMaterialRequest(id, updates) {
   const allowed = {
     status: 'status',
+    title: 'title',
+    type: 'type',
+    description: 'description',
+    videoUrl: 'video_url',
+    documentUrl: 'document_url',
     adminNote: 'admin_note',
     submittedAt: 'submitted_at'
   };
@@ -1467,7 +1585,7 @@ async function getAdminDashboard() {
 }
 
 async function getStudentDashboard(userId) {
-  const [statsRows, courseRows, examRows, upcomingRows, activityRows, leaderboardRows, notificationRows, weeklyRows] = await Promise.all([
+  const [statsRows, courseRows, examRows, upcomingRows, activityRows, leaderboardRows, notificationRows, weeklyRows, materialRows] = await Promise.all([
     query(
       `SELECT
           (SELECT COUNT(*) FROM enrollments WHERE user_id = ? AND status = 'active') AS activeCourses,
@@ -1553,6 +1671,20 @@ async function getStudentDashboard(userId) {
         GROUP BY YEARWEEK(created_at, 1)
         ORDER BY weekKey`,
       [userId]
+    ),
+    query(
+      `SELECT mr.id, mr.title, mr.type, mr.description,
+              mr.video_url AS videoUrl, mr.document_url AS documentUrl,
+              mr.created_at AS createdAt, mr.submitted_at AS submittedAt,
+              c.id AS courseId, c.name AS courseName, t.name AS teacherName
+         FROM teaching_material_requests mr
+         JOIN courses c ON c.id = mr.course_id
+         JOIN enrollments e ON e.course_id = c.id AND e.user_id = ? AND e.status IN ('active', 'completed')
+         LEFT JOIN users t ON t.id = mr.teacher_id
+        WHERE mr.status = 'approved'
+        ORDER BY COALESCE(mr.submitted_at, mr.created_at) DESC
+        LIMIT 50`,
+      [userId]
     )
   ]);
 
@@ -1627,6 +1759,21 @@ async function getStudentDashboard(userId) {
       weekKey: String(row.weekKey),
       xp: toNumber(row.xp),
       activities: toNumber(row.activities)
+    })),
+    materials: materialRows.map(row => ({
+      id: row.id,
+      title: row.title,
+      name: row.title,
+      type: row.type,
+      description: row.description || '',
+      videoUrl: row.videoUrl || '',
+      documentUrl: row.documentUrl || '',
+      url: row.documentUrl || row.videoUrl || '',
+      courseId: row.courseId,
+      courseName: row.courseName,
+      teacherName: row.teacherName,
+      createdAt: isoDate(row.createdAt),
+      submittedAt: isoDate(row.submittedAt)
     }))
   };
 }
@@ -1733,7 +1880,9 @@ async function getTeacherDashboard(teacherId) {
       [teacherId]
     ),
     query(
-      `SELECT id, title, type, status, admin_note AS adminNote,
+      `SELECT id, title, type, status, description,
+              video_url AS videoUrl, document_url AS documentUrl,
+              admin_note AS adminNote,
               submitted_at AS submittedAt, created_at AS createdAt
          FROM teaching_material_requests
         WHERE teacher_id = ?
@@ -1809,6 +1958,9 @@ async function getTeacherDashboard(teacherId) {
       title: row.title,
       type: row.type,
       status: row.status,
+      description: row.description || '',
+      videoUrl: row.videoUrl || '',
+      documentUrl: row.documentUrl || '',
       adminNote: row.adminNote,
       submittedAt: isoDate(row.submittedAt),
       createdAt: isoDate(row.createdAt)
@@ -1884,6 +2036,9 @@ module.exports = {
   touchSession,
   deleteSession,
   createSubmission,
+  findSubmissionById,
+  listSubmissions,
+  updateSubmission,
   listCourses,
   findCourseById,
   createCourse,
@@ -1903,6 +2058,7 @@ module.exports = {
   createExam,
   createExamResult,
   findExamResultById,
+  listExamResults,
   gradeExamResult,
   markAttendance,
   createMaterialRequest,

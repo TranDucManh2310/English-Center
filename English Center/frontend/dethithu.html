@@ -8,7 +8,7 @@
   <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
   <link href="https://fonts.googleapis.com" rel="preconnect">
   <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Raleway:wght@400;600;700;800;900&family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2family=Roboto:wght@300;400;500;700&family=Raleway:wght@400;600;700;800;900&family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
   <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
   <link href="assets/vendor/aos/aos.css" rel="stylesheet">
@@ -442,8 +442,8 @@
         <div class="sidebar-box">
           <h6>Tiến độ</h6>
           <div style="font-size:.82rem;color:#555;line-height:1.8;">
-            <div>✅ Đã trả lời: <strong id="sb-answered">0</strong></div>
-            <div>⏭️ Bỏ qua: <strong id="sb-skipped">0</strong></div>
+            <div> Đã trả lời: <strong id="sb-answered">0</strong></div>
+            <div>⏭ Bỏ qua: <strong id="sb-skipped">0</strong></div>
             <div>⬜ Chưa làm: <strong id="sb-unanswered">50</strong></div>
           </div>
         </div>
@@ -465,7 +465,7 @@
           <span class="score-num" id="res-score">8.0</span>
           <span class="score-max">/ 10.0</span>
         </div>
-        <div class="result-grade" id="res-grade">Giỏi 🎉</div>
+        <div class="result-grade" id="res-grade">Giỏi </div>
         <div class="result-msg" id="res-msg">Xuất sắc! Bạn đã làm rất tốt!</div>
         <div class="result-time-spent"><i class="bi bi-clock me-1"></i>Thời gian hoàn thành: <strong id="res-time">45:20</strong></div>
       </div>
@@ -474,15 +474,15 @@
       <div class="result-stats" data-aos="fade-up">
         <div class="rs-card correct">
           <span class="rs-num" id="res-correct">0</span>
-          <span class="rs-lbl">Câu đúng ✅</span>
+          <span class="rs-lbl">Câu đúng </span>
         </div>
         <div class="rs-card wrong">
           <span class="rs-num" id="res-wrong">0</span>
-          <span class="rs-lbl">Câu sai ❌</span>
+          <span class="rs-lbl">Câu sai </span>
         </div>
         <div class="rs-card skip">
           <span class="rs-num" id="res-skip">0</span>
-          <span class="rs-lbl">Bỏ qua ⏭️</span>
+          <span class="rs-lbl">Bỏ qua ⏭</span>
         </div>
         <div class="rs-card">
           <span class="rs-num" id="res-pct">0%</span>
@@ -563,7 +563,7 @@
   <!-- Vendor JS -->
   <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="assets/vendor/aos/aos.js"></script>
-  <script src="assets/js/main.js"></script>
+  <script src="assets/js/app/template/main.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
   <script>
@@ -662,19 +662,19 @@
       explain:'Đáp án C: Diễn đạt xu hướng đang xảy ra ngay hiện tại → thì hiện tại tiếp diễn.' },
 
     /* PART 3 – READING (21-36) */
-    { id:21, part:'PART 3 – Đọc hiểu (Câu 21–36)', text:'<small style="color:#888;font-style:italic;">Read the following passage and choose the best answer.<br><br></small><b>Passage:</b> <i>"Social media has transformed the way people communicate. While it connects billions of people worldwide, it also raises concerns about privacy, mental health, and the spread of misinformation. Many experts argue that stricter regulations are needed to address these issues."</i><br><br>What is the main idea of the passage?',
+    { id:21, part:'PART 3 – Đọc hiểu (Câu 21–36)', text:'<small style="color:#888;font-style:italic;">Read the following passage and choose the best answer.<br><br></small><b>Passage:</b> <i>"Social media has transformed the way people communicate. While it connects billions of people worldwide, it also raises concerns about privacy, mental health, and the spread of misinformation. Many experts argue that stricter regulations are needed to address these issues."</i><br><br>What is the main idea of the passage',
       options:['A. Social media is entirely harmful to society.','B. Social media has both benefits and drawbacks.','C. Experts want to ban social media.','D. Privacy is the only concern with social media.'], answer:1,
       explain:'Đáp án B: Bài đọc đề cập đến cả mặt tích cực (kết nối) và tiêu cực (quyền riêng tư, sức khỏe tâm thần).' },
-    { id:22, part:'PART 3 – Đọc hiểu (Câu 21–36)', text:'According to the passage, what do many experts suggest?',
+    { id:22, part:'PART 3 – Đọc hiểu (Câu 21–36)', text:'According to the passage, what do many experts suggest',
       options:['A. Banning all social media platforms','B. Ignoring the concerns raised','C. Applying stricter regulations','D. Encouraging unlimited use'], answer:2,
       explain:'Đáp án C: "Many experts argue that stricter regulations are needed" – tác giả nêu rõ trong đoạn văn.' },
     { id:23, part:'PART 3 – Đọc hiểu (Câu 21–36)', text:'The word "transformed" in the passage is closest in meaning to ________.',
       options:['A. limited','B. changed dramatically','C. slightly improved','D. destroyed'], answer:1,
       explain:'Đáp án B: "Transform" = biến đổi hoàn toàn = "changed dramatically".' },
-    { id:24, part:'PART 3 – Đọc hiểu (Câu 21–36)', text:'Which of the following is NOT mentioned as a concern in the passage?',
+    { id:24, part:'PART 3 – Đọc hiểu (Câu 21–36)', text:'Which of the following is NOT mentioned as a concern in the passage',
       options:['A. Privacy','B. Mental health','C. Job loss','D. Misinformation'], answer:2,
       explain:'Đáp án C: "Job loss" (mất việc làm) không được đề cập trong đoạn văn.' },
-    { id:25, part:'PART 3 – Đọc hiểu (Câu 21–36)', text:'<small style="color:#888;font-style:italic;">Read the passage and choose the best answer.<br><br></small><b>Passage:</b> <i>"Renewable energy sources such as solar and wind power are becoming increasingly cost-effective. Governments around the world are investing heavily in clean energy to reduce carbon emissions and combat climate change."</i><br><br>What is the main purpose of investing in renewable energy?',
+    { id:25, part:'PART 3 – Đọc hiểu (Câu 21–36)', text:'<small style="color:#888;font-style:italic;">Read the passage and choose the best answer.<br><br></small><b>Passage:</b> <i>"Renewable energy sources such as solar and wind power are becoming increasingly cost-effective. Governments around the world are investing heavily in clean energy to reduce carbon emissions and combat climate change."</i><br><br>What is the main purpose of investing in renewable energy',
       options:['A. To create more jobs','B. To reduce carbon emissions','C. To increase electricity prices','D. To replace fossil fuels immediately'], answer:1,
       explain:'Đáp án B: "to reduce carbon emissions and combat climate change" được nêu rõ trong bài.' },
     { id:26, part:'PART 3 – Đọc hiểu (Câu 21–36)', text:'The phrase "cost-effective" in the passage means ________.',
@@ -707,7 +707,7 @@
     { id:35, part:'PART 3 – Đọc hiểu (Câu 21–36)', text:'The word "sustainable" in the context of "sustainable development" means ________.',
       options:['A. temporary and changing','B. able to continue over a long time','C. expensive and rare','D. fast and effective'], answer:1,
       explain:'Đáp án B: "sustainable" = bền vững = có thể duy trì lâu dài.' },
-    { id:36, part:'PART 3 – Đọc hiểu (Câu 21–36)', text:'Which sentence uses the correct form of the verb?\nA. She suggested to go to the cinema.\nB. He avoided to answer the question.\nC. They decided going abroad.\nD. We considered moving to another city.',
+    { id:36, part:'PART 3 – Đọc hiểu (Câu 21–36)', text:'Which sentence uses the correct form of the verb\nA. She suggested to go to the cinema.\nB. He avoided to answer the question.\nC. They decided going abroad.\nD. We considered moving to another city.',
       options:['A. She suggested to go to the cinema.','B. He avoided to answer the question.','C. They decided going abroad.','D. We considered moving to another city.'], answer:3,
       explain:'Đáp án D: "consider + V-ing". A sai (suggest + V-ing), B sai (avoid + V-ing), C sai (decide + to-V).' },
 
@@ -739,10 +739,10 @@
     { id:45, part:'PART 4 – Viết (Câu 37–50)', text:'"The more you practice English, ________ you become."',
       options:['A. the more fluent','B. more fluent','C. the fluent','D. most fluent'], answer:0,
       explain:'Đáp án A: Cấu trúc so sánh kép "the + so sánh hơn..., the + so sánh hơn...".' },
-    { id:46, part:'PART 4 – Viết (Câu 37–50)', text:'Choose the most suitable response.\nA: "Would you mind if I opened the window?"\nB: "________"',
+    { id:46, part:'PART 4 – Viết (Câu 37–50)', text:'Choose the most suitable response.\nA: "Would you mind if I opened the window"\nB: "________"',
       options:['A. Yes, please.','B. No, not at all. Go ahead.','C. Yes, go ahead.','D. I mind very much.'], answer:1,
       explain:'Đáp án B: "Would you mind if..." → trả lời "No" = không phiền = đồng ý cho làm.' },
-    { id:47, part:'PART 4 – Viết (Câu 37–50)', text:'Which sentence is GRAMMATICALLY CORRECT?',
+    { id:47, part:'PART 4 – Viết (Câu 37–50)', text:'Which sentence is GRAMMATICALLY CORRECT',
       options:['A. He suggested that she should to go home early.','B. She insisted on him paying for dinner.','C. They accused him to steal the money.','D. I apologize for to be late.'], answer:1,
       explain:'Đáp án B: "insist on + V-ing" là đúng. A sai (suggest + V, không cần "to"), C sai (accuse sb of), D sai (apologize for + V-ing).' },
     { id:48, part:'PART 4 – Viết (Câu 37–50)', text:'"By the end of next year, I ________ English for five years."',
@@ -771,22 +771,22 @@
   /* ════════════════════════════════════════
      RENDER DANH SÁCH
   ════════════════════════════════════════ */
-  function levelClass(l) { return l==='easy'?'lvl-easy':l==='hard'?'lvl-hard':'lvl-medium'; }
+  function levelClass(l) { return l==='easy''lvl-easy':l==='hard''lvl-hard':'lvl-medium'; }
 
   function renderCard(e, idx) {
     var locked = idx >= 2;
     var lockHtml = locked
-      ? '<div class="lock-overlay" onclick="showPW()">'
+       '<div class="lock-overlay" onclick="showPW()">'
           +'<div class="lock-icon"><i class="bi bi-lock-fill"></i></div>'
           +'<div class="lock-label">Nội dung giới hạn</div>'
           +'<div class="lock-sub">Đăng ký để mở khóa</div>'
         +'</div>'
       : '';
     var actionBtn = locked
-      ? '<button class="btn-start ms-1" style="background:#9ca3af;cursor:default" onclick="showPW()"><i class="bi bi-lock-fill"></i>Khóa</button>'
+       '<button class="btn-start ms-1" style="background:#9ca3af;cursor:default" onclick="showPW()"><i class="bi bi-lock-fill"></i>Khóa</button>'
       : '<button class="btn-start ms-1" onclick="startExam('+e.id+')"><i class="bi bi-play-fill"></i>Làm bài</button>';
     return '<div class="col-lg-4 col-md-6 exam-col" data-type="'+e.type+'" data-year="'+e.year+'" data-level="'+e.level+'" data-title="'+e.title.toLowerCase()+'">'
-      +'<div class="exam-card'+(locked?' locked':'')+'">'
+      +'<div class="exam-card'+(locked' locked':'')+'">'
         +lockHtml
         +'<div class="exam-thumb">'
           +'<img src="'+e.thumb+'" alt="" onerror="this.style.display=\'none\'">'
@@ -804,7 +804,7 @@
           +'<div class="exam-footer">'
             +'<div class="exam-attempts"><i class="bi bi-people-fill"></i>'+e.attempts.toLocaleString()+' lượt làm</div>'
             +'<div class="d-flex align-items-center gap-1">'
-              +(e.free?'<span class="tag-free">Miễn phí</span>':'<span class="tag-pro">Thành viên</span>')
+              +(e.free'<span class="tag-free">Miễn phí</span>':'<span class="tag-pro">Thành viên</span>')
               +actionBtn
             +'</div>'
           +'</div>'
@@ -829,7 +829,7 @@
         || col.getAttribute('data-year')===key
         || col.getAttribute('data-type')===key
         || col.getAttribute('data-level')===key;
-      col.style.display = show?'':'none';
+      col.style.display = show'':'none';
     });
   }
 
@@ -837,7 +837,7 @@
     var q = document.getElementById('examSearch').value.toLowerCase();
     document.querySelectorAll('.exam-col').forEach(function(col){
       var t = col.getAttribute('data-title')||'';
-      col.style.display = (!q||t.includes(q))?'':'none';
+      col.style.display = (!q||t.includes(q))'':'none';
     });
   }
 
@@ -878,7 +878,7 @@
       var m = Math.floor(remaining/60);
       var s = remaining%60;
       document.getElementById('timerVal').textContent =
-        (m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+        (m<10'0':'')+m+':'+(s<10'0':'')+s;
       if(remaining <= 120) document.getElementById('timerBox').classList.add('warning');
       if(remaining <= 0)  { clearInterval(timerInterval); autoSubmit(); }
     }
@@ -887,7 +887,7 @@
 
   function fmtTime(sec) {
     var m=Math.floor(sec/60), s=sec%60;
-    return (m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+    return (m<10'0':'')+m+':'+(s<10'0':'')+s;
   }
 
   /* ════════════════════════════════════════
@@ -915,7 +915,7 @@
         if(answers[idx]===i) cls = ' selected';
       }
       var label = String.fromCharCode(65+i);
-      optHtml += '<li class="option-item'+cls+'" onclick="'+(submitted?'':'selectOption('+idx+','+i+')')+'">'+
+      optHtml += '<li class="option-item'+cls+'" onclick="'+(submitted'':'selectOption('+idx+','+i+')')+'">'+
         '<span class="option-label">'+label+'</span>'+
         '<span class="option-text">'+opt+'</span>'+
       '</li>';
@@ -925,16 +925,16 @@
     /* Explanation (if submitted) */
     var explainHtml = '';
     if(submitted) {
-      explainHtml = '<div class="q-explain show"><strong>💡 Giải thích:</strong>'+q.explain+'</div>';
+      explainHtml = '<div class="q-explain show"><strong> Giải thích:</strong>'+q.explain+'</div>';
     }
 
     document.getElementById('q-body').innerHTML =
       '<p class="q-text">'+q.text.replace(/\n/g,'<br>')+'</p>'+optHtml+explainHtml;
 
     /* Nav buttons */
-    document.getElementById('btn-prev').style.visibility = idx===0?'hidden':'';
-    document.getElementById('btn-next').style.display    = idx===total-1?'none':'';
-    document.getElementById('btn-skip').style.display    = submitted?'none':'';
+    document.getElementById('btn-prev').style.visibility = idx===0'hidden':'';
+    document.getElementById('btn-next').style.display    = idx===total-1'none':'';
+    document.getElementById('btn-skip').style.display    = submitted'none':'';
 
     /* Update grid */
     updateQGrid();
@@ -1007,13 +1007,13 @@
   function confirmSubmit() {
     var unanswered = answers.filter(function(a){ return a===-1; }).length;
     var msg = unanswered>0
-      ? 'Bạn còn '+unanswered+' câu chưa trả lời. Bạn có chắc muốn nộp bài không?'
-      : 'Bạn đã trả lời tất cả các câu. Nộp bài ngay?';
+       'Bạn còn '+unanswered+' câu chưa trả lời. Bạn có chắc muốn nộp bài không'
+      : 'Bạn đã trả lời tất cả các câu. Nộp bài ngay';
     if(confirm(msg)) submitExam();
   }
 
   function confirmExit() {
-    if(confirm('Bạn có chắc muốn thoát? Kết quả sẽ không được lưu.')) {
+    if(confirm('Bạn có chắc muốn thoát Kết quả sẽ không được lưu.')) {
       clearInterval(timerInterval);
       goToList();
     }
@@ -1041,11 +1041,11 @@
 
     /* Grade */
     var grade, msg;
-    if(score10>=9)     { grade='Xuất sắc 🏆'; msg='Tuyệt vời! Bạn đã chinh phục đề thi này!'; }
-    else if(score10>=8){ grade='Giỏi 🎉';     msg='Rất tốt! Bạn đã làm bài xuất sắc!'; }
-    else if(score10>=7){ grade='Khá 👍';       msg='Khá tốt! Còn một ít cần ôn thêm.'; }
-    else if(score10>=5){ grade='Trung bình 📚';msg='Cần cố gắng thêm! Ôn lại những phần còn yếu.'; }
-    else               { grade='Cần cải thiện 💪';msg='Đừng nản! Hãy ôn luyện thêm và thử lại nhé.'; }
+    if(score10>=9)     { grade='Xuất sắc '; msg='Tuyệt vời! Bạn đã chinh phục đề thi này!'; }
+    else if(score10>=8){ grade='Giỏi ';     msg='Rất tốt! Bạn đã làm bài xuất sắc!'; }
+    else if(score10>=7){ grade='Khá ';       msg='Khá tốt! Còn một ít cần ôn thêm.'; }
+    else if(score10>=5){ grade='Trung bình ';msg='Cần cố gắng thêm! Ôn lại những phần còn yếu.'; }
+    else               { grade='Cần cải thiện ';msg='Đừng nản! Hãy ôn luyện thêm và thử lại nhé.'; }
 
     /* Show result page */
     document.getElementById('page-exam').style.display   = 'none';
@@ -1067,20 +1067,20 @@
       var userAns = answers[i];
       var isOk    = userAns===q.answer;
       var isSkip  = userAns===-1;
-      var statusCls = isSkip?'rs-skip':isOk?'rs-ok':'rs-fail';
-      var statusIcon = isSkip?'⏭️':isOk?'✅':'❌';
-      var userLabel  = userAns>=0 ? q.options[userAns] : '(Bỏ qua)';
+      var statusCls = isSkip'rs-skip':isOk'rs-ok':'rs-fail';
+      var statusIcon = isSkip'⏭':isOk'':'';
+      var userLabel  = userAns>=0  q.options[userAns] : '(Bỏ qua)';
       var corrLabel  = q.options[q.answer];
-      var ansCls     = isOk?'your-ans ok':'your-ans';
+      var ansCls     = isOk'your-ans ok':'your-ans';
       rv += '<div class="review-row">'
           +'<div class="review-qnum">C'+( i+1)+'</div>'
           +'<div class="review-content">'
-            +'<div class="review-q">'+q.text.replace(/<[^>]+>/g,'').replace(/\n/g,' ').substring(0,90)+(q.text.length>90?'…':'')+'</div>'
+            +'<div class="review-q">'+q.text.replace(/<[^>]+>/g,'').replace(/\n/g,' ').substring(0,90)+(q.text.length>90'…':'')+'</div>'
             +'<div class="review-answer">'
               +'Bạn chọn: <span class="'+ansCls+'">'+userLabel+'</span>'
-              +(isOk?'':' &nbsp;|&nbsp; Đáp án: <span class="correct-ans">'+corrLabel+'</span>')
+              +(isOk'':' &nbsp;|&nbsp; Đáp án: <span class="correct-ans">'+corrLabel+'</span>')
             +'</div>'
-            +(submitted&&!isOk&&!isSkip?'<div style="font-size:.77rem;color:#666;margin-top:.3rem;font-style:italic;">'+q.explain+'</div>':'')
+            +(submitted&&!isOk&&!isSkip'<div style="font-size:.77rem;color:#666;margin-top:.3rem;font-style:italic;">'+q.explain+'</div>':'')
           +'</div>'
           +'<div class="review-status '+statusCls+'">'+statusIcon+'</div>'
         +'</div>';
@@ -1138,7 +1138,7 @@
   </style>
   <div id="pw-modal">
     <div class="pw-box">
-      <button class="pw-close" onclick="closePW()">✕</button>
+      <button class="pw-close" onclick="closePW()">x</button>
       <div class="pw-badge"><i class="bi bi-shield-lock-fill"></i> Nội dung thành viên</div>
       <div class="pw-illu"><i class="bi bi-journal-text"></i></div>
       <div class="pw-title">Mở khóa toàn bộ đề thi</div>
@@ -1149,7 +1149,7 @@
         <div class="pw-perk"><i class="bi bi-check-circle-fill"></i> Đáp án & giải thích chi tiết sau mỗi bài thi</div>
         <div class="pw-perk"><i class="bi bi-check-circle-fill"></i> Thống kê & theo dõi tiến độ cá nhân</div>
       </div>
-      <button class="pw-btn1" onclick="closePW();window.location.href='dangky.html'">🎓 Đăng ký học ngay</button>
+      <button class="pw-btn1" onclick="closePW();window.location.href='dangky.html'"> Đăng ký học ngay</button>
       <button class="pw-btn2" onclick="closePW();window.location.href='dangnhap.html'">Tôi đã có tài khoản — Đăng nhập</button>
       <div class="pw-note">Các đề miễn phí luôn mở — không cần đăng ký.</div>
     </div>
@@ -1159,7 +1159,7 @@
     function closePW(){ document.getElementById('pw-modal').classList.remove('show'); document.body.style.overflow=''; }
     document.getElementById('pw-modal').addEventListener('click',function(e){ if(e.target===this) closePW(); });
   </script>
-  <script src="assets/js/site-integration.js?v=20260530-integrated-db"></script>
-  <script src="assets/js/auth.js?v=20260530-session-db"></script>
+  <script src="assets/js/app/core/site-integration.jsv=20260530-integrated-db"></script>
+  <script src="assets/js/app/core/auth.jsv=20260530-session-db"></script>
 </body>
 </html>

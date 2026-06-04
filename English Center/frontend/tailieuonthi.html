@@ -11,7 +11,7 @@
   <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
   <link href="https://fonts.googleapis.com" rel="preconnect">
   <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900&family=Raleway:ital,wght@0,100;0,400;0,600;0,700;0,800;0,900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900&family=Raleway:ital,wght@0,100;0,400;0,600;0,700;0,800;0,900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700&display=swap" rel="stylesheet">
   <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
   <link href="assets/vendor/aos/aos.css" rel="stylesheet">
@@ -203,8 +203,8 @@
             <div class="col-md-3">
               <select class="form-select form-select-sm" id="filterType" onchange="handleSearch()" style="font-size:.88rem;border-radius:8px;height:40px;">
                 <option value="all">Tất cả loại</option>
-                <option value="pdf">&#128196; PDF</option>
-                <option value="video">&#127902; Video</option>
+                <option value="pdf">PDF</option>
+                <option value="video">Video</option>
               </select>
             </div>
             <div class="col-md-3">
@@ -335,395 +335,9 @@
   <script src="assets/vendor/php-email-form/validate.js"></script>
   <script src="assets/vendor/aos/aos.js"></script>
   <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
-  <script src="assets/js/main.js"></script>
-
-  <script>
-  var data = {
-    nguphap: {
-      videoCount: 72,
-      pdfs: [
-        { title:'Tong hop Thi dong tu Tieng Anh',        pages:24, size:'2.1 MB', level:'Co ban',   free:true,  file:'ngu-phap-thi-dong-tu.pdf' },
-        { title:'Menh de quan he - Bai tap & Ly thuyet', pages:18, size:'1.8 MB', level:'Trung cap',free:true,  file:'menh-de-quan-he.pdf' },
-        { title:'Cau dieu kien loai 1, 2, 3 - Toan tap', pages:20, size:'1.9 MB', level:'Trung cap',free:false, file:'cau-dieu-kien.pdf' },
-        { title:'Cau bi dong - 50 bai tap co dap an',    pages:15, size:'1.4 MB', level:'Trung cap',free:true,  file:'assets/docs/cau-bi-dong.pdf' },
-        { title:'Cau gian tiep - Day du cong thuc',      pages:16, size:'1.5 MB', level:'Nang cao', free:false, file:'cau-gian-tiep.pdf' },
-        { title:'So sanh hon & So sanh nhat - Toan tap', pages:12, size:'1.1 MB', level:'Co ban',   free:true,  file:'so-sanh.pdf' }
-      ],
-      pdfTitles: ['Tổng hợp Thì động từ Tiếng Anh','Mệnh đề quan hệ – Bài tập & Lý thuyết','Câu điều kiện loại 1, 2, 3 – Toàn tập','Câu bị động – 50 bài tập có đáp án','Câu gián tiếp – Đầy đủ công thức','So sánh hơn & So sánh nhất – Toàn tập'],
-      videos: [
-        { title:'Thì hiện tại hoàn thành – Dấu hiệu nhận biết', teacher:'Nguyễn Thị Lan Anh', duration:'18:24', thumb:'assets/img/education/courses-1.webp', url:'https://www.youtube.com/embed/PbGnR-5gYpk' },
-        { title:'Câu điều kiện – Phân biệt loại 1, 2, 3',       teacher:'Nguyễn Thị Lan Anh', duration:'22:10', thumb:'assets/img/education/courses-2.webp', url:'https://www.youtube.com/embed/lG-K-EyWeKQ' },
-        { title:'Mệnh đề quan hệ – Khi nào dùng which/who/that',teacher:'Hoàng Thị Thu Hà',   duration:'15:45', thumb:'assets/img/education/courses-3.webp', url:'https://www.youtube.com/embed/E2hdanfRzO0' }
-      ],
-      flashcards: [
-        { word:'Present Perfect',    type:'grammar', meaning:'Thì Hiện tại hoàn thành', example:'I have studied English for 5 years.' },
-        { word:'Relative Clause',    type:'grammar', meaning:'Mệnh đề quan hệ',         example:'The book which I bought is interesting.' },
-        { word:'Conditional Type 2', type:'grammar', meaning:'Câu điều kiện loại 2',    example:'If I were rich, I would travel the world.' },
-        { word:'Passive Voice',      type:'grammar', meaning:'Câu bị động',             example:'English is spoken worldwide.' },
-        { word:'Reported Speech',    type:'grammar', meaning:'Câu gián tiếp',           example:'She said that she was tired.' },
-        { word:'Superlative',        type:'grammar', meaning:'So sánh nhất',            example:'He is the tallest student in class.' }
-      ]
-    },
-    tuvung: {
-      videoCount: 58,
-      pdfs: [
-        { title:'600 tu vung chu de Moi truong',        pages:20, size:'1.8 MB', level:'Trung cap',free:true,  file:'tv-moi-truong.pdf' },
-        { title:'Tu vung Khoa hoc & Cong nghe',         pages:22, size:'2.0 MB', level:'Nang cao', free:false, file:'tv-khoa-hoc.pdf' },
-        { title:'Tu vung Giao duc & Hoc tap',           pages:18, size:'1.6 MB', level:'Co ban',   free:true,  file:'tv-giao-duc.pdf' },
-        { title:'Word Formation - Cau tao tu toan tap', pages:25, size:'2.3 MB', level:'Nang cao', free:false, file:'word-formation.pdf' },
-        { title:'Phrasal Verbs pho bien trong de thi',  pages:16, size:'1.4 MB', level:'Trung cap',free:true,  file:'phrasal-verbs.pdf' },
-        { title:'Collocations 300 cap tu thuong gap',   pages:14, size:'1.3 MB', level:'Trung cap',free:false, file:'collocations.pdf' }
-      ],
-      pdfTitles: ['600 Từ vựng chủ đề Môi trường','Từ vựng Khoa học & Công nghệ','Từ vựng Giáo dục & Học tập','Word Formation – Cấu tạo từ toàn tập','Phrasal Verbs phổ biến trong đề thi','Collocations – 300 cặp từ thường gặp'],
-      videos: [
-        { title:'Kỹ thuật học 50 từ vựng/ngày hiệu quả',       teacher:'Phạm Khánh Linh', duration:'20:15', thumb:'assets/img/education/courses-4.webp', url:'https://www.youtube.com/embed/NaBFJBNXGF0' },
-        { title:'Word Formation – Tiền tố & Hậu tố quan trọng',teacher:'Phạm Khánh Linh', duration:'17:30', thumb:'assets/img/education/courses-5.webp', url:'https://www.youtube.com/embed/3qD4GqLYM6A' },
-        { title:'Phrasal Verbs thường gặp nhất đề THPTQG',     teacher:'Lê Hoàng Nam',    duration:'19:00', thumb:'assets/img/education/courses-6.webp', url:'https://www/youtube.com/embed/k8YLwDO64jc' }
-      ],
-      flashcards: [
-        { word:'Environment',    type:'vocab', meaning:'Môi trường',       example:'We must protect our environment.' },
-        { word:'Deforestation',  type:'vocab', meaning:'Nạn phá rừng',     example:'Deforestation destroys natural habitats.' },
-        { word:'Renewable',      type:'vocab', meaning:'Có thể tái tạo',   example:'Solar energy is a renewable resource.' },
-        { word:'Biodiversity',   type:'vocab', meaning:'Đa dạng sinh học', example:'The Amazon has rich biodiversity.' },
-        { word:'Sustainable',    type:'vocab', meaning:'Bền vững',         example:'Sustainable development is important.' },
-        { word:'Greenhouse gas', type:'vocab', meaning:'Khí nhà kính',     example:'CO2 is a major greenhouse gas.' },
-        { word:'Pollution',      type:'vocab', meaning:'Ô nhiễm',          example:'Air pollution affects our health.' },
-        { word:'Conservation',   type:'vocab', meaning:'Bảo tồn',          example:'Wildlife conservation is necessary.' }
-      ]
-    },
-    dochieu: {
-      videoCount: 65,
-      pdfs: [
-        { title:'Ky thuat Skimming & Scanning hieu qua',     pages:14, size:'1.3 MB', level:'Co ban',   free:true,  file:'skimming-scanning.pdf' },
-        { title:'100 Bai doc hieu co dap an - Co ban',       pages:60, size:'4.5 MB', level:'Co ban',   free:false, file:'doc-hieu-co-ban.pdf' },
-        { title:'100 Bai doc hieu co dap an - Nang cao',     pages:65, size:'4.8 MB', level:'Nang cao', free:false, file:'doc-hieu-nang-cao.pdf' },
-        { title:'Dien tu vao doan van - 50 bai luyen tap',   pages:30, size:'2.5 MB', level:'Trung cap',free:true,  file:'dien-tu.pdf' },
-        { title:'Tu dong nghia & Trai nghia thuong gap',     pages:18, size:'1.6 MB', level:'Trung cap',free:true,  file:'dong-nghia.pdf' },
-        { title:'Error identification - 80 cau tim loi sai', pages:25, size:'2.1 MB', level:'Nang cao', free:false, file:'error-id.pdf' }
-      ],
-      pdfTitles: ['Kỹ thuật Skimming & Scanning hiệu quả','100 Bài đọc hiểu có đáp án – Cơ bản','100 Bài đọc hiểu có đáp án – Nâng cao','Điền từ vào đoạn văn – 50 bài luyện tập','Từ đồng nghĩa & Trái nghĩa thường gặp','Error identification – 80 câu tìm lỗi sai'],
-      videos: [
-        { title:'Kỹ thuật đọc nhanh – Hoàn thành trong 18 phút', teacher:'Lê Hoàng Nam',       duration:'25:00', thumb:'assets/img/education/courses-7.webp',  url:'https://www.youtube.com/embed/7AbytfwIU30' },
-        { title:'Chiến lược điền từ vào đoạn văn',               teacher:'Lê Hoàng Nam',       duration:'21:15', thumb:'assets/img/education/courses-8.webp',  url:'https://www.youtube.com/embed/sisa9bqQvAQ' },
-        { title:'Phân tích cấu trúc đoạn văn học thuật',         teacher:'Ngô Thị Bích Ngọc',  duration:'18:40', thumb:'assets/img/education/courses-9.webp',  url:'https://www.youtube.com/embed/7KB5In0xywc' }
-      ],
-      flashcards: [
-        { word:'Main idea',        type:'reading', meaning:'Ý chính đoạn văn',              example:'The main idea is usually in the topic sentence.' },
-        { word:'Inference',        type:'reading', meaning:'Suy luận / ngụ ý',              example:"You can infer the author's attitude from the text." },
-        { word:'Paraphrase',       type:'reading', meaning:'Diễn đạt lại bằng từ khác',     example:'The answer is often a paraphrase of the text.' },
-        { word:'Context clue',     type:'reading', meaning:'Gợi ý từ văn cảnh',            example:'Use context clues to guess unknown words.' },
-        { word:'Topic sentence',   type:'reading', meaning:'Câu chủ đề',                   example:'The topic sentence introduces the paragraph.' },
-        { word:'Supporting detail',type:'reading', meaning:'Chi tiết hỗ trợ',              example:'Supporting details explain the main idea.' }
-      ]
-    },
-    nguam: {
-      videoCount: 48,
-      pdfs: [
-        { title:'Bang phien am IPA - Huong dan day du',   pages:12, size:'1.1 MB', level:'Co ban',   free:true,  file:'ipa-chart.pdf' },
-        { title:'Cac am de nham - th, sh, ng',            pages:10, size:'0.9 MB', level:'Co ban',   free:true,  file:'am-de-nham.pdf' },
-        { title:'Ngu dieu cau hoi & cau tra loi',         pages:14, size:'1.2 MB', level:'Trung cap',free:false, file:'ngu-dieu.pdf' },
-        { title:'Connected speech - Linking words',       pages:16, size:'1.4 MB', level:'Nang cao', free:false, file:'connected-speech.pdf' },
-        { title:'50 Bai nghe co transcript & dap an',     pages:45, size:'3.8 MB', level:'Trung cap',free:false, file:'bai-nghe.pdf' },
-        { title:'Stress & Intonation - Trong am tu',      pages:13, size:'1.2 MB', level:'Trung cap',free:true,  file:'trong-am.pdf' }
-      ],
-      pdfTitles: ['Bảng phiên âm IPA – Hướng dẫn đầy đủ','Các âm dễ nhầm – /θ/ /ð/ /ʃ/ /ʒ/','Ngữ điệu câu hỏi & câu trả lời','Connected speech – Linking words','50 Bài nghe có transcript & đáp án','Stress & Intonation – Trọng âm từ'],
-      videos: [
-        { title:'Phát âm chuẩn 44 âm IPA Tiếng Anh',         teacher:'Trần Thị Hương', duration:'30:00', thumb:'assets/img/education/courses-10.webp', url:'https://www.youtube.com/embed/EEj_LeERW1U' },
-        { title:'Linked speech – Nói tự nhiên như bản ngữ',   teacher:'Trần Thị Hương', duration:'22:30', thumb:'assets/img/education/courses-11.webp', url:'https://www.youtube.com/embed/-Uo1qYERol4' },
-        { title:'Kỹ năng nghe chọn từ điền vào chỗ trống',   teacher:'Trần Thị Hương', duration:'19:45', thumb:'assets/img/education/courses-12.webp', url:'' }
-      ],
-      flashcards: [
-        { word:'/θ/ – thin', type:'phonetics', meaning:'Âm "th" vô thanh', example:'think, three, thank, tooth' },
-        { word:'/ð/ – this', type:'phonetics', meaning:'Âm "th" hữu thanh', example:'this, that, the, them' },
-        { word:'/ʃ/ – she',  type:'phonetics', meaning:'Âm "sh"',           example:'she, ship, wash, nation' },
-        { word:'/ŋ/ – sing', type:'phonetics', meaning:'Âm "ng" cuối',      example:'sing, ring, long, hang' },
-        { word:'/æ/ – cat',  type:'phonetics', meaning:'Âm "a" ngắn mở',    example:'cat, hat, man, ran' },
-        { word:'/ɜː/ – bird',type:'phonetics', meaning:'Âm "er" dài',       example:'bird, word, heard, turn' }
-      ]
-    },
-    'luyen-de': {
-      videoCount: 42,
-      pdfs: [
-        { title:'De thi THPTQG 2024 - Co dap an chi tiet', pages:8,  size:'0.9 MB', level:'Nang cao', free:true,  file:'de-2024.pdf' },
-        { title:'De thi THPTQG 2023 - Co dap an chi tiet', pages:8,  size:'0.9 MB', level:'Nang cao', free:true,  file:'de-2023.pdf' },
-        { title:'De thi THPTQG 2022 - Co dap an chi tiet', pages:8,  size:'0.9 MB', level:'Nang cao', free:false, file:'de-2022.pdf' },
-        { title:'10 De thi thu THPTQG - Bo 1',             pages:80, size:'6.5 MB', level:'Nang cao', free:false, file:'de-thu-bo1.pdf' },
-        { title:'10 De thi thu THPTQG - Bo 2',             pages:80, size:'6.5 MB', level:'Nang cao', free:false, file:'de-thu-bo2.pdf' },
-        { title:'Phan tich cau truc de thi THPTQG 2024',   pages:20, size:'2.0 MB', level:'Trung cap',free:true,  file:'phan-tich-de.pdf' }
-      ],
-      pdfTitles: ['Đề thi THPTQG 2024 – Có đáp án chi tiết','Đề thi THPTQG 2023 – Có đáp án chi tiết','Đề thi THPTQG 2022 – Có đáp án chi tiết','10 Đề thi thử THPTQG – Bộ 1','10 Đề thi thử THPTQG – Bộ 2','Phân tích cấu trúc đề thi THPTQG 2024'],
-      videos: [
-        { title:'Giải chi tiết đề THPTQG 2024',                         teacher:'Trần Đức Minh',     duration:'45:00', thumb:'assets/img/education/courses-1.webp', url:'https://www.youtube.com/embed/zWhW79UzJjQ' },
-        { title:'Phân tích cấu trúc 50 câu đề thi 2023',                teacher:'Trần Đức Minh',     duration:'38:20', thumb:'assets/img/education/courses-3.webp', url:'https://www.youtube.com/embed/CiQykBafxF0' },
-        { title:'Chiến lược làm bài 50 câu trong 60 phút',              teacher:'Ngô Thị Bích Ngọc', duration:'28:00', thumb:'assets/img/education/courses-5.webp', url:'https://www.youtube.com/embed/_ncgaZWqQNs' }
-      ],
-      flashcards: [
-        { word:'Mark the letter A',    type:'exam', meaning:'Chọn đáp án đúng nhất', example:'Luôn đọc cả 4 đáp án trước khi chọn.' },
-        { word:'Underlining keywords', type:'exam', meaning:'Gạch chân từ khóa',     example:'Gạch chân từ khóa để tập trung khi đọc.' },
-        { word:'Elimination method',   type:'exam', meaning:'Phương pháp loại trừ',  example:'Loại đáp án sai rõ ràng trước.' },
-        { word:'Time management',      type:'exam', meaning:'Quản lý thời gian',     example:'Tối đa 72 giây cho mỗi câu hỏi.' },
-        { word:'Double-check',         type:'exam', meaning:'Kiểm tra lại đáp án',   example:'Dành 5 phút cuối để soát lại.' }
-      ]
-    },
-    captoc: {
-      videoCount: 30,
-      pdfs: [
-        { title:'Lo trinh on thi 4 tuan - Ke hoach chi tiet', pages:10, size:'1.0 MB', level:'Trung cap',free:true,  file:'lo-trinh-4-tuan.pdf' },
-        { title:'Tom tat Ngu phap trong tam - 1 trang A4',    pages:2,  size:'0.3 MB', level:'Co ban',   free:true,  file:'tom-tat-ngu-phap.pdf' },
-        { title:'200 Tu vung PHAI nho truoc ky thi',          pages:8,  size:'0.8 MB', level:'Co ban',   free:true,  file:'200-tu-vung.pdf' },
-        { title:'50 Cau truc cau quan trong nhat',            pages:12, size:'1.1 MB', level:'Trung cap',free:false, file:'50-cau-truc.pdf' },
-        { title:'Checklist kien thuc ngay truoc thi',         pages:4,  size:'0.5 MB', level:'Co ban',   free:true,  file:'checklist.pdf' },
-        { title:'Meo lam bai trac nghiem - Tranh bay diem',   pages:14, size:'1.3 MB', level:'Nang cao', free:false, file:'meo-trac-nghiem.pdf' }
-      ],
-      pdfTitles: ['Lộ trình ôn thi 4 tuần – Kế hoạch chi tiết','Tóm tắt Ngữ pháp trọng tâm – 1 trang A4','200 Từ vựng PHẢI nhớ trước kỳ thi','50 Cấu trúc câu quan trọng nhất','Checklist kiến thức ngày trước thi','Mẹo làm bài trắc nghiệm – Tránh bẫy điểm'],
-      videos: [
-        { title:'Ôn tập tổng hợp – Toàn bộ ngữ pháp trong 60 phút', teacher:'Vũ Đức Anh', duration:'60:00', thumb:'assets/img/education/courses-2.webp', url:'https://www.youtube.com/embed/wVCEjkyj-Nk' },
-        { title:'100 câu dễ – Không được sai trong đề thi',          teacher:'Vũ Đức Anh', duration:'35:00', thumb:'assets/img/education/courses-4.webp', url:'' },
-        { title:'Tâm lý thi cử – Vào phòng thi tự tin',              teacher:'Vũ Đức Anh', duration:'12:00', thumb:'assets/img/education/courses-6.webp', url:'' }
-      ],
-      flashcards: [
-        { word:'Thì PH. tại đơn', type:'review', meaning:'S + V(s/es)',              example:'He goes to school every day.' },
-        { word:'Thì PH. tại TT',  type:'review', meaning:'S + is/am/are + V-ing',   example:'She is studying right now.' },
-        { word:'Thì PH. tại HT',  type:'review', meaning:'S + have/has + V-ed/PII', example:'I have finished my homework.' },
-        { word:'Thì QK đơn',      type:'review', meaning:'S + V-ed / V2',           example:'We visited Hanoi last year.' },
-        { word:'Câu ĐK loại 1',   type:'review', meaning:'If + PH. đơn, Will + V',  example:'If it rains, we will stay home.' },
-        { word:'Câu ĐK loại 2',   type:'review', meaning:'If + QK đơn, Would + V',  example:'If I had money, I would buy it.' },
-        { word:'Câu bị động',     type:'review', meaning:'S + be + V-ed/PII + by O',example:'The book was written by her.' },
-        { word:'Câu gián tiếp',   type:'review', meaning:'Said that + lùi thì',     example:'He said that he was happy.' }
-      ]
-    }
-  };
-
-  var currentTab = 'nguphap';
-  var fcIndex    = {};
-
-  /* ── RENDER PDFs với paywall ── */
-  function renderPDFs(tab) {
-    var d = data[tab];
-    var rows = d.pdfs.map(function(p, i) {
-      var displayTitle = d.pdfTitles ? d.pdfTitles[i] : p.title;
-      var badge = i < 2
-        ? '<span class="pdf-badge badge-free">Miễn phí</span>'
-        : '<span class="pdf-badge badge-pro">Thành viên</span>';
-      var safeFile  = p.file.replace(/'/g, "\\'");
-      var safeTitle = displayTitle.replace(/'/g, "\\'");
-      var locked_pdf = i >= 2;
-      var lockHtml  = !locked_pdf ? '' :
-        '<div class="pdf-lock" onclick="showPW()">'
-          +'<div class="pdf-lock-icon"><i class="bi bi-lock-fill"></i></div>'
-          +'<div><div class="pdf-lock-txt">Tài liệu thành viên</div>'
-          +'<div class="pdf-lock-sub">Đăng ký để mở khóa</div></div>'
-        +'</div>';
-
-    var actionHtml = '';
-        if (!locked_pdf) {
-            // Nút Xem sẽ gọi hàm openPreview bạn đã viết
-            actionHtml = '<button class="btn-preview btn btn-sm btn-outline-danger me-2" onclick="openPreview(\''+safeFile+'\',\''+safeTitle+'\')">'
-                          +'<i class="bi bi-eye"></i> Xem'
-                        +'</button>'
-                        +'<a href="assets/docs/'+p.file+'" class="btn-dl btn btn-sm btn-danger" download>'
-                          +'<i class="bi bi-download"></i> Tải'
-                        +'</a>';
-        } else {
-            actionHtml = '<button class="btn-dl btn btn-sm" style="background:#9ca3af;color:#fff;cursor:default" onclick="showPW()">'
-                          +'<i class="bi bi-lock-fill"></i> Khóa'
-                        +'</button>';
-        }
-
-        return '<div class="col-lg-6 pdf-item" data-title="'+displayTitle.toLowerCase()+'">'
-            +'<div class="pdf-card'+(locked_pdf ? ' locked' : '')+'" style="display:flex; align-items:center; padding:15px; border:1px solid #ddd; border-radius:10px; margin-bottom:15px; position:relative;">'
-              +lockHtml
-              +'<div class="pdf-icon" style="font-size:2rem; color:#e84444; margin-right:15px;"><i class="bi bi-file-earmark-pdf-fill"></i></div>'
-              +'<div class="pdf-info" style="flex-grow:1;">'
-                +'<h6 style="margin-bottom:0; font-size:0.9rem; font-weight:bold;">'+displayTitle+'</h6>'
-                +'<small class="text-muted">'+p.pages+' trang &nbsp;&middot;&nbsp; '+p.size+' &nbsp;&middot;&nbsp; '+badge+'</small>'
-              +'</div>'
-              +'<div class="pdf-actions">' + actionHtml + '</div>'
-            +'</div>'
-          +'</div>';
-    }).join('');
-
-    return '<div class="section-label"><i class="bi bi-file-earmark-pdf"></i>Tài liệu PDF</div>'
-         + '<div class="row g-3 mb-5" id="pdf-grid">'+rows+'</div>';
-  }
-
-  /* ── RENDER Videos với paywall (video đầu tiên free, còn lại khóa) ── */
-  function renderVideos(tab) {
-    var d      = data[tab];
-    var videos = d.videos;
-    var total  = d.videoCount;
-    var cards  = videos.map(function(v, vi) {
-      var locked    = vi > 0;
-      var safeTitle = v.title.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-      var safeUrl   = (v.url || '').replace(/'/g, "\\'");
-      var lockHtml  = locked
-        ? '<div class="v-lock" onclick="showPW()">'
-            +'<div class="v-lock-icon"><i class="bi bi-lock-fill"></i></div>'
-            +'<div class="v-lock-lbl">Video thành viên</div>'
-            +'<div class="v-lock-sub">Đăng ký để xem</div>'
-          +'</div>'
-        : '';
-      var thumbClick = locked ? 'showPW()' : 'openVideo(\''+safeTitle+'\',\''+safeUrl+'\')';
-      return '<div class="col-md-4 video-item" data-title="'+v.title.toLowerCase()+'" data-type="video" data-level="">'
-        +'<div class="video-card'+(locked?' locked':'')+'">'
-          +lockHtml
-          +'<div class="video-thumb" onclick="'+thumbClick+'">'
-            +'<img src="'+v.thumb+'" alt="" onerror="this.style.display=\'none\'">'
-            +'<div class="play-btn"><i class="bi bi-play-fill"></i></div>'
-            +'<span class="video-duration">'+v.duration+'</span>'
-          +'</div>'
-          +'<div class="video-body">'
-            +'<h6>'+v.title+'</h6>'
-            +'<div class="video-teacher"><i class="bi bi-person-fill"></i>'+v.teacher+'</div>'
-          +'</div>'
-        +'</div>'
-      +'</div>';
-    }).join('');
-    var seeAll = '';
-    if (total > videos.length) {
-      seeAll = '<div class="col-12 mt-1"><div class="video-see-all">'
-        + '<i class="bi bi-play-circle me-1" style="color:var(--accent-color,#e84444);"></i>'
-        + 'Đang hiển thị <strong>'+videos.length+'</strong> video tiêu biểu &mdash; '
-        + 'Bộ này có tổng cộng <strong>'+total+'</strong> bài giảng. '
-        + '<a href="dangky.html">Đăng ký để xem toàn bộ &rarr;</a>'
-        + '</div></div>';
-    }
-    return '<div class="section-label">'
-        + '<i class="bi bi-play-circle"></i>Video bài giảng'
-        + '<span class="cbadge">'+total+' video</span>'
-      + '</div>'
-      + '<div class="row g-3 mb-5">'+cards+seeAll+'</div>';
-  }
-
-  function renderFlashcards(tab) {
-    var cards = data[tab].flashcards;
-    if (fcIndex[tab] === undefined) fcIndex[tab] = 0;
-    var idx  = fcIndex[tab];
-    var card = cards[idx];
-    var listItems = cards.map(function(c, i) {
-      var cls = i === idx ? ' active' : '';
-      return '<div class="fc-list-item'+cls+'" onclick="goToCard(\''+tab+'\','+i+')">'
-        +'<span class="fc-list-num">'+(i+1)+'</span>'
-        +'<span class="fc-list-word">'+c.word+'</span>'
-        +'<span class="fc-list-mean">'+c.meaning+'</span>'
-      +'</div>';
-    }).join('');
-    return '<div class="section-label"><i class="bi bi-layers"></i>Thẻ lật (Flashcard)</div>'
-      +'<div class="row g-4 mb-5 justify-content-center">'
-        +'<div class="col-md-5">'
-          +'<div class="flashcard-scene" id="fc-'+tab+'" onclick="flipCard(\''+tab+'\')">'+
-            '<div class="flashcard-inner">'
-              +'<div class="flashcard-front"><span class="fc-word">'+card.word+'</span><span class="fc-hint">['+card.type+']</span></div>'
-              +'<div class="flashcard-back"><span class="fc-meaning">'+card.meaning+'</span><span class="fc-example">'+card.example+'</span></div>'
-            +'</div>'
-          +'</div>'
-          +'<p class="flip-hint"><i class="bi bi-hand-index me-1"></i>Click vào thẻ để lật</p>'
-          +'<div class="fc-nav">'
-            +'<button onclick="prevCard(\''+tab+'\')"><i class="bi bi-chevron-left"></i> Trước</button>'
-            +'<span class="fc-counter" id="fc-count-'+tab+'">'+(idx+1)+' / '+cards.length+'</span>'
-            +'<button onclick="nextCard(\''+tab+'\')">Tiếp <i class="bi bi-chevron-right"></i></button>'
-          +'</div>'
-        +'</div>'
-        +'<div class="col-md-5">'
-          +'<div style="background:#f8f9fa;border-radius:12px;padding:1rem;max-height:280px;overflow-y:auto;" id="fc-list-'+tab+'">'
-            +'<p style="font-size:.76rem;font-weight:700;color:#aaa;margin:0 0 .6rem;text-transform:uppercase;letter-spacing:1px;">Tất cả thẻ</p>'
-            +listItems
-          +'</div>'
-        +'</div>'
-      +'</div>';
-  }
-
-  function renderTab(tab) {
-    document.getElementById('tab-content-area').innerHTML =
-      renderPDFs(tab) + renderVideos(tab) + renderFlashcards(tab);
-  }
-
-  function flipCard(tab) { var el=document.getElementById('fc-'+tab); if(el) el.classList.toggle('flipped'); }
-  function nextCard(tab) { var len=data[tab].flashcards.length; fcIndex[tab]=(fcIndex[tab]+1)%len; renderTab(tab); }
-  function prevCard(tab) { var len=data[tab].flashcards.length; fcIndex[tab]=(fcIndex[tab]-1+len)%len; renderTab(tab); }
-  function goToCard(tab,idx) {
-    fcIndex[tab]=idx; renderTab(tab);
-    setTimeout(function(){ var list=document.getElementById('fc-list-'+tab); var active=list&&list.querySelector('.active'); if(active) active.scrollIntoView({block:'nearest',behavior:'smooth'}); },50);
-  }
-
-  function switchTab(tab, btn) {
-    currentTab=tab;
-    document.querySelectorAll('.topic-tabs .nav-link').forEach(function(b){ b.classList.remove('active'); });
-    btn.classList.add('active');
-    resetSearch();
-    renderTab(tab);
-    window.scrollTo({top:document.getElementById('topicTabs').offsetTop-80,behavior:'smooth'});
-  }
-
-  function handleSearch() {
-    var query=document.getElementById('searchInput').value.toLowerCase().trim();
-    var type=document.getElementById('filterType').value;
-    var level=document.getElementById('filterLevel').value;
-    var items=document.querySelectorAll('.pdf-item, .video-item');
-    var shown=0;
-    items.forEach(function(item){
-      var ok=(!query||(item.getAttribute('data-title')||'').includes(query))
-            &&(type==='all'||item.getAttribute('data-type')===type)
-            &&(level==='all'||item.getAttribute('data-level')===level);
-      item.style.display=ok?'':'none';
-      if(ok) shown++;
-    });
-    var notice=document.getElementById('searchNotice');
-    if(query||type!=='all'||level!=='all'){
-      notice.style.display='block';
-      document.getElementById('searchNoticeText').textContent='Tìm thấy '+shown+' kết quả'+(query?' cho "'+query+'"':'');
-    } else { notice.style.display='none'; }
-  }
-
-  function resetSearch() {
-    document.getElementById('searchInput').value='';
-    document.getElementById('filterType').value='all';
-    document.getElementById('filterLevel').value='all';
-    document.getElementById('searchNotice').style.display='none';
-    document.querySelectorAll('.pdf-item, .video-item').forEach(function(i){ i.style.display=''; });
-  }
-
-  function openPreview(file, title) {
-   var fileUrl = 'assets/docs/' + file;
-    document.getElementById('previewTitle').textContent = 'Xem trước: ' + title;
-    document.getElementById('previewFileName').textContent = title;
-    var pdfViewer = document.getElementById('pdfViewer');
-    if (pdfViewer) {
-        pdfViewer.src = fileUrl;
-    }
-    var downloadBtn = document.getElementById('previewDownload');
-    if (downloadBtn) {
-        downloadBtn.href = fileUrl;
-        downloadBtn.setAttribute('download', title + '.pdf');
-    }
-    var myModal = new bootstrap.Modal(document.getElementById('previewModal'));
-    myModal.show();
-  }
-
-  function openVideo(title, url) {
-    document.getElementById('videoModalTitle').textContent=title;
-    var body=document.getElementById('videoModalBody');
-    if(url&&url.trim()!==''){
-      if(url.includes('youtube.com')||url.includes('youtu.be')){
-        body.innerHTML='<iframe src="'+url+'?autoplay=1&rel=0" width="100%" height="100%" style="aspect-ratio:16/9;display:block;" frameborder="0" allow="autoplay;encrypted-media" allowfullscreen></iframe>';
-      } else {
-        body.innerHTML='<video controls autoplay style="width:100%;aspect-ratio:16/9;display:block;background:#000;"><source src="'+url+'" type="video/mp4">Trình duyệt không hỗ trợ video.</video>';
-      }
-    } else {
-      body.innerHTML='<div class="video-placeholder py-5"><i class="bi bi-play-circle"></i><p style="font-size:.88rem;color:#ccc;margin:.5rem 0 .8rem;">'+title+'</p><p style="font-size:.78rem;color:#888;margin:0;">Video chưa được tích hợp.<br>Hướng dẫn: điền trường <code style="background:#333;padding:.1rem .3rem;border-radius:3px;">url</code> trong mảng <code style="background:#333;padding:.1rem .3rem;border-radius:3px;">videos</code> của từng tab.</p></div>';
-    }
-    new bootstrap.Modal(document.getElementById('videoModal')).show();
-  }
-
-  document.addEventListener('DOMContentLoaded', function() {
-    var vm=document.getElementById('videoModal');
-    if(vm){ vm.addEventListener('hide.bs.modal',function(){ document.getElementById('videoModalBody').innerHTML='<div class="video-placeholder"><i class="bi bi-play-circle"></i></div>'; }); }
-  });
-
-  renderTab('nguphap');
-  </script>
-
-  <!-- ══ PAYWALL MODAL ══ -->
+  <script src="assets/js/app/template/main.js"></script>
+  <script src="assets/js/app/features/public/materials.jsv=20260604-api-public"></script>
+<!-- ══ PAYWALL MODAL ══ -->
   <style>
     #pw-modal { display:none;position:fixed;inset:0;z-index:99999;align-items:center;justify-content:center;background:rgba(10,15,30,.68);backdrop-filter:blur(8px); }
     #pw-modal.show { display:flex; }
@@ -747,7 +361,7 @@
   </style>
   <div id="pw-modal">
     <div class="pw-box">
-      <button class="pw-close" onclick="closePW()">✕</button>
+      <button class="pw-close" onclick="closePW()">x</button>
       <div class="pw-badge"><i class="bi bi-shield-lock-fill"></i> Nội dung thành viên</div>
       <div class="pw-illu"><i class="bi bi-book-fill"></i></div>
       <div class="pw-title">Mở khóa tài liệu đầy đủ</div>
@@ -758,7 +372,7 @@
         <div class="pw-perk"><i class="bi bi-check-circle-fill"></i> Flashcard & bài tập tương tác theo chủ đề</div>
         <div class="pw-perk"><i class="bi bi-check-circle-fill"></i> Lộ trình học cá nhân hóa theo mục tiêu</div>
       </div>
-      <button class="pw-btn1" onclick="closePW();window.location.href='dangky.html'">🎓 Đăng ký học ngay</button>
+      <button class="pw-btn1" onclick="closePW();window.location.href='dangky.html'"> Đăng ký học ngay</button>
       <button class="pw-btn2" onclick="closePW();window.location.href='dangnhap.html'">Tôi đã có tài khoản — Đăng nhập</button>
       <div class="pw-note">Tài liệu miễn phí luôn mở — không cần đăng ký.</div>
     </div>
@@ -768,7 +382,7 @@
     function closePW(){ document.getElementById('pw-modal').classList.remove('show'); document.body.style.overflow=''; }
     document.getElementById('pw-modal').addEventListener('click',function(e){ if(e.target===this) closePW(); });
   </script>
-  <script src="assets/js/site-integration.js?v=20260530-integrated-db"></script>
-  <script src="assets/js/auth.js?v=20260530-session-db"></script>
+  <script src="assets/js/app/core/site-integration.jsv=20260530-integrated-db"></script>
+  <script src="assets/js/app/core/auth.jsv=20260530-session-db"></script>
 </body>
 </html>
