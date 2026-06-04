@@ -74,10 +74,10 @@ async function callAssistantService(payload) {
 }
 
 async function callDeepSeek(systemPrompt, messages) {
-  const key = process.env.DEEPSEEK_API_KEY || '';
-  if (!key || key === 'your_deepseek_api_key_here') return '';
-  const model = process.env.DEEPSEEK_MODEL || 'deepseek-chat';
-  const url = process.env.DEEPSEEK_API_URL || 'https://api.deepseek.com/v1/chat/completions';
+  const key = process.env.AI_API_KEY || process.env.DEEPSEEK_API_KEY || '';
+  if (!key || key === 'your_api_key_here') return '';
+  const model = process.env.AI_MODEL || process.env.DEEPSEEK_MODEL || 'gpt-4o-mini';
+  const url = process.env.AI_API_URL || process.env.DEEPSEEK_API_URL || 'https://api.openai.com/v1/chat/completions';
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 25000);
   try {

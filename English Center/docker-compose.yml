@@ -32,10 +32,10 @@ services:
       DB_PASSWORD: ${DB_PASSWORD:-ec_password}
       DB_NAME: ${DB_NAME:-english_center}
       PORT: 3000
-      # AI – lấy từ backend/.env hoặc đặt trực tiếp ở đây
-      DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY:-}
-      DEEPSEEK_MODEL: ${DEEPSEEK_MODEL:-deepseek-chat}
-      DEEPSEEK_API_URL: ${DEEPSEEK_API_URL:-https://api.deepseek.com/v1/chat/completions}
+      # AI – lấy từ .env hoặc đặt trực tiếp ở đây
+      AI_API_KEY: ${AI_API_KEY:-}
+      AI_MODEL: ${AI_MODEL:-gpt-4o-mini}
+      AI_API_URL: ${AI_API_URL:-https://api.openai.com/v1/chat/completions}
     depends_on:
       db:
         condition: service_healthy

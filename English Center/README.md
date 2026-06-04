@@ -260,10 +260,10 @@ Tất cả biến được đặt trong `backend/.env`:
 
 ```env
 # ── AI ────────────────────────────────────────────────────────
-DEEPSEEK_API_KEY=       # API key của provider AI
-DEEPSEEK_MODEL=         # Tên model, vd: deepseek-chat, gpt-4o
-DEEPSEEK_API_URL=       # Endpoint API (OpenAI-compatible format)
-                        # Mặc định: https://api.deepseek.com/v1/chat/completions
+AI_API_KEY=             # API key (OpenAI: sk-..., DeepSeek: tp-...)
+AI_MODEL=gpt-4o-mini    # Tên model: gpt-4o, gpt-4o-mini, deepseek-chat...
+AI_API_URL=https://api.openai.com/v1/chat/completions
+                        # DeepSeek: https://api.deepseek.com/v1/chat/completions
 
 # ── Database ──────────────────────────────────────────────────
 DB_HOST=127.0.0.1       # Host MySQL (Docker: tự override thành "db")
