@@ -1,0 +1,9 @@
+backend/node_modules
+backend/.env
+backend/data
+**/node_modules
+**/.git
+**/temp
+*.md
+*.bat
+*.txt

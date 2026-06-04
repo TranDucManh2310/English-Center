@@ -13,6 +13,15 @@
     materials: [],
     exams: [],
     notifications: [],
+    questions: [],
+    selectedStudentIds: new Set(),
+    renderedStudents: [],
+    currentStudentId: "",
+    aiDraft: "",
+    clecExercises: [],
+    clecAttachments: [],
+    examQuestions: [],
+    questionBank: [],
     currentSection: "dashboard",
     currentGradeId: "",
     currentAttendanceSessionId: ""
@@ -45,7 +54,11 @@
       }
     });
     const data = await response.json().catch(() => ({}));
-    if (!response.ok || data.ok === false) throw new Error(data.message || "Yeu cau khong thanh cong.");
+    if (!response.ok || data.ok === false) {
+      const error = new Error(data.message || "Yeu cau khong thanh cong.");
+      error.status = response.status;
+      throw error;
+    }
     return data;
   }
 
@@ -73,8 +86,144 @@
     return new Date(value).toLocaleDateString("vi-VN", { weekday: "short", day: "2-digit", month: "2-digit" });
   }
 
+  function downloadText(filename, content, type) {
+    const blob = new Blob([content], { type: type || "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  function csvEscape(value) {
+    const text = String(value ?? "");
+    return /[",\r\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
+  }
+
+  function toCsv(rows) {
+    return rows.map(row => row.map(csvEscape).join(",")).join("\r\n");
+  }
+
+  function parseCsv(text) {
+    const rows = [];
+    let row = [];
+    let cell = "";
+    let quoted = false;
+    for (let i = 0; i < text.length; i += 1) {
+      const ch = text[i];
+      const next = text[i + 1];
+      if (quoted) {
+        if (ch === '"' && next === '"') {
+          cell += '"';
+          i += 1;
+        } else if (ch === '"') {
+          quoted = false;
+        } else {
+          cell += ch;
+        }
+      } else if (ch === '"') {
+        quoted = true;
+      } else if (ch === ",") {
+        row.push(cell);
+        cell = "";
+      } else if (ch === "\n") {
+        row.push(cell.replace(/\r$/, ""));
+        rows.push(row);
+        row = [];
+        cell = "";
+      } else {
+        cell += ch;
+      }
+    }
+    if (cell || row.length) {
+      row.push(cell.replace(/\r$/, ""));
+      rows.push(row);
+    }
+    return rows.filter(item => item.some(value => String(value || "").trim()));
+  }
+
+  function generatedStudentEmail(name) {
+    const slug = String(name || "hocvien").normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase().replace(/[^a-z0-9]+/g, ".").replace(/^\.+|\.+$/g, "") || "hocvien";
+    return `${slug}.${Date.now().toString().slice(-6)}${Math.floor(Math.random() * 90 + 10)}@example.com`;
+  }
+
+  function normalizeText(value) {
+    return String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  }
+
+  function currentStudentRows() {
+    return state.renderedStudents && state.renderedStudents.length ? state.renderedStudents : state.students;
+  }
+
   function notify(message, type) {
     if (typeof window.toast === "function") window.toast(message, type || "success");
+  }
+
+  function toast(message, type) {
+    const wrap = document.getElementById("toastWrap");
+    if (!wrap) return;
+    const el = document.createElement("div");
+    el.className = `toast ${type === "error" ? "error" : type === "info" ? "info" : ""}`;
+    el.innerHTML = `<i class="bi ${type === "error" ? "bi-exclamation-circle-fill" : "bi-check-circle-fill"}"></i><span>${escapeHtml(message)}</span>`;
+    wrap.appendChild(el);
+    setTimeout(() => {
+      el.style.animation = "slideOut .25s ease forwards";
+      setTimeout(() => el.remove(), 260);
+    }, 2600);
+  }
+
+  function clearSession() {
+    if (window.EC_AUTH && typeof window.EC_AUTH.clearSession === "function") {
+      window.EC_AUTH.clearSession();
+      return;
+    }
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(USER_KEY);
+  }
+
+  function setDashboardStatus(title, subtitle) {
+    setText("#wTitle", title);
+    const sub = document.querySelector("#s-dashboard .topbar-sub");
+    if (sub) sub.textContent = subtitle || "";
+  }
+
+  function renderUnavailableState(message) {
+    const bodyA = document.getElementById("teacherAttentionBody") || document.querySelectorAll("#s-dashboard table tbody")[0];
+    const bodyB = document.getElementById("teacherPendingBody") || document.querySelectorAll("#s-dashboard table tbody")[1];
+    setText("#attentionCount", "0 truong hop");
+    setText("#teacherPendingCount", "0 bai");
+    setText("#teacherTodoCount", "0 viec");
+    if (bodyA) bodyA.innerHTML = `<tr><td colspan="4" style="text-align:center;color:var(--ink4);padding:20px">${escapeHtml(message)}</td></tr>`;
+    if (bodyB) bodyB.innerHTML = `<tr><td colspan="5" style="text-align:center;color:var(--ink4);padding:20px">${escapeHtml(message)}</td></tr>`;
+    const todo = document.getElementById("teacherTodoList");
+    if (todo) todo.innerHTML = `<div style="text-align:center;color:var(--ink4);padding:16px 0">${escapeHtml(message)}</div>`;
+  }
+
+  function showLoginRequired() {
+    clearSession();
+    state.user = null;
+    setText("#sbName", "Chua dang nhap");
+    setText("#sbEmail", "Vui long dang nhap lai");
+    setDashboardStatus("Chua dang nhap", "Dang chuyen ve trang dang nhap de lay lai phien lam viec.");
+    renderUnavailableState("Can dang nhap de xem du lieu giao vien.");
+    sessionStorage.setItem("ec_after_login", "dashboard_giaovien.html");
+    setTimeout(() => {
+      if (location.pathname.toLowerCase().includes("dashboard_giaovien")) location.href = "dangnhap.html";
+    }, 700);
+  }
+
+  function showRefreshError(error) {
+    if (error && (error.status === 401 || error.status === 403)) {
+      showLoginRequired();
+      return;
+    }
+    setDashboardStatus("Khong tai duoc dashboard", error.message || "Backend chua tra du lieu thanh cong.");
+    renderUnavailableState("Khong tai duoc du lieu. Vui long thu lai sau.");
+    notify(error.message || "Khong tai duoc dashboard.", "error");
   }
 
   function studentStatus(progress, score, absences) {
@@ -254,9 +403,10 @@
     const st = (document.getElementById("fst") || {}).value || "";
     const q = ((document.getElementById("fq") || {}).value || "").toLowerCase();
     const sortV = (document.getElementById("fsort") || {}).value || "name";
+    const stNorm = normalizeText(st);
     let rows = state.students.filter(student =>
       (!cl || student.l === cl) &&
-      (!st || student.st === st) &&
+      (!st || normalizeText(student.st) === stNorm) &&
       (!q || student.n.toLowerCase().includes(q) || student.email.toLowerCase().includes(q))
     );
     rows = rows.slice().sort((a, b) => {
@@ -266,6 +416,7 @@
       if (sortV === "absent") return b.ab - a.ab;
       return a.n.localeCompare(b.n, "vi");
     });
+    state.renderedStudents = rows;
     setText("#stCnt", `${rows.length} hoc sinh`);
     setText("#hsSubtitle", `${state.students.length} hoc sinh trong ${state.courses.length} lop hoc`);
     const body = document.getElementById("stBody");
@@ -274,7 +425,7 @@
       const idx = state.students.indexOf(student);
       const scoreColor = student.sc >= 8 ? "var(--green)" : student.sc >= 6.5 ? "var(--amber)" : "var(--red)";
       const absentColor = student.ab > 2 ? "var(--red)" : student.ab > 0 ? "var(--amber)" : "var(--green)";
-      return `<tr><td><input type="checkbox" class="tcb-sel" data-idx="${idx}" style="width:15px;height:15px;accent-color:var(--purple);cursor:pointer"></td>` +
+      return `<tr><td><input type="checkbox" class="tcb-sel" data-id="${escapeHtml(student.id)}" ${state.selectedStudentIds.has(student.id) ? "checked" : ""} style="width:15px;height:15px;accent-color:var(--purple);cursor:pointer"></td>` +
         `<td><div style="display:flex;align-items:center;gap:10px"><div class="ava" style="background:linear-gradient(${student.g})">${escapeHtml(student.i)}</div><div><div style="font-weight:700;color:var(--ink)">${escapeHtml(student.n)}</div><div style="font-size:11px;color:var(--ink4)">${escapeHtml(student.phone)}</div></div></div></td>` +
         `<td><span class="tag" style="background:#f1f5f9;color:var(--ink2);font-size:11px">${escapeHtml(student.l)}</span></td>` +
         `<td style="min-width:130px"><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--ink4);margin-bottom:3px"><span>Hoan thanh</span><span>${student.pr}%</span></div><div class="pb"><div class="pf" style="width:${student.pr}%;background:var(--purple)"></div></div></td>` +
@@ -282,8 +433,9 @@
         `<td style="text-align:center"><span style="font-size:13px;font-weight:700">${student.nop}</span><div style="font-size:10px;color:var(--ink4)">bai</div></td>` +
         `<td style="text-align:center"><span style="font-size:13px;font-weight:700;color:${absentColor}">${student.ab}</span><div style="font-size:10px;color:var(--ink4)">buoi</div></td>` +
         `<td style="text-align:center"><span class="tag" style="background:${student.sb};color:${student.st2}">${student.st}</span></td>` +
-        `<td style="text-align:center"><div style="display:flex;gap:4px;justify-content:center;flex-wrap:wrap"><button data-idx="${idx}" class="btn-xem-hs btn-sm sec" style="padding:4px 9px;font-size:11.5px"><i class="bi bi-person-lines-fill"></i> Ho so</button><button data-idx="${idx}" class="btn-nhank-hs btn-sm prim" style="padding:4px 9px;font-size:11.5px"><i class="bi bi-chat-dots-fill"></i> Nhan</button></div></td></tr>`;
+        `<td style="text-align:center"><div style="display:flex;gap:4px;justify-content:center;flex-wrap:wrap"><button data-id="${escapeHtml(student.id)}" class="btn-xem-hs btn-sm sec" style="padding:4px 9px;font-size:11.5px"><i class="bi bi-person-lines-fill"></i> Ho so</button><button data-id="${escapeHtml(student.id)}" class="btn-nhank-hs btn-sm prim" style="padding:4px 9px;font-size:11.5px"><i class="bi bi-chat-dots-fill"></i> Nhan</button></div></td></tr>`;
     }).join("") : `<tr><td colspan="9" style="text-align:center;color:var(--ink4);padding:28px">Khong co hoc sinh phu hop.</td></tr>`;
+    updateSelectionUi();
   }
 
   async function addNewStudent() {
@@ -292,8 +444,7 @@
     const courseId = document.getElementById("newHsLop").value || "";
     if (!name) return notify("Vui long nhap ho ten hoc sinh.", "error");
     if (!courseId) return notify("Vui long chon lop hoc.", "error");
-    const slug = name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, ".").replace(/^\.+|\.+$/g, "") || "hocvien";
-    const email = `${slug}.${Date.now().toString().slice(-6)}@example.com`;
+    const email = generatedStudentEmail(name);
     const data = await request("/api/users", {
       method: "POST",
       body: JSON.stringify({ name, phone, email, role: "student", password: "student123", courseId })
@@ -303,6 +454,155 @@
     document.getElementById("newHsPhone").value = "";
     document.getElementById("addHsForm").classList.remove("show");
     await refresh();
+  }
+
+  function toggleBulkMsg() {
+    const panel = document.getElementById("bulkMsgPanel");
+    if (panel) panel.style.display = panel.style.display === "none" || !panel.style.display ? "block" : "none";
+  }
+
+  function toggleAddHs() {
+    const form = document.getElementById("addHsForm");
+    if (form) form.classList.toggle("show");
+  }
+
+  function toggleChip(el) {
+    const wrap = el && el.parentElement;
+    if (!wrap) return;
+    wrap.querySelectorAll(".cls-chip").forEach(item => item.classList.remove("sel"));
+    el.classList.add("sel");
+  }
+
+  function updateSelectionUi() {
+    const count = state.selectedStudentIds.size;
+    const countEl = document.getElementById("selCount");
+    const deleteBtn = document.getElementById("btnDelSel");
+    const selAll = document.getElementById("selAll");
+    if (countEl) {
+      countEl.style.display = count ? "" : "none";
+      countEl.textContent = `${count} hoc sinh da chon`;
+    }
+    if (deleteBtn) deleteBtn.style.display = count ? "" : "none";
+    if (selAll) {
+      const visible = currentStudentRows();
+      selAll.checked = Boolean(visible.length) && visible.every(student => state.selectedStudentIds.has(student.id));
+    }
+  }
+
+  function toggleSelectAll(input) {
+    const checked = Boolean(input && input.checked);
+    currentStudentRows().forEach(student => {
+      if (checked) state.selectedStudentIds.add(student.id);
+      else state.selectedStudentIds.delete(student.id);
+    });
+    document.querySelectorAll("#stBody .tcb-sel").forEach(box => { box.checked = checked; });
+    updateSelectionUi();
+  }
+
+  function setSortHs(sort) {
+    const select = document.getElementById("fsort");
+    if (select) select.value = sort || "name";
+    renderSt();
+  }
+
+  function exportStudentList() {
+    const rows = currentStudentRows();
+    const csv = toCsv([
+      ["Name", "Email", "Phone", "Course", "Progress", "Average score", "Submissions", "Absences", "Status"],
+      ...rows.map(student => [student.n, student.email, student.phone, student.l, student.pr, student.sc, student.nop, student.ab, student.st])
+    ]);
+    downloadText(`teacher-students-${new Date().toISOString().slice(0, 10)}.csv`, csv, "text/csv;charset=utf-8");
+  }
+
+  function importCSV() {
+    let input = document.getElementById("teacherCsvImport");
+    if (!input) {
+      input = document.createElement("input");
+      input.type = "file";
+      input.id = "teacherCsvImport";
+      input.accept = ".csv,text/csv";
+      input.style.display = "none";
+      document.body.appendChild(input);
+      input.addEventListener("change", () => handleStudentCsv(input).catch(error => notify(error.message, "error")));
+    }
+    input.value = "";
+    input.click();
+  }
+
+  async function handleStudentCsv(input) {
+    const file = input.files && input.files[0];
+    if (!file) return;
+    const text = await file.text();
+    const rows = parseCsv(text);
+    if (!rows.length) return notify("File CSV khong co du lieu.", "error");
+    const headers = rows[0].map(item => String(item || "").trim().toLowerCase());
+    const hasHeader = headers.some(item => ["name", "ho ten", "họ tên", "phone", "email", "course", "lop", "lớp"].includes(item));
+    const dataRows = hasHeader ? rows.slice(1) : rows;
+    const indexOf = names => {
+      const idx = headers.findIndex(header => names.includes(header));
+      return idx >= 0 ? idx : -1;
+    };
+    const nameIdx = hasHeader ? indexOf(["name", "ho ten", "họ tên", "ten", "tên"]) : 0;
+    const phoneIdx = hasHeader ? indexOf(["phone", "sdt", "so dien thoai", "số điện thoại"]) : 1;
+    const emailIdx = hasHeader ? indexOf(["email"]) : 2;
+    const courseIdx = hasHeader ? indexOf(["course", "courseid", "course id", "lop", "lớp", "class"]) : 3;
+    const fallbackCourseId = document.getElementById("newHsLop")?.value || state.courses[0]?.id || "";
+    let created = 0;
+    for (const row of dataRows) {
+      const name = String(row[nameIdx] || "").trim();
+      if (!name) continue;
+      const courseRaw = String(row[courseIdx] || "").trim();
+      const course = state.courses.find(item => item.id === courseRaw || item.name.toLowerCase() === courseRaw.toLowerCase());
+      const courseId = (course && course.id) || fallbackCourseId;
+      if (!courseId) throw new Error("CSV can co lop hoc hoac giao vien phai co it nhat mot lop.");
+      await request("/api/users", {
+        method: "POST",
+        body: JSON.stringify({
+          name,
+          phone: phoneIdx >= 0 ? row[phoneIdx] || "" : "",
+          email: emailIdx >= 0 && row[emailIdx] ? row[emailIdx] : generatedStudentEmail(name),
+          role: "student",
+          password: "student123",
+          courseId
+        })
+      });
+      created += 1;
+    }
+    notify(`Da import ${created} hoc sinh.`);
+    await refresh();
+  }
+
+  function openStudentModal(studentId, focusMessage) {
+    const student = state.students.find(item => item.id === studentId);
+    if (!student) return;
+    state.currentStudentId = student.id;
+    setText("#hsName", student.n);
+    setText("#hsLop", student.l);
+    setText("#hsScore", `${Number(student.sc || 0).toFixed(1)}/10`);
+    setText("#hsNop", `${student.nop} bai`);
+    setText("#hsAbsent", `${student.ab} buoi`);
+    setText("#hsPhone", student.phone || student.email || "-");
+    setText("#hsProgTxt", `${student.pr}%`);
+    const prog = document.getElementById("hsProg");
+    if (prog) prog.style.width = `${student.pr}%`;
+    const status = document.getElementById("hsStatus");
+    if (status) {
+      status.textContent = student.st;
+      status.style.background = student.sb;
+      status.style.color = student.st2;
+    }
+    const note = document.getElementById("hsNote");
+    if (note) note.value = localStorage.getItem(`ec_teacher_note_${student.id}`) || "";
+    setText("#hsMsgTarget", student.n);
+    const modal = document.getElementById("hsModal");
+    if (modal) modal.classList.add("show");
+    if (focusMessage) setTimeout(() => document.getElementById("hsMsgTa")?.focus(), 0);
+  }
+
+  function saveHsNote() {
+    if (!state.currentStudentId) return;
+    localStorage.setItem(`ec_teacher_note_${state.currentStudentId}`, document.getElementById("hsNote")?.value || "");
+    notify("Da luu ghi chu hoc sinh.");
   }
 
   function renderLectures() {
@@ -339,13 +639,100 @@
     }[status] || { label: status || "Moi", bg: "#f1f5f9", color: "#64748b" };
   }
 
+  function openCreateLec() {
+    const modal = document.getElementById("createLecModal");
+    if (modal) modal.classList.add("show");
+  }
+
+  function closeCreateLec() {
+    const modal = document.getElementById("createLecModal");
+    if (modal) modal.classList.remove("show");
+  }
+
+  function switchClecTab(btn, id) {
+    document.querySelectorAll(".clec-tab").forEach(tab => {
+      tab.classList.remove("active");
+      tab.style.borderBottomColor = "transparent";
+      tab.style.color = "var(--ink3)";
+    });
+    if (btn) {
+      btn.classList.add("active");
+      btn.style.borderBottomColor = "var(--purple)";
+      btn.style.color = "var(--purple)";
+    }
+    ["clec-info", "clec-content", "clec-exercise", "clec-files"].forEach(tabId => {
+      const panel = document.getElementById(tabId);
+      if (panel) panel.style.display = tabId === id ? "" : "none";
+    });
+  }
+
+  function handleClecFileSelect(input, type) {
+    const file = input.files && input.files[0];
+    if (!file) return;
+    setClecFileName(type, file.name);
+  }
+
+  function handleClecFileDrop(event, type) {
+    event.preventDefault();
+    const file = event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files[0];
+    if (!file) return;
+    setClecFileName(type, file.name);
+  }
+
+  function setClecFileName(type, name) {
+    if (type === "video") {
+      const el = document.getElementById("clecVideoName");
+      if (el) {
+        el.style.display = "block";
+        el.textContent = name;
+      }
+    } else if (type === "slide") {
+      setText("#clecSlideName", name);
+    } else if (type === "attach") {
+      state.clecAttachments.push(name);
+      renderAttachList();
+    }
+  }
+
+  function handleClecAttach(input) {
+    Array.from(input.files || []).forEach(file => state.clecAttachments.push(file.name));
+    renderAttachList();
+  }
+
+  function renderAttachList() {
+    const list = document.getElementById("attachList");
+    if (!list) return;
+    list.innerHTML = state.clecAttachments.length ? state.clecAttachments.map((name, index) => (
+      `<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:#fff"><i class="bi bi-paperclip"></i><span style="flex:1;font-size:12.5px;font-weight:600">${escapeHtml(name)}</span><button type="button" data-index="${index}" class="btn-remove-attach" style="border:none;background:#fee2e2;color:#dc2626;border-radius:6px;padding:3px 8px;cursor:pointer">x</button></div>`
+    )).join("") : "";
+  }
+
+  function addExercise(type) {
+    const labels = { mc: "Trac nghiem", fill: "Dien vao cho trong", match: "Noi cap", order: "Sap xep cau", h5p: "H5P" };
+    state.clecExercises.push({ type, title: labels[type] || "Bai tap" });
+    renderExercises();
+  }
+
+  function renderExercises() {
+    const list = document.getElementById("exerciseList");
+    const badge = document.getElementById("exBadge");
+    if (badge) badge.textContent = state.clecExercises.length;
+    if (!list) return;
+    list.innerHTML = state.clecExercises.length ? state.clecExercises.map((item, index) => (
+      `<div class="q-item"><button class="q-del btn-remove-exercise" data-index="${index}" type="button">x</button><div style="font-size:13px;font-weight:800;color:var(--ink);margin-bottom:8px">${escapeHtml(item.title)}</div><input data-index="${index}" class="exercise-title" value="${escapeHtml(item.title)}" style="width:100%;border:1.5px solid var(--line);border-radius:6px;padding:8px 10px;font-size:13px;font-family:inherit" placeholder="Mo ta bai tap"></div>`
+    )).join("") : `<div id="exEmpty" style="text-align:center;padding:36px;color:var(--ink4);font-size:13.5px"><i class="bi bi-puzzle" style="font-size:32px;display:block;margin-bottom:8px;opacity:.35"></i>Chua co bai tap nao.</div>`;
+  }
+
   async function submitMaterial(status) {
     const title = (document.getElementById("clecTitle").value || "").trim();
     const courseId = document.getElementById("clecClass").value || "";
+    const exercises = Array.from(document.querySelectorAll(".exercise-title")).map(input => input.value.trim()).filter(Boolean);
     const description = [
       (document.getElementById("clecDesc").value || "").trim(),
       (document.getElementById("clecGoal").value || "").trim(),
-      (document.getElementById("clecNote").value || "").trim()
+      (document.getElementById("clecNote").value || "").trim(),
+      exercises.length ? `Bai tap tuong tac:\n- ${exercises.join("\n- ")}` : "",
+      state.clecAttachments.length ? `File dinh kem:\n- ${state.clecAttachments.join("\n- ")}` : ""
     ].filter(Boolean).join("\n\n");
     const videoUrl = (document.getElementById("clecVideoLink").value || "").trim();
     const documentUrl = (document.getElementById("clecDocLink").value || "").trim();
@@ -361,7 +748,7 @@
     notify(status === "pending" ? "Da luu ban nhap." : "Da gui noi dung cho quan tri vien duyet.");
     if (typeof window.closeCreateLec === "function") window.closeCreateLec();
     await refresh();
-    if (typeof window.nav === "function") window.nav("baigiang", document.querySelector("[onclick*=baigiang]"));
+    if (typeof window.nav === "function") window.nav("baigiang");
   }
 
   function renderDe() {
@@ -372,23 +759,162 @@
       const pending = Number(exam.pendingSubmissions || 0);
       return `<div style="padding:13px 0;border-bottom:1px solid var(--line)"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:5px"><span style="font-size:13.5px;font-weight:700">${escapeHtml(exam.title)}</span><span style="font-size:11.5px;color:var(--ink4)">${escapeHtml(moneyDate(exam.createdAt))}</span></div>` +
         `<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:7px"><span class="tag" style="background:#ede9fe;color:#6d28d9;font-size:11px">${escapeHtml(exam.courseName || "Chua gan lop")}</span><span style="font-size:12px;font-weight:600;color:var(--ink3)">${total} bai nop - ${pending} cho cham</span></div>` +
-        `<div style="display:flex;gap:6px"><button onclick="window.nav && nav('dashboard',document.querySelector('[onclick*=dashboard]'))" style="background:var(--purple-lt);color:var(--purple);border:none;border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer"><i class="bi bi-bar-chart-fill me-1"></i>Xem bai nop</button></div></div>`;
+        `<div style="display:flex;gap:6px"><button onclick="window.nav && nav('dashboard')" style="background:var(--purple-lt);color:var(--purple);border:none;border-radius:6px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer"><i class="bi bi-bar-chart-fill me-1"></i>Xem bai nop</button></div></div>`;
     }).join("") : `<div style="text-align:center;color:var(--ink4);padding:30px">Chua co de kiem tra nao.</div>`;
+  }
+
+  function switchDeTab(btn, id) {
+    document.querySelectorAll("#s-taode .tab-btn").forEach(tab => tab.classList.remove("active"));
+    if (btn) btn.classList.add("active");
+    ["tab-info", "tab-questions", "tab-history"].forEach(tabId => {
+      const el = document.getElementById(tabId);
+      if (el) el.style.display = tabId === id ? "" : "none";
+    });
+  }
+
+  function questionTemplate(type, seed) {
+    return {
+      id: `q_${Date.now()}_${Math.random().toString(16).slice(2)}`,
+      type: type === "tl" ? "essay" : "multiple_choice",
+      content: seed?.content || "",
+      options: seed?.options || ["", "", "", ""],
+      correctAnswer: seed?.correctAnswer || "A",
+      explanation: seed?.explanation || ""
+    };
+  }
+
+  function addQuestion(type, seed) {
+    state.examQuestions.push(questionTemplate(type, seed));
+    renderQuestionList();
+  }
+
+  function collectExamQuestions() {
+    return Array.from(document.querySelectorAll("#questionList .q-item")).map((item, index) => {
+      const type = item.dataset.type;
+      const content = item.querySelector(".q-content")?.value.trim() || "";
+      const explanation = item.querySelector(".q-exp")?.value.trim() || "";
+      if (type === "essay") {
+        return { questionNo: index + 1, type: "essay", content, options: [], correctAnswer: item.querySelector(".q-answer")?.value.trim() || "", explanation };
+      }
+      const options = Array.from(item.querySelectorAll(".q-opt-input")).map(input => input.value.trim());
+      return { questionNo: index + 1, type: "multiple_choice", content, options, correctAnswer: item.querySelector(".q-correct")?.value || "A", explanation };
+    }).filter(item => item.content);
+  }
+
+  function renderQuestionList() {
+    const list = document.getElementById("questionList");
+    const count = state.examQuestions.length;
+    setText("#qCount", count);
+    setText("#qCountBig", `${count} cau hoi`);
+    if (!list) return;
+    list.innerHTML = count ? state.examQuestions.map((q, index) => {
+      if (q.type === "essay") {
+        return `<div class="q-item" data-type="essay" data-id="${q.id}"><button type="button" class="q-del btn-del-question" data-id="${q.id}">x</button><div style="font-size:12px;font-weight:800;color:var(--purple);margin-bottom:8px">Cau ${index + 1} - Tu luan</div><textarea class="q-content" rows="3" style="width:100%;border:1.5px solid var(--line);border-radius:6px;padding:8px 10px;font-family:inherit;font-size:13px" placeholder="Noi dung cau hoi">${escapeHtml(q.content)}</textarea><input class="q-answer" value="${escapeHtml(q.correctAnswer || "")}" style="width:100%;border:1.5px solid var(--line);border-radius:6px;padding:8px 10px;margin-top:8px;font-family:inherit;font-size:13px" placeholder="Dap an goi y"><textarea class="q-exp" rows="2" style="width:100%;border:1.5px solid var(--line);border-radius:6px;padding:8px 10px;margin-top:8px;font-family:inherit;font-size:13px" placeholder="Giai thich">${escapeHtml(q.explanation || "")}</textarea></div>`;
+      }
+      return `<div class="q-item" data-type="multiple_choice" data-id="${q.id}"><button type="button" class="q-del btn-del-question" data-id="${q.id}">x</button><div style="font-size:12px;font-weight:800;color:var(--purple);margin-bottom:8px">Cau ${index + 1} - Trac nghiem</div><textarea class="q-content" rows="2" style="width:100%;border:1.5px solid var(--line);border-radius:6px;padding:8px 10px;font-family:inherit;font-size:13px" placeholder="Noi dung cau hoi">${escapeHtml(q.content)}</textarea>${["A", "B", "C", "D"].map((label, optIndex) => `<div class="q-opt"><span style="width:22px;font-weight:800;color:var(--ink3)">${label}</span><input class="q-opt-input" value="${escapeHtml(q.options[optIndex] || "")}" style="flex:1;border:1.5px solid var(--line);border-radius:6px;padding:7px 10px;font-size:13px;font-family:inherit" placeholder="Lua chon ${label}"></div>`).join("")}<div style="display:flex;gap:8px"><select class="q-correct" style="border:1.5px solid var(--line);border-radius:6px;padding:7px 10px;font-size:13px"><option ${q.correctAnswer === "A" ? "selected" : ""}>A</option><option ${q.correctAnswer === "B" ? "selected" : ""}>B</option><option ${q.correctAnswer === "C" ? "selected" : ""}>C</option><option ${q.correctAnswer === "D" ? "selected" : ""}>D</option></select><input class="q-exp" value="${escapeHtml(q.explanation || "")}" style="flex:1;border:1.5px solid var(--line);border-radius:6px;padding:7px 10px;font-size:13px;font-family:inherit" placeholder="Giai thich"></div></div>`;
+    }).join("") : `<div style="text-align:center;padding:40px;color:var(--ink4);font-size:13.5px"><i class="bi bi-file-earmark-plus" style="font-size:32px;display:block;margin-bottom:8px;opacity:.4"></i>Chua co cau hoi nao.</div>`;
+  }
+
+  function shuffleQuestions() {
+    state.examQuestions = collectExamQuestions().map((item, index) => ({ ...item, id: state.examQuestions[index]?.id || `q_${index}` })).sort(() => Math.random() - 0.5);
+    renderQuestionList();
+  }
+
+  function clearQuestions() {
+    state.examQuestions = [];
+    renderQuestionList();
+  }
+
+  function quickTemplate(kind) {
+    const title = document.getElementById("tenDe");
+    const duration = document.querySelector("#s-taode input[type=number]");
+    if (kind === "TN40") {
+      if (title) title.value = "De 40 cau trac nghiem chuan THPTQG";
+      if (duration) duration.value = 40;
+      document.getElementById("deLoai").value = "Trac nghiem";
+      clearQuestions();
+      addQuestion("tn", { content: "Chon dap an dung.", options: ["A", "B", "C", "D"], correctAnswer: "A" });
+    } else if (kind === "TL10") {
+      if (title) title.value = "Kiem tra tu luan ngu phap";
+      if (duration) duration.value = 5;
+      document.getElementById("deLoai").value = "Tu luan";
+      clearQuestions();
+      addQuestion("tl", { content: "Viet lai cau sao cho nghia khong doi.", correctAnswer: "Dap an mau" });
+    } else {
+      if (title) title.value = "De ket hop trac nghiem va tu luan";
+      document.getElementById("deLoai").value = "Ket hop";
+      clearQuestions();
+      addQuestion("tn", { content: "Chon dap an dung.", options: ["A", "B", "C", "D"], correctAnswer: "A" });
+      addQuestion("tl", { content: "Giai thich lua chon cua em.", correctAnswer: "Giai thich hop ly" });
+    }
+  }
+
+  function previewExam() {
+    const questions = collectExamQuestions();
+    setText("#prvExamTitle", document.getElementById("tenDe")?.value || "Xem truoc de thi");
+    setText("#prvExamMeta", `${questions.length} cau hoi`);
+    const body = document.getElementById("examPreviewBody");
+    if (body) {
+      body.innerHTML = questions.length ? questions.map((q, index) => `<div class="exam-q"><div style="font-weight:800;margin-bottom:8px">Cau ${index + 1}. ${escapeHtml(q.content)}</div>${(q.options || []).filter(Boolean).map((opt, optIndex) => `<div class="exam-opt">${String.fromCharCode(65 + optIndex)}. ${escapeHtml(opt)}</div>`).join("")}</div>`).join("") : `<div style="text-align:center;padding:30px;color:var(--ink4)">Chua co cau hoi nao de xem truoc.</div>`;
+    }
+    document.getElementById("examPreviewModal")?.classList.add("show");
+  }
+
+  function closeExamPreview() {
+    document.getElementById("examPreviewModal")?.classList.remove("show");
+  }
+
+  function ensureQuestionBank() {
+    if (state.questionBank.length) return;
+    state.questionBank = [
+      questionTemplate("tn", { content: "If I ___ you, I would review the lesson again.", options: ["am", "were", "was", "be"], correctAnswer: "B", explanation: "Cau dieu kien loai 2 dung were." }),
+      questionTemplate("tn", { content: "Choose the word closest in meaning to important.", options: ["vital", "minor", "simple", "late"], correctAnswer: "A" }),
+      questionTemplate("tl", { content: "Rewrite: Although it rained, we continued the class.", correctAnswer: "Despite the rain, we continued the class." })
+    ];
+  }
+
+  function importFromBank() {
+    ensureQuestionBank();
+    renderBank();
+    document.getElementById("bankModal")?.classList.add("show");
+  }
+
+  function renderBank() {
+    ensureQuestionBank();
+    const q = (document.getElementById("bankSearch")?.value || "").toLowerCase();
+    const list = document.getElementById("bankList");
+    if (!list) return;
+    const rows = state.questionBank.filter(item => !q || item.content.toLowerCase().includes(q));
+    list.innerHTML = rows.map(item => `<label class="qa" style="cursor:pointer"><input type="checkbox" class="bank-choice" value="${item.id}" style="width:16px;height:16px;accent-color:var(--purple)"><div style="flex:1"><div style="font-size:13px;font-weight:700">${escapeHtml(item.content)}</div><div style="font-size:11.5px;color:var(--ink4)">${item.type === "essay" ? "Tu luan" : "Trac nghiem"}</div></div></label>`).join("") || `<div style="text-align:center;color:var(--ink4);padding:24px">Khong co cau hoi phu hop.</div>`;
+  }
+
+  function addSelectedBank() {
+    const ids = Array.from(document.querySelectorAll(".bank-choice:checked")).map(input => input.value);
+    state.questionBank.filter(item => ids.includes(item.id)).forEach(item => addQuestion(item.type === "essay" ? "tl" : "tn", item));
+    document.getElementById("bankModal")?.classList.remove("show");
+  }
+
+  function closeBank() {
+    document.getElementById("bankModal")?.classList.remove("show");
   }
 
   async function createExamFromForm() {
     const title = (document.getElementById("tenDe").value || "").trim();
-    const courseId = document.querySelector("#s-taode .fr select").value || "";
-    const duration = Number(document.querySelector("#s-taode input[type=number]").value || 60);
+    const selects = document.querySelectorAll("#s-taode #tab-info .fr select");
+    const courseId = selects[0]?.value || "";
+    const duration = parseInt(selects[1]?.value || "60", 10) || 60;
     const type = document.getElementById("deLoai").value || "quiz";
     if (!title) return notify("Vui long nhap ten de.", "error");
     if (!courseId) return notify("Vui long chon lop hoc.", "error");
+    const dueAt = document.querySelector("#s-taode input[type=date]")?.value || "";
     await request("/api/exams", {
       method: "POST",
-      body: JSON.stringify({ title, courseId, durationMinutes: duration, type, totalScore: 10, status: "published" })
+      body: JSON.stringify({ title, courseId, durationMinutes: duration, type, totalScore: 10, status: "published", dueAt: dueAt || null, questions: collectExamQuestions() })
     });
     document.getElementById("tenDe").value = "";
+    state.examQuestions = [];
     if (window.QUESTIONS) window.QUESTIONS.length = 0;
+    renderQuestionList();
     notify("Da tao de kiem tra.");
     await refresh();
     renderDe();
@@ -547,6 +1073,68 @@
       `<div class="ni" style="${!item.isRead ? "background:#fafbff;" : ""}"><div class="ni-ico" style="background:#ede9fe"><i class="bi bi-bell-fill" style="color:var(--purple)"></i></div><div style="flex:1"><div style="font-size:13.5px;font-weight:${!item.isRead ? 700 : 600};color:var(--ink);margin-bottom:3px">${!item.isRead ? '<span class="nd"></span>' : ""}${escapeHtml(item.title)}</div><div style="font-size:12.5px;color:var(--ink3);line-height:1.5;margin-bottom:4px">${escapeHtml(item.body || "")}</div><div style="font-size:11.5px;color:var(--ink4)">${escapeHtml(moneyDate(item.createdAt))}</div></div></div>`
     )).join("") : `<div style="text-align:center;color:var(--ink4);padding:30px">Chua co thong bao.</div>`;
     updateBadges();
+  }
+
+  function questionPriority(item) {
+    if (item.status === "answered") return "low";
+    const ageHours = item.createdAt ? (Date.now() - new Date(item.createdAt).getTime()) / 36e5 : 0;
+    return ageHours >= 48 ? "high" : "med";
+  }
+
+  function renderFb() {
+    const list = document.getElementById("fbList");
+    if (!list) return;
+    const course = document.getElementById("fbFilterLop")?.value || "";
+    const status = document.getElementById("fbFilterStatus")?.value || "";
+    const priority = document.getElementById("fbFilterPri")?.value || "";
+    const q = (document.getElementById("fbSearch")?.value || "").toLowerCase();
+    let rows = state.questions.slice();
+    if (course) rows = rows.filter(item => item.courseName === course);
+    if (status === "pending") rows = rows.filter(item => item.status !== "answered");
+    if (status === "done") rows = rows.filter(item => item.status === "answered");
+    if (priority) rows = rows.filter(item => questionPriority(item) === priority);
+    if (q) rows = rows.filter(item => [item.title, item.body, item.studentName, item.courseName].some(value => String(value || "").toLowerCase().includes(q)));
+    const pending = state.questions.filter(item => item.status !== "answered").length;
+    setText("#fbSubTitle", `${pending} cau hoi tu hoc sinh dang cho giai dap`);
+    list.innerHTML = rows.length ? rows.map(item => {
+      const pri = questionPriority(item);
+      const answered = item.status === "answered";
+      return `<div class="fb" style="border-radius:0;margin:0;border-bottom:1px solid var(--line)"><div style="display:flex;gap:12px;align-items:flex-start"><div class="ava" style="background:linear-gradient(135deg,#6d28d9,#8b5cf6)">${escapeHtml(initials(item.studentName))}</div><div style="flex:1"><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:5px"><span style="font-size:13.5px;font-weight:800">${escapeHtml(item.title || item.body.slice(0, 80))}</span><span class="tag ${pri === "high" ? "pri-high" : "pri-med"}">${pri === "high" ? "Uu tien cao" : "Binh thuong"}</span><span class="tag" style="background:${answered ? "#d1fae5" : "#fef3c7"};color:${answered ? "#059669" : "#d97706"}">${answered ? "Da tra loi" : "Cho phan hoi"}</span></div><div style="font-size:12px;color:var(--ink3);margin-bottom:8px">${escapeHtml(item.studentName || "")} - ${escapeHtml(item.courseName || "Chua gan lop")} - ${escapeHtml(moneyDate(item.createdAt))}</div><div style="font-size:13px;color:var(--ink2);line-height:1.6;margin-bottom:10px">${escapeHtml(item.body)}</div>${answered ? `<div style="background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px;font-size:13px;color:var(--ink2)">${escapeHtml(item.answer || "")}</div>` : `<textarea id="fbAns_${item.id}" rows="2" style="width:100%;border:1.5px solid var(--line);border-radius:8px;padding:9px 11px;font-size:13px;font-family:inherit;resize:none" placeholder="Nhap cau tra loi..."></textarea><button onclick="answerFeedback('${escapeHtml(item.id)}')" class="btn-sm prim" style="margin-top:8px"><i class="bi bi-reply-fill"></i> Tra loi</button>`}</div></div></div>`;
+    }).join("") : `<div style="text-align:center;color:var(--ink4);padding:30px">Khong co cau hoi phu hop.</div>`;
+  }
+
+  async function answerFeedback(id, fallbackAnswer) {
+    const input = document.getElementById(`fbAns_${id}`);
+    const answer = (fallbackAnswer || input?.value || "").trim();
+    if (!answer) return notify("Vui long nhap cau tra loi.", "error");
+    await request(`/api/questions/${encodeURIComponent(id)}`, {
+      method: "PATCH",
+      body: JSON.stringify({ answer })
+    });
+    notify("Da gui cau tra loi cho hoc sinh.");
+    await refresh();
+    renderFb();
+  }
+
+  async function markAllReplied() {
+    const rows = state.questions.filter(item => item.status !== "answered");
+    for (const item of rows) {
+      await request(`/api/questions/${encodeURIComponent(item.id)}`, {
+        method: "PATCH",
+        body: JSON.stringify({ answer: "Giao vien da ghi nhan cau hoi va se trao doi chi tiet trong buoi hoc tiep theo." })
+      });
+    }
+    if (!rows.length) return notify("Khong co cau hoi dang cho phan hoi.", "info");
+    notify(`Da danh dau ${rows.length} cau hoi.`);
+    await refresh();
+  }
+
+  function exportFeedback() {
+    const rows = state.questions;
+    downloadText(`teacher-feedback-${new Date().toISOString().slice(0, 10)}.csv`, toCsv([
+      ["Student", "Course", "Title", "Question", "Status", "Answer", "Created at"],
+      ...rows.map(item => [item.studentName, item.courseName, item.title, item.body, item.status, item.answer || "", item.createdAt || ""])
+    ]), "text/csv;charset=utf-8");
   }
 
   function updateBadges() {
@@ -731,6 +1319,238 @@
     )).join("") : `<div style="text-align:center;color:var(--ink4);padding:22px">Chua co hoc sinh.</div>`;
   }
 
+  function renderAiSuggestions() {
+    const list = document.getElementById("qaList");
+    if (!list) return;
+    const suggestions = ["Relative Clauses", "Conditional Sentences", "Reading Inference", "Writing Task 2"];
+    list.innerHTML = suggestions.map(text => `<button class="qa" type="button" data-ai-topic="${escapeHtml(text)}"><i class="bi bi-stars" style="color:var(--purple)"></i><span style="font-size:13px;font-weight:700">${escapeHtml(text)}</span></button>`).join("");
+  }
+
+  async function genAI() {
+    const topic = (document.getElementById("aiTopic")?.value || "").trim();
+    const level = document.getElementById("aiLv")?.value || "";
+    const duration = document.getElementById("aiDur")?.value || "";
+    const objective = document.querySelector("#s-ai input[placeholder*='Phan'], #s-ai input[placeholder*='PhÃ¢n']")?.value || "";
+    if (!topic) return notify("Vui long nhap chu de bai giang.", "error");
+    const box = document.getElementById("aiBox");
+    const out = document.getElementById("aiOut");
+    if (box) box.style.display = "block";
+    if (out) out.textContent = "Dang tao giao an...";
+    const res = await request("/api/chat", {
+      method: "POST",
+      body: JSON.stringify({
+        system: "Ban la tro ly soan giao an tieng Anh cho giao vien.",
+        messages: [{ role: "user", content: `Tao giao an ${duration} cho chu de ${topic}, trinh do ${level}. Muc tieu: ${objective || "on tap va thuc hanh"}.` }],
+        context: { role: "teacher" }
+      })
+    });
+    state.aiDraft = (res.content && res.content[0] && res.content[0].text) || "";
+    if (out) out.innerHTML = escapeHtml(state.aiDraft).replace(/\n/g, "<br>");
+    ["aiCopyBtn", "aiSaveBtn"].forEach(id => {
+      const btn = document.getElementById(id);
+      if (btn) btn.style.display = "inline-flex";
+    });
+  }
+
+  async function copyAI() {
+    if (!state.aiDraft) return;
+    try {
+      await navigator.clipboard.writeText(state.aiDraft);
+    } catch {
+      const ta = document.createElement("textarea");
+      ta.value = state.aiDraft;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      ta.remove();
+    }
+    notify("Da sao chep giao an.");
+  }
+
+  async function saveAILesson() {
+    if (!state.aiDraft) return notify("Chua co giao an AI de luu.", "error");
+    const topic = (document.getElementById("aiTopic")?.value || "Giao an AI").trim();
+    const courseId = state.courses[0]?.id || "";
+    if (!courseId) return notify("Can co lop hoc truoc khi luu giao an.", "error");
+    await request("/api/material-requests", {
+      method: "POST",
+      body: JSON.stringify({ title: topic, courseId, type: "lesson", status: "pending", description: state.aiDraft })
+    });
+    notify("Da luu giao an AI vao ban nhap.");
+    await refresh();
+  }
+
+  function setRptPeriod(el, period) {
+    document.querySelectorAll("#s-baocao .rpt-s").forEach(item => item.classList.remove("active"));
+    if (el) el.classList.add("active");
+    const labels = { tuan: "Thong ke tuan nay", thang: "Thong ke thang nay", quy: "Thong ke quy nay" };
+    setText("#rptPeriodLabel", labels[period] || "Thong ke lop hoc");
+    renderReports();
+  }
+
+  function exportReport() {
+    exportReportXLS();
+  }
+
+  function exportReportXLS() {
+    const rows = [
+      ["Course", "Students", "Average score", "Average progress"],
+      ...state.courses.map(course => [course.name, course.students || 0, course.averageScore || 0, course.averageProgress || 0])
+    ];
+    downloadText(`teacher-report-${new Date().toISOString().slice(0, 10)}.csv`, toCsv(rows), "text/csv;charset=utf-8");
+  }
+
+  function prevWeek() {
+    window._weekOffset = (window._weekOffset || 0) - 1;
+    renderCal();
+  }
+
+  function nextWeek() {
+    window._weekOffset = (window._weekOffset || 0) + 1;
+    renderCal();
+  }
+
+  function openAddSession() {
+    document.getElementById("addSessionModal")?.classList.add("show");
+  }
+
+  function closeAddSession() {
+    document.getElementById("addSessionModal")?.classList.remove("show");
+  }
+
+  function closeAttModal() {
+    document.getElementById("attModal")?.classList.remove("show");
+  }
+
+  function setAtt(btn) {
+    const row = btn.closest(".att-row");
+    if (!row) return;
+    row.querySelectorAll(".att-b").forEach(item => {
+      item.classList.remove("present", "late", "absent");
+      item.style.background = "#fff";
+      item.style.borderColor = "var(--line)";
+      item.style.color = "var(--ink3)";
+    });
+    btn.classList.add(btn.dataset.st);
+    const colors = {
+      present: ["var(--green-lt)", "var(--green)", "#6ee7b7"],
+      late: ["var(--amber-lt)", "var(--amber)", "#fcd34d"],
+      absent: ["var(--red-lt)", "var(--red)", "#fca5a5"]
+    }[btn.dataset.st] || ["#fff", "var(--ink3)", "var(--line)"];
+    btn.style.background = colors[0];
+    btn.style.color = colors[1];
+    btn.style.borderColor = colors[2];
+  }
+
+  function markAllAtt(status) {
+    document.querySelectorAll(`#attList .att-b[data-st="${status}"]`).forEach(setAtt);
+  }
+
+  function joinZoom(url, label) {
+    if (!url) return notify(`Lop ${label || ""} chua co link hoc truc tuyen.`, "info");
+    window.open(url, "_blank", "noopener");
+  }
+
+  function closeChamBai() {
+    document.getElementById("chamBaiModal")?.classList.remove("show");
+  }
+
+  function onScoreInputChange() {
+    const value = document.getElementById("scoreInput")?.value || "";
+    setText("#cbTotalScore", value || "—");
+  }
+
+  function addComment(btn) {
+    const text = (btn.textContent || "").trim();
+    const ta = document.getElementById("cbComment");
+    if (!ta || !text) return;
+    ta.value = [ta.value.trim(), text].filter(Boolean).join(ta.value.trim() ? ". " : "");
+  }
+
+  function closeHsModal() {
+    document.getElementById("hsModal")?.classList.remove("show");
+  }
+
+  function closeLecture() {
+    const modal = document.getElementById("lectureModal");
+    const frame = document.getElementById("prvFrame");
+    if (frame) frame.src = "";
+    if (modal) modal.classList.remove("show");
+  }
+
+  function closeReview() {
+    document.getElementById("reviewModal")?.classList.remove("show");
+  }
+
+  function saveSn() {
+    notify("Da luu ghi chu buoi hoc.");
+    document.getElementById("sessionNoteModal")?.classList.remove("show");
+  }
+
+  async function saveSt() {
+    const name = (document.getElementById("setName")?.value || "").trim();
+    if (!name) return notify("Vui long nhap ho ten.", "error");
+    const res = await request("/api/profile", { method: "PATCH", body: JSON.stringify({ name }) });
+    if (window.EC_AUTH && res.user) window.EC_AUTH.setUser(res.user);
+    localStorage.setItem(USER_KEY, JSON.stringify(res.user));
+    state.user = res.user;
+    applyIdentity();
+    notify("Da luu thong tin tai khoan.");
+  }
+
+  async function saveEmailPrefix() {
+    const prefix = (document.getElementById("setEmailUser")?.value || "").trim().toLowerCase().replace(/[^a-z0-9._-]/g, "");
+    if (!prefix) return notify("Email khong hop le.", "error");
+    notify("Giao vien can lien he quan tri vien de doi email dang nhap.", "info");
+  }
+
+  function uploadAvatar(input) {
+    const file = input.files && input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      localStorage.setItem("ec_teacher_avatar", reader.result);
+      ["sbAva", "bigAva"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = `<img src="${reader.result}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit">`;
+      });
+      notify("Da cap nhat avatar tren trinh duyet nay.");
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function renderGlobalSearch(results) {
+    const drop = document.getElementById("gsDrop");
+    if (!drop) return;
+    drop.classList.add("show");
+    drop.innerHTML = results.length ? results.map(item => `<div class="gs-item" data-nav="${item.nav}" data-id="${item.id || ""}"><span class="gs-lbl">${escapeHtml(item.label)}</span><span class="gs-sub">${escapeHtml(item.sub || "")}</span></div>`).join("") : `<div class="gs-empty">Khong co ket qua.</div>`;
+  }
+
+  function gsSearch() {
+    const q = (document.getElementById("gsInput")?.value || "").toLowerCase();
+    const base = [
+      { label: "Dashboard", nav: "dashboard", sub: "Tong quan" },
+      { label: "Danh sach hoc sinh", nav: "hocsinh", sub: "Quan ly lop" },
+      { label: "Bai giang cua toi", nav: "baigiang", sub: "Hoc lieu" },
+      { label: "Tao de kiem tra", nav: "taode", sub: "Kiem tra" },
+      { label: "Nhan xet & Phan hoi", nav: "phanhoi", sub: "Hoi dap" }
+    ];
+    const students = state.students.map(item => ({ label: item.n, nav: "hocsinh", id: item.id, sub: item.l }));
+    renderGlobalSearch([...base, ...students].filter(item => !q || item.label.toLowerCase().includes(q) || item.sub.toLowerCase().includes(q)).slice(0, 12));
+  }
+
+  function gsKey(event) {
+    if (event.key !== "Enter") return;
+    const first = document.querySelector("#gsDrop .gs-item");
+    if (first) first.click();
+  }
+
+  function doLogout() {
+    if (window.EC_AUTH && typeof window.EC_AUTH.logout === "function") return window.EC_AUTH.logout();
+    clearSession();
+    location.href = "dangnhap.html";
+  }
+
   function renderAll() {
     applyIdentity();
     syncCourseSelects();
@@ -740,66 +1560,137 @@
     renderDe();
     renderCal();
     renderNotifications();
+    renderFb();
     renderReports();
+    renderAiSuggestions();
+    renderQuestionList();
   }
 
   async function refresh() {
     state.user = currentUser();
-    if (!token()) return;
-    const [dashboardRes, coursesRes, enrollmentsRes, sessionsRes, materialsRes, examsRes, notifRes] = await Promise.all([
-      request("/api/dashboard/teacher"),
-      request(`/api/courses${state.user && state.user.id ? `?teacherId=${encodeURIComponent(state.user.id)}` : ""}`),
-      request("/api/enrollments?limit=1000"),
-      request("/api/class-sessions?limit=1000"),
-      request("/api/material-requests?limit=200"),
-      request("/api/exams?limit=200"),
-      request("/api/notifications?limit=100")
-    ]);
-    state.dashboard = dashboardRes.dashboard || {};
-    state.courses = coursesRes.courses || [];
-    state.enrollments = enrollmentsRes.enrollments || [];
-    state.students = state.enrollments.map(mapEnrollment);
-    state.sessions = sessionsRes.sessions || [];
-    state.materials = materialsRes.requests || [];
-    state.exams = examsRes.exams || [];
-    state.notifications = notifRes.notifications || [];
-    window.STUDENTS = state.students;
-    renderAll();
+    if (!token()) {
+      showLoginRequired();
+      return;
+    }
+
+    try {
+      const [dashboardRes, coursesRes, enrollmentsRes, sessionsRes, materialsRes, examsRes, notifRes, questionsRes] = await Promise.all([
+        request("/api/dashboard/teacher"),
+        request(`/api/courses${state.user && state.user.id ? `?teacherId=${encodeURIComponent(state.user.id)}` : ""}`),
+        request("/api/enrollments?limit=1000"),
+        request("/api/class-sessions?limit=1000"),
+        request("/api/material-requests?limit=200"),
+        request("/api/exams?limit=200"),
+        request("/api/notifications?limit=100"),
+        request("/api/questions?limit=200")
+      ]);
+      state.dashboard = dashboardRes.dashboard || {};
+      state.courses = coursesRes.courses || [];
+      state.enrollments = enrollmentsRes.enrollments || [];
+      state.students = state.enrollments.map(mapEnrollment);
+      state.sessions = sessionsRes.sessions || [];
+      state.materials = materialsRes.requests || [];
+      state.exams = examsRes.exams || [];
+      state.notifications = notifRes.notifications || [];
+      state.questions = questionsRes.questions || [];
+      window.STUDENTS = state.students;
+      renderAll();
+    } catch (error) {
+      showRefreshError(error);
+    }
   }
 
   function installOverrides() {
     const oldNav = window.nav;
-    window.nav = function(id, el) {
-      state.currentSection = id;
-      if (typeof oldNav === "function") oldNav(id, el);
+    window.toast = toast;
+    window.nav = function(id) {
+      const targetId = document.getElementById(`s-${id}`) ? id : "dashboard";
+      state.currentSection = targetId;
+      if (typeof oldNav === "function") oldNav(targetId);
       setTimeout(() => {
-        if (id === "hocsinh") renderSt();
-        if (id === "baigiang") renderLectures();
-        if (id === "taode") renderDe();
-        if (id === "lichdayhoc") renderCal();
-        if (id === "thongbao") renderNotifications();
-        if (id === "baocao") renderReports();
+        if (targetId === "hocsinh") renderSt();
+        if (targetId === "baigiang") renderLectures();
+        if (targetId === "taode") renderDe();
+        if (targetId === "lichdayhoc") renderCal();
+        if (targetId === "thongbao") renderNotifications();
+        if (targetId === "baocao") renderReports();
       }, 0);
     };
     window.renderSt = renderSt;
     window.renderLec = renderLectures;
     window.renderDe = renderDe;
     window.renderCal = renderCal;
+    window.renderFb = renderFb;
     window.renderTodaySessions = renderTodaySessions;
     window.updateRptChart = updateRptChart;
     window.renderTopStudents = renderTopStudents;
+    window.toggleBulkMsg = toggleBulkMsg;
+    window.toggleAddHs = toggleAddHs;
+    window.toggleChip = toggleChip;
+    window.toggleSelectAll = toggleSelectAll;
+    window.setSortHs = setSortHs;
+    window.exportStudentList = exportStudentList;
+    window.importCSV = importCSV;
     window.addNewStudent = () => addNewStudent().catch(error => notify(error.message, "error"));
+    window.openCreateLec = openCreateLec;
+    window.closeCreateLec = closeCreateLec;
+    window.switchClecTab = switchClecTab;
+    window.handleClecFileSelect = handleClecFileSelect;
+    window.handleClecFileDrop = handleClecFileDrop;
+    window.handleClecAttach = handleClecAttach;
+    window.addExercise = addExercise;
     window.submitLecForReview = () => submitMaterial("submitted").catch(error => notify(error.message, "error"));
     window.saveDraftLec = () => submitMaterial("pending").catch(error => notify(error.message, "error"));
+    window.switchDeTab = switchDeTab;
+    window.addQuestion = addQuestion;
+    window.shuffleQuestions = shuffleQuestions;
+    window.clearQuestions = clearQuestions;
+    window.quickTemplate = quickTemplate;
+    window.previewExam = previewExam;
+    window.closeExamPreview = closeExamPreview;
+    window.importFromBank = importFromBank;
+    window.renderBank = renderBank;
+    window.addSelectedBank = addSelectedBank;
+    window.closeBank = closeBank;
+    window.markAllReplied = () => markAllReplied().catch(error => notify(error.message, "error"));
+    window.exportFeedback = exportFeedback;
+    window.answerFeedback = (id) => answerFeedback(id).catch(error => notify(error.message, "error"));
+    window.genAI = () => genAI().catch(error => notify(error.message, "error"));
+    window.copyAI = () => copyAI().catch(error => notify(error.message, "error"));
+    window.saveAILesson = () => saveAILesson().catch(error => notify(error.message, "error"));
+    window.setRptPeriod = setRptPeriod;
+    window.exportReport = exportReport;
+    window.exportReportXLS = exportReportXLS;
+    window.prevWeek = prevWeek;
+    window.nextWeek = nextWeek;
+    window.openAddSession = openAddSession;
+    window.closeAddSession = closeAddSession;
+    window.closeAttModal = closeAttModal;
+    window.markAllAtt = markAllAtt;
+    window.setAtt = setAtt;
+    window.joinZoom = joinZoom;
     window.saveNewSession = () => saveNewSession().catch(error => notify(error.message, "error"));
     window.saveAttModal = () => saveAttendance().catch(error => notify(error.message, "error"));
     window.filterSchTable = renderScheduleTable;
     window.sendBulkMsg = () => sendBulkMsg().catch(error => notify(error.message, "error"));
     window.sendHsMsg = () => sendHsMsg().catch(error => notify(error.message, "error"));
     window.submitCham = () => submitGrade().catch(error => notify(error.message, "error"));
+    window.closeChamBai = closeChamBai;
+    window.addComment = addComment;
+    window.onScoreInputChange = onScoreInputChange;
+    window.closeHsModal = closeHsModal;
+    window.saveHsNote = saveHsNote;
+    window.closeLecture = closeLecture;
+    window.closeReview = closeReview;
+    window.saveSn = saveSn;
+    window.uploadAvatar = uploadAvatar;
+    window.saveEmailPrefix = () => saveEmailPrefix().catch(error => notify(error.message, "error"));
+    window.saveSt = () => saveSt().catch(error => notify(error.message, "error"));
+    window.gsSearch = gsSearch;
+    window.gsKey = gsKey;
+    window.doLogout = doLogout;
     window.deleteStudent = () => notify("Giao vien khong xoa tai khoan hoc sinh. Vui long lien he quan tri vien.", "warn");
     window.deleteSelected = () => notify("Giao vien khong xoa tai khoan hoc sinh. Vui long lien he quan tri vien.", "warn");
-    window.importCSV = () => notify("Chuc nang import se duoc xu ly qua quan tri vien de tranh trung tai khoan.", "info");
     document.addEventListener("click", event => {
       const btn = event.target.closest("#btnTaoDe");
       if (!btn) return;
@@ -807,17 +1698,75 @@
       event.stopPropagation();
       createExamFromForm().catch(error => notify(error.message, "error"));
     }, true);
+    document.addEventListener("click", event => {
+      const studentBtn = event.target.closest(".btn-xem-hs,.btn-nhank-hs");
+      if (studentBtn) {
+        openStudentModal(studentBtn.dataset.id, studentBtn.classList.contains("btn-nhank-hs"));
+        return;
+      }
+      const attachBtn = event.target.closest(".btn-remove-attach");
+      if (attachBtn) {
+        state.clecAttachments.splice(Number(attachBtn.dataset.index), 1);
+        renderAttachList();
+        return;
+      }
+      const exerciseBtn = event.target.closest(".btn-remove-exercise");
+      if (exerciseBtn) {
+        state.clecExercises.splice(Number(exerciseBtn.dataset.index), 1);
+        renderExercises();
+        return;
+      }
+      const questionBtn = event.target.closest(".btn-del-question");
+      if (questionBtn) {
+        state.examQuestions = state.examQuestions.filter(item => item.id !== questionBtn.dataset.id);
+        renderQuestionList();
+        return;
+      }
+      const aiBtn = event.target.closest("[data-ai-topic]");
+      if (aiBtn) {
+        const input = document.getElementById("aiTopic");
+        if (input) input.value = aiBtn.dataset.aiTopic;
+        genAI().catch(error => notify(error.message, "error"));
+        return;
+      }
+      const gsItem = event.target.closest("#gsDrop .gs-item");
+      if (gsItem) {
+        if (typeof window.nav === "function") window.nav(gsItem.dataset.nav);
+        if (gsItem.dataset.id) setTimeout(() => openStudentModal(gsItem.dataset.id, false), 0);
+        document.getElementById("gsDrop")?.classList.remove("show");
+      }
+    });
+    document.addEventListener("change", event => {
+      const box = event.target.closest(".tcb-sel");
+      if (!box) return;
+      if (box.checked) state.selectedStudentIds.add(box.dataset.id);
+      else state.selectedStudentIds.delete(box.dataset.id);
+      updateSelectionUi();
+    });
     document.getElementById("btnMarkRead").addEventListener("click", () => {
-      state.notifications.forEach(item => { item.isRead = true; });
-      renderNotifications();
-      notify("Da danh dau thong bao da doc.");
+      request("/api/notifications/read-all", { method: "POST" })
+        .then(refresh)
+        .then(() => notify("Da danh dau thong bao da doc."))
+        .catch(error => notify(error.message, "error"));
     }, true);
+    document.getElementById("btnChangePwd")?.addEventListener("click", () => {
+      const currentPassword = document.getElementById("pwd1")?.value || "";
+      const newPassword = document.getElementById("pwd2")?.value || "";
+      const confirm = document.getElementById("pwd3")?.value || "";
+      if (newPassword !== confirm) return notify("Mat khau xac nhan khong khop.", "error");
+      request("/api/profile/password", { method: "PATCH", body: JSON.stringify({ currentPassword, newPassword }) })
+        .then(() => {
+          ["pwd1", "pwd2", "pwd3"].forEach(id => { const input = document.getElementById(id); if (input) input.value = ""; });
+          notify("Da doi mat khau.");
+        })
+        .catch(error => notify(error.message, "error"));
+    });
   }
 
   ready(function() {
     if (!location.pathname.toLowerCase().includes("dashboard_giaovien")) return;
     installOverrides();
-    setTimeout(() => refresh().catch(error => notify(error.message, "error")), 250);
+    setTimeout(refresh, 250);
   });
 
   window.EC_TEACHER = {
@@ -825,6 +1774,10 @@
     refresh,
     openGrade,
     openAttendance,
+    contactStudent(id) {
+      if (typeof window.nav === "function") window.nav("hocsinh");
+      setTimeout(() => openStudentModal(id, true), 0);
+    },
     previewMaterial(id) {
       const item = state.materials.find(row => row.id === id);
       if (!item) return;

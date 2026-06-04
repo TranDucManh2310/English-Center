@@ -18,14 +18,14 @@
     const firstTableBody = section.querySelector("table tbody");
     if (!firstTableBody) return;
     const rows = state.materialRequests;
-    firstTableBody.innerHTML = rows.length  rows.map(row => {
-      const statusText = row.status === "approved"  "Da duyet" : row.status === "rejected"  "Tu choi" : row.status === "submitted"  "Cho duyet" : "Ban nhap";
-      const statusKind = row.status === "approved"  "success" : row.status === "rejected"  "danger" : "warning";
+    firstTableBody.innerHTML = rows.length ? rows.map(row => {
+      const statusText = row.status === "approved" ? "Da duyet" : row.status === "rejected" ? "Tu choi" : row.status === "submitted" ? "Cho duyet" : "Ban nhap";
+      const statusKind = row.status === "approved" ? "success" : row.status === "rejected" ? "danger" : "warning";
       return `<tr>
         <td>
           <div style="display:flex;align-items:center;gap:8px;">
             <div style="width:32px;height:32px;border-radius:8px;background:#eff6ff;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><i class="mdi mdi-file-document-outline" style="color:#3b82f6;font-size:16px;"></i></div>
-            <div><div style="font-size:12px;font-weight:700;color:#0f172a;">${escapeHtml(row.title)}</div><div style="font-size:10px;color:#94a3b8;">${dateLabel(row.submittedAt || row.createdAt, true)} - ${escapeHtml(row.teacherName || "")}</div>${row.videoUrl  `<a href="${escapeHtml(row.videoUrl)}" target="_blank" rel="noopener" style="font-size:10.5px;font-weight:700;color:#2563eb;">Video</a>` : ""}${row.documentUrl  ` <a href="${escapeHtml(row.documentUrl)}" target="_blank" rel="noopener" style="font-size:10.5px;font-weight:700;color:#059669;">Tai lieu</a>` : ""}</div>
+            <div><div style="font-size:12px;font-weight:700;color:#0f172a;">${escapeHtml(row.title)}</div><div style="font-size:10px;color:#94a3b8;">${dateLabel(row.submittedAt || row.createdAt, true)} - ${escapeHtml(row.teacherName || "")}</div>${row.videoUrl ? `<a href="${escapeHtml(row.videoUrl)}" target="_blank" rel="noopener" style="font-size:10.5px;font-weight:700;color:#2563eb;">Video</a>` : ""}${row.documentUrl ? ` <a href="${escapeHtml(row.documentUrl)}" target="_blank" rel="noopener" style="font-size:10.5px;font-weight:700;color:#059669;">Tai lieu</a>` : ""}</div>
           </div>
         </td>
         <td>${badge(row.courseName || "Chua gan khoa", "info")}</td>
@@ -55,8 +55,8 @@
           return !Number.isNaN(date.getTime()) && date.getFullYear() === row.year && date.getMonth() + 1 === row.month;
         });
         const paidCount = monthEnrollments.filter(item => item.paymentStatus === "paid").length;
-        const rate = monthEnrollments.length  Math.round(paidCount / monthEnrollments.length * 100) : 0;
-        const avgCompletion = monthEnrollments.length  Math.round(monthEnrollments.reduce((sum, item) => sum + number(item.progress), 0) / monthEnrollments.length) : 0;
+        const rate = monthEnrollments.length ? Math.round(paidCount / monthEnrollments.length * 100) : 0;
+        const avgCompletion = monthEnrollments.length ? Math.round(monthEnrollments.reduce((sum, item) => sum + number(item.progress), 0) / monthEnrollments.length) : 0;
         return `<tr>
           <td><b>T${row.month}/${row.year}</b></td>
           <td>${monthEnrollments.length}</td>
@@ -119,8 +119,8 @@
       type: "line",
       data: {
         labels: newStudents.map(row => {
-          const date = row.weekStart  new Date(row.weekStart) : null;
-          return date && !Number.isNaN(date.getTime())  `${date.getDate()}/${date.getMonth() + 1}` : "";
+          const date = row.weekStart ? new Date(row.weekStart) : null;
+          return date && !Number.isNaN(date.getTime()) ? `${date.getDate()}/${date.getMonth() + 1}` : "";
         }),
         datasets: [{ label: "Hoc vien moi", data: newStudents.map(row => number(row.count)), borderColor: "#10b981", backgroundColor: "rgba(16,185,129,.12)", fill: true, tension: .35 }]
       },
@@ -132,7 +132,7 @@
         labels: statuses.map(row => row.name),
         datasets: [{ label: "Hoan thanh", data: statuses.map(row => {
           const total = number(row.learning) + number(row.slow) + number(row.risk) + number(row.completed);
-          return total  Math.round(number(row.completed) / total * 100) : 0;
+          return total ? Math.round(number(row.completed) / total * 100) : 0;
         }), backgroundColor: "rgba(16,185,129,.78)", borderRadius: 6 }]
       },
       options: { indexAxis: "y", responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { min: 0, max: 100, ticks: { callback: value => `${value}%` } }, y: { grid: { display: false } } } }
@@ -140,7 +140,7 @@
     mountChart("bcFeeStatusChart", {
       type: "doughnut",
       data: {
-        labels: fee.map(row => row.status === "paid"  "Da thu" : row.status === "overdue"  "Qua han" : row.status === "refunded"  "Hoan tien" : "Cho thu"),
+        labels: fee.map(row => row.status === "paid" ? "Da thu" : row.status === "overdue" ? "Qua han" : row.status === "refunded" ? "Hoan tien" : "Cho thu"),
         datasets: [{ data: fee.map(row => number(row.amount)), backgroundColor: ["#10b981", "#f59e0b", "#ef4444", "#94a3b8"], borderWidth: 0 }]
       },
       options: { cutout: "68%", responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
@@ -148,7 +148,7 @@
     const legend = document.getElementById("bcFeeStatusLegend");
     if (legend) {
       legend.innerHTML = fee.map((row, index) => {
-        const label = row.status === "paid"  "Da thu" : row.status === "overdue"  "Qua han" : row.status === "refunded"  "Hoan tien" : "Cho thu";
+        const label = row.status === "paid" ? "Da thu" : row.status === "overdue" ? "Qua han" : row.status === "refunded" ? "Hoan tien" : "Cho thu";
         const color = ["#10b981", "#f59e0b", "#ef4444", "#94a3b8"][index] || "#94a3b8";
         return `<div style="display:flex;align-items:center;justify-content:space-between;font-size:11px;"><span style="display:flex;gap:5px;align-items:center;"><i style="width:9px;height:9px;border-radius:2px;background:${color};display:inline-block"></i>${label}</span><b>${money(row.amount)}</b></div>`;
       }).join("");
@@ -156,7 +156,7 @@
   }
 
   async function updateMaterial(id, status) {
-    const adminNote = status === "pending"  "Can chinh sua theo gop y cua admin." : "";
+    const adminNote = status === "pending" ? "Can chinh sua theo gop y cua admin." : "";
     try {
       await request(`/api/material-requests/${encodeURIComponent(id)}`, {
         method: "PATCH",

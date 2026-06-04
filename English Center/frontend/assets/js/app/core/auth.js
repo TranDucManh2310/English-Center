@@ -153,7 +153,7 @@
     if (window.location.protocol === "file:" || !getToken() || window.__ecPresenceSocket) return;
     const scheme = window.location.protocol === "https:" ? "wss" : "ws";
     const page = `${window.location.pathname}${window.location.search}`;
-    const ws = new WebSocket(`${scheme}://${window.location.host}/ws/onlinetoken=${encodeURIComponent(getToken())}&page=${encodeURIComponent(page)}`);
+    const ws = new WebSocket(`${scheme}://${window.location.host}/ws/online?token=${encodeURIComponent(getToken())}&page=${encodeURIComponent(page)}`);
     window.__ecPresenceSocket = ws;
 
     function sendPresence() {

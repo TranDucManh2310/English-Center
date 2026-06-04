@@ -30379,4 +30379,29 @@ dl li {
   background-color: darkgrey;
   outline: 1px solid slategrey;
 }
+
+/* Prevent browser/bootstrap press state from repainting every button blue. */
+button,
+[role="button"],
+.btn,
+a[class*="btn"] {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus:not(:focus-visible),
+[role="button"]:focus:not(:focus-visible),
+.btn:focus:not(:focus-visible),
+a[class*="btn"]:focus:not(:focus-visible) {
+  outline: 0;
+  box-shadow: none;
+}
+
+.btn:not(.active):not(.show):active,
+.btn:not(.active):not(.show):focus,
+a[class*="btn"]:not(.active):active,
+a[class*="btn"]:not(.active):focus {
+  background-color: var(--bs-btn-bg, inherit);
+  border-color: var(--bs-btn-border-color, currentColor);
+  color: var(--bs-btn-color, inherit);
+}
 /*# sourceMappingURL=maps/style.css.map */

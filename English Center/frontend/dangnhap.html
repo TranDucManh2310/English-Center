@@ -477,8 +477,8 @@
  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
  <script src="assets/vendor/aos/aos.js"></script>
  <script src="assets/js/app/core/api-client.js"></script>
- <script src="assets/js/app/core/site-integration.jsv=20260530-integrated-db"></script>
- <script src="assets/js/app/core/auth.jsv=20260530-session-db"></script>
+ <script src="assets/js/app/core/site-integration.js?v=20260530-integrated-db"></script>
+ <script src="assets/js/app/core/auth.js?v=20260530-session-db"></script>
  <script src="assets/js/app/template/main.js"></script>
 
  <script>
@@ -488,8 +488,8 @@
  function togglePw() {
  const inp = document.getElementById('password');
  const ico = document.getElementById('eyeIcon');
- inp.type = inp.type === 'password'  'text' : 'password';
- ico.className = inp.type === 'text'  'bi bi-eye-slash' : 'bi bi-eye';
+ inp.type = inp.type === 'password' ? 'text' : 'password';
+ ico.className = inp.type === 'text' ? 'bi bi-eye-slash' : 'bi bi-eye';
  }
 
  /* ── Alert ── */
@@ -517,7 +517,7 @@
  /* ── Đăng nhập email ── */
  // Xác định role từ email
  function getRoleFromEmail(email) {
- return email.toLowerCase().endsWith('@englishcenter.vn')  'teacher' : 'student';
+ return email.toLowerCase().endsWith('@englishcenter.vn') ? 'teacher' : 'student';
  }
 
  function handleLogin() {
@@ -578,7 +578,7 @@
  dashboardUrl = 'dashboard_giaovien.html';
  } else {
  // Học sinh: kiểm tra đã đăng ký khóa học chưa
- const studentHome = window.EC_AUTH  window.EC_AUTH.roleHome(role) : 'dashboard_hocsinh_new.html';
+ const studentHome = window.EC_AUTH ? window.EC_AUTH.roleHome(role) : 'dashboard_hocsinh_new.html';
  let hasEnrollment = Array.isArray(sessionUser.enrolled) && sessionUser.enrolled.length > 0;
 
  if (apiAuthenticated && window.EC_API && !hasEnrollment) {
@@ -600,10 +600,10 @@
  sessionStorage.removeItem('ec_after_login');
  dashboardUrl = afterLoginUrl;
  }
- const badgeColor = role === 'admin'  '#dc2626' : (isTeacher  '#7c3aed' : '#106eea');
- const badgeBg = role === 'admin'  '#fef2f2' : (isTeacher  '#f3f0ff' : '#e8f1fd');
- const badgeIcon = role === 'admin'  'bi-shield-lock-fill' : (isTeacher  'bi-person-workspace' : 'bi-mortarboard');
- const badgeLabel = role === 'admin'  'Quản trị viên' : (isTeacher  'Giáo viên' : 'Học sinh');
+ const badgeColor = role === 'admin' ? '#dc2626' : (isTeacher ? '#7c3aed' : '#106eea');
+ const badgeBg = role === 'admin' ? '#fef2f2' : (isTeacher ? '#f3f0ff' : '#e8f1fd');
+ const badgeIcon = role === 'admin' ? 'bi-shield-lock-fill' : (isTeacher ? 'bi-person-workspace' : 'bi-mortarboard');
+ const badgeLabel = role === 'admin' ? 'Quản trị viên' : (isTeacher ? 'Giáo viên' : 'Học sinh');
 
  showPopup(`
  <div style="text-align:center">

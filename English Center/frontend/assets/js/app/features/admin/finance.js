@@ -17,13 +17,13 @@
       if ([...select.options].some(option => option.value === current)) select.value = current;
     }
 
-    const filter = select  select.value : "";
+    const filter = select ? select.value : "";
     const rows = state.enrollments.filter(row => !filter || row.paymentStatus === filter);
     const body = document.getElementById("tcBody");
     if (body) {
-      body.innerHTML = rows.length  rows.map(row => {
-        const statusText = row.paymentStatus === "paid"  "Da thanh toan" : row.paymentStatus === "overdue"  "Qua han" : row.paymentStatus === "refunded"  "Hoan tien" : "Cho thanh toan";
-        const statusKind = row.paymentStatus === "paid"  "success" : row.paymentStatus === "overdue"  "danger" : row.paymentStatus === "refunded"  "info" : "warning";
+      body.innerHTML = rows.length ? rows.map(row => {
+        const statusText = row.paymentStatus === "paid" ? "Da thanh toan" : row.paymentStatus === "overdue" ? "Qua han" : row.paymentStatus === "refunded" ? "Hoan tien" : "Cho thanh toan";
+        const statusKind = row.paymentStatus === "paid" ? "success" : row.paymentStatus === "overdue" ? "danger" : row.paymentStatus === "refunded" ? "info" : "warning";
         return `<tr>
           <td><strong>${escapeHtml(row.studentName)}</strong><div style="font-size:10px;color:#94a3b8;">${escapeHtml(row.studentEmail || "")}</div></td>
           <td>${escapeHtml(row.courseName)}</td>
@@ -54,7 +54,7 @@
     const cards = document.querySelectorAll("#sec-taichinh > .row.g-3.mb-4 .card-body");
     const totalRows = state.enrollments.length;
     const paidRows = state.enrollments.filter(item => item.paymentStatus === "paid").length;
-    const paidRate = totalRows  Math.round(paidRows / totalRows * 100) : 0;
+    const paidRate = totalRows ? Math.round(paidRows / totalRows * 100) : 0;
     const teacherCount = state.teachers.length;
     const activeTeacherCount = new Set(state.courses.filter(item => item.teacherId && item.status === "active").map(item => item.teacherId)).size;
     const values = [
@@ -86,7 +86,7 @@
     if (!container) return;
     const rows = (state.dashboard && state.dashboard.courseRevenue || []).slice(0, 8);
     const total = rows.reduce((sum, row) => sum + number(row.revenue), 0) || 1;
-    container.innerHTML = rows.length  rows.map(row => {
+    container.innerHTML = rows.length ? rows.map(row => {
       const pct = Math.round(number(row.revenue) / total * 100);
       return `<div style="margin-bottom:10px;">
         <div style="display:flex;justify-content:space-between;margin-bottom:4px;">

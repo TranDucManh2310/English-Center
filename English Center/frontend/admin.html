@@ -1292,11 +1292,11 @@
  <li class="nav-item dropdown">
  <a class="nav-link count-indicator" id="notificationDropdown" href="#" data-bs-toggle="dropdown">
  <i class="icon-bell"></i>
- <span class="count">4</span>
+ <span class="count" id="navNotifCount">0</span>
  </a>
  <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list pb-0" aria-labelledby="notificationDropdown">
  <a class="dropdown-item py-3 border-bottom">
- <p class="mb-0 fw-medium float-start">Bạn có 4 thông báo mới </p>
+ <p class="mb-0 fw-medium float-start">Bạn có <span id="navNotifText">0</span> thông báo mới </p>
  <span class="badge badge-pill badge-primary float-end">Xem tất cả</span>
  </a>
  <a class="dropdown-item preview-item py-3">
@@ -1377,7 +1377,7 @@
  <p class="fw-light text-muted mb-0">admin@englishcenter.edu.vn</p>
  </div>
 <a class="dropdown-item" href="#" onclick="openHoSo();return false;"><i class="dropdown-item-icon mdi mdi-account-outline text-primary me-2"></i> Hồ sơ của tôi</a>
-<a class="dropdown-item" href="#" onclick="openCaiDat();return false;"><i class="dropdown-item-icon mdi mdi-cog-outline text-primary me-2"></i> Cài đặt hệ thống</a> <a class="dropdown-item" href="dangnhap.html"><i class="dropdown-item-icon mdi mdi-power text-primary me-2"></i>Đăng xuất</a>
+<a class="dropdown-item" href="#" onclick="openCaiDat();return false;"><i class="dropdown-item-icon mdi mdi-cog-outline text-primary me-2"></i> Cài đặt hệ thống</a> <a class="dropdown-item" href="#" onclick="(window.EC_AUTH&&window.EC_AUTH.logout?window.EC_AUTH.logout():(localStorage.removeItem('ec_auth_token'),localStorage.removeItem('ec_current_user'),fetch('/api/auth/logout',{method:'POST'}).catch(()=>{}),window.location.href='dangnhap.html'));return false;"><i class="dropdown-item-icon mdi mdi-power text-primary me-2"></i>Đăng xuất</a>
  </div>
  </li>
  </ul>
@@ -1394,7 +1394,7 @@
 
  <!-- Dashboard -->
  <li class="nav-item">
- <a class="nav-link active" href="#" onclick="spaNav('overview',null);setSidebarActive(this);return false;">
+ <a class="nav-link active" href="#dashboard" onclick="return spaNav('overview',null);">
  <i class="mdi mdi-view-dashboard menu-icon"></i>
  <span class="menu-title">Bảng Điều Khiển</span>
  </a>
@@ -1404,7 +1404,7 @@
  <li class="nav-item nav-category">Học Viên</li>
 
  <li class="nav-item">
- <a class="nav-link" href="#" onclick="spaNav('hocvien','sec-dshv');setSidebarActive(this);return false;">
+ <a class="nav-link" href="#students" onclick="return spaNav('hocvien','sec-dshv');">
  <i class="menu-icon mdi mdi-account-school"></i>
  <span class="menu-title">Quản Lý Học Viên</span>
  </a>
@@ -1415,7 +1415,7 @@
  <li class="nav-item nav-category">Giáo Viên</li>
 
  <li class="nav-item">
- <a class="nav-link" href="#" onclick="spaNav('giaovien','sec-dsgv');setSidebarActive(this);return false;">
+ <a class="nav-link" href="#teachers" onclick="return spaNav('giaovien','sec-dsgv');">
  <i class="menu-icon mdi mdi-account-tie"></i>
  <span class="menu-title">Quản Lý Giáo Viên</span>
  </a>
@@ -1425,7 +1425,7 @@
  <li class="nav-item nav-category">Khóa Học</li>
 
  <li class="nav-item">
- <a class="nav-link" href="#" onclick="spaNav('khoahoc','sec-dskh');setSidebarActive(this);return false;">
+ <a class="nav-link" href="#courses" onclick="return spaNav('khoahoc','sec-dskh');">
  <i class="menu-icon mdi mdi-book-open-page-variant"></i>
  <span class="menu-title">Khóa Học & Tài Liệu</span>
  </a>
@@ -1434,7 +1434,7 @@
  <!-- ── PHÊ DUYỆT ── -->
  <li class="nav-item nav-category">Phê Duyệt</li>
  <li class="nav-item">
- <a class="nav-link" href="#" onclick="spaNav('duyet','sec-duyet-lich');setSidebarActive(this);return false;">
+ <a class="nav-link" href="#approval-schedule" onclick="return spaNav('duyet','sec-duyet-lich');">
  <i class="menu-icon mdi mdi-check-circle-outline"></i>
  <span class="menu-title">Kiểm Duyệt & Lịch Học</span>
  </a>
@@ -1444,7 +1444,7 @@
  <li class="nav-item nav-category">Tài Chính</li>
 
  <li class="nav-item">
- <a class="nav-link" href="#" onclick="spaNav('taichinh','sec-taichinh');setSidebarActive(this);return false;">
+ <a class="nav-link" href="#finance" onclick="return spaNav('taichinh','sec-taichinh');">
  <i class="menu-icon mdi mdi-currency-usd"></i>
  <span class="menu-title">Thu Chi & Học Phí</span>
  </a>
@@ -1453,19 +1453,19 @@
  <!-- ── VẬN HÀNH ── -->
  <li class="nav-item nav-category">Vận Hành</li>
  <li class="nav-item">
- <a class="nav-link" href="#" onclick="spaNav('tienich','sec-baocao');setSidebarActive(this);return false;">
+ <a class="nav-link" href="#reports" onclick="return spaNav('tienich','sec-baocao');">
  <i class="menu-icon mdi mdi-chart-box-outline"></i>
  <span class="menu-title">Báo Cáo & Thống Kê</span>
  </a>
  </li>
  <li class="nav-item">
- <a class="nav-link" href="#" onclick="spaNav('tienich','sec-thongbao');setSidebarActive(this);return false;">
+ <a class="nav-link" href="#notifications" onclick="return spaNav('tienich','sec-thongbao');">
  <i class="menu-icon mdi mdi-bell-ring-outline"></i>
  <span class="menu-title">Gửi Thông Báo</span>
  </a>
  </li>
  <li class="nav-item">
- <a class="nav-link" href="#" onclick="spaNav('tienich','sec-vinhdanh');setSidebarActive(this);return false;">
+ <a class="nav-link" href="#honor" onclick="return spaNav('tienich','sec-vinhdanh');">
  <i class="menu-icon mdi mdi-trophy-outline"></i>
  <span class="menu-title">Vinh Danh Học Viên</span>
  </a>
@@ -1597,9 +1597,9 @@
 
  <!-- Quick Actions Bar -->
  <div class="ec-quick-actions mt-3">
- <button class="btn btn-sm btn-outline-success" onclick="adminToast('Đã gửi email nhắc nhở đến 14 học viên không hoạt động!','success')"><i class="mdi mdi-email-send me-1"></i>Nhắc nhở hàng loạt</button>
- <button class="btn btn-sm btn-outline-warning" onclick="adminToast('Đang xuất báo cáo tổng hợp tháng 3...','warning')"><i class="mdi mdi-file-chart me-1"></i>Xuất báo cáo tháng</button>
- <button class="btn btn-sm btn-outline-info" onclick="window.EC_DASHBOARD && window.EC_DASHBOARD.refreshAdminDashboard  window.EC_DASHBOARD.refreshAdminDashboard(true) : adminToast('Bang dieu khien chua san sang','warning')"><i class="mdi mdi-refresh me-1"></i>Làm mới</button>
+ <button class="btn btn-sm btn-outline-success"><i class="mdi mdi-email-send me-1"></i>Nhắc nhở hàng loạt</button>
+ <button class="btn btn-sm btn-outline-warning" onclick="window.exportAdminReport?window.exportAdminReport('summary'):void(0)"><i class="mdi mdi-file-chart me-1"></i>Xuất báo cáo tháng</button>
+ <button class="btn btn-sm btn-outline-info" onclick="window.EC_ADMIN_OPS&&window.EC_ADMIN_OPS.refresh?window.EC_ADMIN_OPS.refresh():adminToast('Đang tải...','warning')"><i class="mdi mdi-refresh me-1"></i>Làm mới</button>
  <button class="btn btn-sm btn-outline-secondary" onclick="showActivityLog()"><i class="mdi mdi-history me-1"></i>Activity Log</button>
  </div>
 
@@ -1615,14 +1615,14 @@
  </span>
  <button onclick="this.closest('.card').remove();adminToast('Đã đánh dấu xử lý xong!','success')" style="background:none;border:1px solid #f59e0b;border-radius:6px;padding:2px 10px;font-size:12px;color:#92400e;cursor:pointer;font-weight:600">x Đóng</button>
  </div>
- <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:0;">
+ <div id="sysAlertsContent" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:0;">
  <div style="padding:10px 16px;display:flex;align-items:flex-start;gap:10px;border-right:1px solid rgba(245,158,11,0.15);">
  <div style="width:36px;height:36px;border-radius:10px;background:#fee2e2;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
  <i class="mdi mdi-file-clock" style="color:#dc2626;font-size:18px;"></i>
  </div>
  <div>
  <div style="font-weight:700;font-size:12px;color:#dc2626;">Bài chưa chấm quá hạn</div>
- <div style="font-size:12px;color:#7f1d1d;">GV Trần Minh Khôi — 6 bài &gt; 48h</div>
+ <div style="font-size:12px;color:#7f1d1d;" id="sysAlertPending">Đang tải...</div>
  </div>
  </div>
  <div style="padding:10px 16px;display:flex;align-items:flex-start;gap:10px;border-right:1px solid rgba(245,158,11,0.15);">
@@ -1631,7 +1631,7 @@
  </div>
  <div>
  <div style="font-weight:700;font-size:12px;color:#d97706;">Học viên không hoạt động</div>
- <div style="font-size:12px;color:#78350f;">14 học viên không đăng nhập &gt; 7 ngày</div>
+ <div style="font-size:12px;color:#78350f;" id="sysAlertInactive">Đang tải...</div>
  </div>
  </div>
  <div style="padding:10px 16px;display:flex;align-items:flex-start;gap:10px;border-right:1px solid rgba(245,158,11,0.15);">
@@ -1640,7 +1640,7 @@
  </div>
  <div>
  <div style="font-weight:700;font-size:12px;color:#d97706;">Hỏi đáp chờ kiểm duyệt</div>
- <div style="font-size:12px;color:#78350f;">2 câu hỏi chờ duyệt &gt; 24h</div>
+ <div style="font-size:12px;color:#78350f;" id="sysAlertQA">Đang tải...</div>
  </div>
  </div>
  <div style="padding:10px 16px;display:flex;align-items:flex-start;gap:10px;">
@@ -1649,7 +1649,7 @@
  </div>
  <div>
  <div style="font-weight:700;font-size:12px;color:#d97706;">Tài liệu & đề thi chờ duyệt</div>
- <div style="font-size:12px;color:#78350f;">5 mục đang chờ phê duyệt</div>
+ <div style="font-size:12px;color:#78350f;" id="sysAlertMaterials">Đang tải...</div>
  </div>
  </div>
  </div>
@@ -1796,8 +1796,8 @@
  </div>
  <span style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.4px;">Doanh Thu Tháng Này</span>
  </div>
- <h3 style="font-size:26px;font-weight:900;color:#0f172a;margin:0 0 4px;line-height:1.1;">38.5 tr ₫</h3>
- <span style="font-size:11px;font-weight:700;color:#10b981;background:#ecfdf5;border-radius:20px;padding:2px 8px;display:inline-flex;align-items:center;gap:3px;"><i class="mdi mdi-trending-up" style="font-size:13px;"></i>+12.4% so tháng trước</span>
+ <h3 id="miniRevenueVal" style="font-size:26px;font-weight:900;color:#0f172a;margin:0 0 4px;line-height:1.1;">...</h3>
+ <span id="miniRevenueSub" style="font-size:11px;font-weight:700;color:#10b981;background:#ecfdf5;border-radius:20px;padding:2px 8px;display:inline-flex;align-items:center;gap:3px;"><i class="mdi mdi-trending-up" style="font-size:13px;"></i>Đang cập nhật</span>
  </div>
  <canvas id="sparkRevenue" width="90" height="48" style="flex-shrink:0;"></canvas>
  </div>
@@ -1815,8 +1815,8 @@
  </div>
  <span style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.4px;">Học Viên Đăng Ký Mới</span>
  </div>
- <h3 style="font-size:26px;font-weight:900;color:#0f172a;margin:0 0 4px;line-height:1.1;">47 HV</h3>
- <span style="font-size:11px;font-weight:700;color:#10b981;background:#ecfdf5;border-radius:20px;padding:2px 8px;display:inline-flex;align-items:center;gap:3px;"><i class="mdi mdi-trending-up" style="font-size:13px;"></i>+8 so tuần trước</span>
+ <h3 id="miniStudentsVal" style="font-size:26px;font-weight:900;color:#0f172a;margin:0 0 4px;line-height:1.1;">...</h3>
+ <span id="miniStudentsSub" style="font-size:11px;font-weight:700;color:#10b981;background:#ecfdf5;border-radius:20px;padding:2px 8px;display:inline-flex;align-items:center;gap:3px;"><i class="mdi mdi-trending-up" style="font-size:13px;"></i>Đang cập nhật</span>
  </div>
  <canvas id="sparkStudents" width="90" height="48" style="flex-shrink:0;"></canvas>
  </div>
@@ -1834,8 +1834,8 @@
  </div>
  <span style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.4px;">Tỷ Lệ Hoàn Thành</span>
  </div>
- <h3 style="font-size:26px;font-weight:900;color:#0f172a;margin:0 0 4px;line-height:1.1;">78.3%</h3>
- <span style="font-size:11px;font-weight:700;color:#10b981;background:#ecfdf5;border-radius:20px;padding:2px 8px;display:inline-flex;align-items:center;gap:3px;"><i class="mdi mdi-trending-up" style="font-size:13px;"></i>+3.1% tháng này</span>
+ <h3 id="miniCompletionVal" style="font-size:26px;font-weight:900;color:#0f172a;margin:0 0 4px;line-height:1.1;">...</h3>
+ <span id="miniCompletionSub" style="font-size:11px;font-weight:700;color:#10b981;background:#ecfdf5;border-radius:20px;padding:2px 8px;display:inline-flex;align-items:center;gap:3px;"><i class="mdi mdi-trending-up" style="font-size:13px;"></i>Đang cập nhật</span>
  </div>
  <canvas id="sparkCompletion" width="90" height="48" style="flex-shrink:0;"></canvas>
  </div>
@@ -1864,9 +1864,9 @@
  </div>
  </div>
  <div class="d-flex align-items-center gap-3 mt-2 mb-3">
- <h2 class="fw-bold mb-0">38.500.000</h2>
+ <h2 id="mainRevenueVal" class="fw-bold mb-0">...</h2>
  <span class="fw-semibold text-muted">VNĐ</span>
- <span class="fw-bold text-success small">↑ +1.37%</span>
+ <span class="fw-bold text-success small" id="mainRevenueSub"></span>
  </div>
  <div style="position:relative;flex:1;min-height:240px;"><canvas id="marketingOverview" style="position:absolute;inset:0;width:100%!important;height:100%!important;"></canvas></div>
  </div>
@@ -1959,45 +1959,8 @@
  </div>
  <a href="#" class="btn btn-outline-primary btn-sm" onclick="spaNav('hocvien','sec-dshv');return false;" style="font-size:11px;">Xem tất cả</a>
  </div>
- <div class="d-flex align-items-center justify-content-between py-2 border-bottom">
- <div class="d-flex align-items-center gap-2">
- <div style="width:7px;height:7px;border-radius:50%;background:#ef4444;flex-shrink:0;"></div>
- <span style="font-size:12px;font-weight:600;">Nguyễn Trung Quân</span>
- </div>
- <div class="d-flex align-items-center gap-1">
- <div class="progress" style="width:60px;height:5px;border-radius:99px;"><div class="progress-bar bg-danger" style="width:15%"></div></div>
- <span style="font-size:11px;color:#ef4444;font-weight:700;">15%</span>
- </div>
- </div>
- <div class="d-flex align-items-center justify-content-between py-2 border-bottom">
- <div class="d-flex align-items-center gap-2">
- <div style="width:7px;height:7px;border-radius:50%;background:#f59e0b;flex-shrink:0;"></div>
- <span style="font-size:12px;font-weight:600;">Lê Hoàng Nam</span>
- </div>
- <div class="d-flex align-items-center gap-1">
- <div class="progress" style="width:60px;height:5px;border-radius:99px;"><div class="progress-bar bg-warning" style="width:38%"></div></div>
- <span style="font-size:11px;color:#f59e0b;font-weight:700;">38%</span>
- </div>
- </div>
- <div class="d-flex align-items-center justify-content-between py-2 border-bottom">
- <div class="d-flex align-items-center gap-2">
- <div style="width:7px;height:7px;border-radius:50%;background:#10b981;flex-shrink:0;"></div>
- <span style="font-size:12px;font-weight:600;">Lê Trung Hiếu</span>
- </div>
- <div class="d-flex align-items-center gap-1">
- <div class="progress" style="width:60px;height:5px;border-radius:99px;"><div class="progress-bar bg-success" style="width:79%"></div></div>
- <span style="font-size:11px;color:#10b981;font-weight:700;">79%</span>
- </div>
- </div>
- <div class="d-flex align-items-center justify-content-between py-2">
- <div class="d-flex align-items-center gap-2">
- <div style="width:7px;height:7px;border-radius:50%;background:#10b981;flex-shrink:0;"></div>
- <span style="font-size:12px;font-weight:600;">Lê Minh Anh</span>
- </div>
- <div class="d-flex align-items-center gap-1">
- <div class="progress" style="width:60px;height:5px;border-radius:99px;"><div class="progress-bar bg-success" style="width:100%"></div></div>
- <span style="font-size:11px;color:#10b981;font-weight:700;">100%</span>
- </div>
+ <div id="studentAttentionList">
+ <div class="text-muted small text-center py-3">Đang tải...</div>
  </div>
  </div>
  </div>
@@ -8387,13 +8350,14 @@
  /* ── Active sidebar highlight on SPA nav ── */
  var _origSpaV5 = window.spaNav;
  window.spaNav = function(tabKey, sectionId) {
- _origSpaV5(tabKey, sectionId);
+ var result = typeof _origSpaV5 === 'function' ? _origSpaV5(tabKey, sectionId) : false;
  /* Re-apply table transitions after render */
  setTimeout(function() {
  document.querySelectorAll('table tbody tr').forEach(function(tr) {
  tr.style.cursor = 'default';
  });
  }, 0);
+ return result;
  };
 
  /* ── Tooltip-like title on truncated nav items ── */
@@ -8439,8 +8403,8 @@
  start += increment;
  if (start >= target) { start = target; clearInterval(timer); }
  el.textContent = isFloat
-  start.toFixed(1).replace('.', ',')
- : Math.floor(start).toLocaleString('vi-VN');
+  ? start.toFixed(1).replace('.', ',')
+  : Math.floor(start).toLocaleString('vi-VN');
  }, step);
  }
  /* Apply to KPI h3 numbers */
@@ -8486,18 +8450,22 @@
 function openCaiDat() {
  adminToast('Trang cài đặt đang được phát triển!', 'info');
 }
+function openModalVinhDanh() {
+ if (typeof spaNav === 'function') spaNav('tienich', 'sec-vinhdanh');
+}
  </script>
 
- <script src="assets/js/app/core/admin-api-only.jsv=20260604-api-only"></script><script src="assets/js/app/core/site-integration.jsv=20260530-integrated-db"></script>
- <script src="assets/js/app/core/auth.jsv=20260530-session-db"></script>
- <script src="assets/js/app/features/admin/management.jsv=20260530-admin-student-unique"></script>
- <script src="assets/js/app/features/admin/core.jsv=20260530-admin-ops-fixes"></script>
- <script src="assets/js/app/features/admin/courses.jsv=20260530-admin-ops-fixes"></script>
- <script src="assets/js/app/features/admin/finance.jsv=20260530-admin-ops-fixes"></script>
- <script src="assets/js/app/features/admin/approvals.jsv=20260530-admin-ops-fixes"></script>
- <script src="assets/js/app/features/admin/notifications.jsv=20260530-admin-ops-fixes"></script>
- <script src="assets/js/app/features/admin/schedule.jsv=20260530-admin-ops-fixes"></script>
- <script src="assets/js/app/features/admin/materials-reports.jsv=20260530-admin-ops-fixes"></script>
- <script src="assets/js/app/features/admin/operations.jsv=20260530-admin-ops-fixes"></script>
+ <script src="assets/js/app/core/admin-api-only.js?v=20260605-admin-nav"></script>
+<script src="assets/js/app/core/site-integration.js?v=20260605-admin-nav"></script>
+ <script src="assets/js/app/core/auth.js?v=20260605-admin-nav"></script>
+ <script src="assets/js/app/features/admin/management.js?v=20260605-admin-nav"></script>
+ <script src="assets/js/app/features/admin/core.js?v=20260605-admin-nav"></script>
+ <script src="assets/js/app/features/admin/courses.js?v=20260605-admin-nav"></script>
+ <script src="assets/js/app/features/admin/finance.js?v=20260605-admin-nav"></script>
+ <script src="assets/js/app/features/admin/approvals.js?v=20260605-admin-nav"></script>
+ <script src="assets/js/app/features/admin/notifications.js?v=20260605-admin-nav"></script>
+ <script src="assets/js/app/features/admin/schedule.js?v=20260605-admin-nav"></script>
+ <script src="assets/js/app/features/admin/materials-reports.js?v=20260605-admin-nav"></script>
+ <script src="assets/js/app/features/admin/operations.js?v=20260605-admin-nav"></script>
 </body>
 </html>

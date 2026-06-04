@@ -81,16 +81,17 @@
  headers
  });
 
- if (!response.ok) {
+ const data = await response.json().catch(() => ({}));
+ if (!response.ok || data.ok === false) {
  if (response.status === 401) {
  localStorage.removeItem('ec_auth_token');
  localStorage.removeItem('ec_current_user');
  window.location.replace('dangnhap.html');
  }
- throw new Error(`API error: ${response.status}`);
+ throw new Error(data.message || `API error: ${response.status}`);
  }
 
- return await response.json();
+ return data;
  } catch (error) {
  console.error('API call failed:', error);
  throw error;
@@ -624,7 +625,12 @@
  <div class="db-pdf-info" style="flex:1">
  <h6>${escapeHtml(mat.title || mat.name || 'Bai hoc')}</h6>
  <small>${escapeHtml(mat.courseName || '')}${mat.teacherName ? ' - ' + escapeHtml(mat.teacherName) : ''}</small>
- ${mat.description ? `<div style="font-size:12px;color:var(--text-muted);margin-top:6px;line-height:1.5">${escapeHtml(mat.description).replace(/\n/g, '<br>')}</div>` : ''}
+ ${mat.description
+  ? `<div style="font-size:12px;color:var(--text-muted);margin-top:6px;line-height:1.5">
+      ${escapeHtml(mat.description).replace(/\n/g, '<br>')}
+    </div>`
+  : ''
+ }
  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
  ${mat.videoUrl ? `<a href="${escapeHtml(mat.videoUrl)}" target="_blank" rel="noopener" class="db-btn-dl" style="text-decoration:none;color:inherit"><i class="bi bi-play-circle"></i> Xem video</a>` : ''}
  ${mat.documentUrl ? `<a href="${escapeHtml(mat.documentUrl)}" target="_blank" rel="noopener" class="db-btn-dl" style="text-decoration:none;color:inherit"><i class="bi bi-box-arrow-up-right"></i> Mo tai lieu</a>` : ''}
@@ -768,19 +774,19 @@
  if (averageScore > 0 || completedExams > 0 || completionRate > 0) {
  statsHtml = `
  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px">
- ${averageScore > 0  `
+ ${averageScore > 0 ? `
  <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; text-align: center">
  <div style="font-size: 28px; font-weight: 900; color: var(--blue)">${averageScore.toFixed(1)}</div>
  <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px">Điểm trung bình</div>
  </div>
  ` : ''}
- ${completedExams > 0  `
+ ${completedExams > 0 ? `
  <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; text-align: center">
  <div style="font-size: 28px; font-weight: 900; color: var(--green)">${completedExams}</div>
  <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px">Bài kiểm tra</div>
  </div>
  ` : ''}
- ${completionRate > 0  `
+ ${completionRate > 0 ? `
  <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; text-align: center">
  <div style="font-size: 28px; font-weight: 900; color: var(--orange)">${completionRate}%</div>
  <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px">Tỉ lệ hoàn thành</div>
@@ -797,7 +803,7 @@
  const score = exam.score || 0;
  const maxScore = exam.maxScore || 100;
  const percentage = Math.round((score / maxScore) * 100);
- const scoreClass = percentage >= 70  's-high' : percentage >= 50  's-mid' : 's-low';
+ const scoreClass = percentage >= 70 ? 's-high' : percentage >= 50 ? 's-mid' : 's-low';
  const rank = exam.rank || '-';
  
  return `
@@ -864,7 +870,7 @@
  <h3 style="font-size: 14px; font-weight: 800; margin-bottom: 12px">Huy hiệu của bạn</h3>
  <div class="badges-grid">
  ${badges.map(badge => `
- <div class="badge-item ${badge.unlocked  '' : 'locked'}">
+ <div class="badge-item ${badge.unlocked ? '' : 'locked'}">
  <div class="badge-icon">${badge.icon || ''}</div>
  <div class="badge-name">${badge.name}</div>
  <div class="badge-desc">${badge.description}</div>
@@ -895,10 +901,10 @@
  .slice(0, 2);
  
  return `
- <div class="lb-item ${isCurrentUser  'me' : ''}">
+ <div class="lb-item ${isCurrentUser ? 'me' : ''}">
  <div class="lb-rank">${index + 1}</div>
  <div class="lb-avatar" style="background: linear-gradient(135deg, ${user.avatarColor || '#1a6ef5'}, ${user.avatarColorLight || '#60a5fa'})">${initials}</div>
- <div class="lb-name ${isCurrentUser  'me-name' : ''}">${user.name || 'Học sinh'}</div>
+ <div class="lb-name ${isCurrentUser ? 'me-name' : ''}">${user.name || 'Học sinh'}</div>
  <div class="lb-xp">${user.xp || 0} XP</div>
  </div>
  `;
@@ -948,27 +954,28 @@
  
  <div style="margin-bottom: 16px">
  <label style="display: block; font-size: 12px; font-weight: 700; margin-bottom: 6px; color: var(--text-muted)">Tên</label>
- <input type="text" value="${state.user.name}" style="width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 10px; font-family: 'Be Vietnam Pro', sans-serif; font-size: 14px;">
+ <input id="stName" type="text" value="${escapeHtml(state.user.name || '')}" style="width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 10px; font-family: 'Be Vietnam Pro', sans-serif; font-size: 14px;">
  </div>
  
  <div style="margin-bottom: 16px">
  <label style="display: block; font-size: 12px; font-weight: 700; margin-bottom: 6px; color: var(--text-muted)">Email</label>
- <input type="email" value="${state.user.email}" disabled style="width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 10px; font-family: 'Be Vietnam Pro', sans-serif; font-size: 14px; background: var(--bg);">
+ <input id="stEmail" type="email" value="${escapeHtml(state.user.email || '')}" disabled style="width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 10px; font-family: 'Be Vietnam Pro', sans-serif; font-size: 14px; background: var(--bg);">
  </div>
  
  <div style="margin-bottom: 16px">
  <label style="display: block; font-size: 12px; font-weight: 700; margin-bottom: 6px; color: var(--text-muted)">Số điện thoại</label>
- <input type="tel" value="${state.user.phone || ''}" style="width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 10px; font-family: 'Be Vietnam Pro', sans-serif; font-size: 14px;">
+ <input id="stPhone" type="tel" value="${escapeHtml(state.user.phone || '')}" style="width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 10px; font-family: 'Be Vietnam Pro', sans-serif; font-size: 14px;">
  </div>
  
- <button style="background: var(--blue); color: #fff; border: none; border-radius: 8px; padding: 10px 20px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: 'Be Vietnam Pro', sans-serif;">Lưu thay đổi</button>
+ <button onclick="stSaveProfile()" style="background: var(--blue); color: #fff; border: none; border-radius: 8px; padding: 10px 20px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: 'Be Vietnam Pro', sans-serif;">Lưu thay đổi</button>
  </div>
  
  <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 20px">
  <h3 style="font-size: 14px; font-weight: 800; margin-bottom: 16px">Bảo mật</h3>
- <button style="width: 100%; background: none; border: 1px solid var(--border); border-radius: 8px; padding: 12px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: 'Be Vietnam Pro', sans-serif; color: var(--blue); transition: all 0.15s;">
- Đổi mật khẩu
- </button>
+ <input id="stCurrentPassword" type="password" placeholder="Mat khau hien tai" style="width: 100%; margin-bottom: 10px; border: 1px solid var(--border); border-radius: 8px; padding: 10px; font-family: 'Be Vietnam Pro', sans-serif; font-size: 14px;">
+ <input id="stNewPassword" type="password" placeholder="Mat khau moi" style="width: 100%; margin-bottom: 10px; border: 1px solid var(--border); border-radius: 8px; padding: 10px; font-family: 'Be Vietnam Pro', sans-serif; font-size: 14px;">
+ <input id="stConfirmPassword" type="password" placeholder="Nhap lai mat khau moi" style="width: 100%; margin-bottom: 12px; border: 1px solid var(--border); border-radius: 8px; padding: 10px; font-family: 'Be Vietnam Pro', sans-serif; font-size: 14px;">
+ <button onclick="stChangePassword()" style="width: 100%; background: none; border: 1px solid var(--border); border-radius: 8px; padding: 12px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: 'Be Vietnam Pro', sans-serif; color: var(--blue); transition: all 0.15s;">Đổi mật khẩu</button>
  </div>
  </div>
  `;
@@ -991,7 +998,7 @@
  window.toggleNotif = function(event) {
  const dropdown = document.getElementById('notifDropdown');
  state.notif.notifOpen = !state.notif.notifOpen;
- dropdown.style.display = state.notif.notifOpen  'block' : 'none';
+ dropdown.style.display = state.notif.notifOpen ? 'block' : 'none';
  event.stopPropagation();
  };
 
@@ -1115,7 +1122,7 @@
  if (question.type === 'multiple_choice' && question.options && question.options.length > 0) {
  questionHtml += `<div style="display: flex; flex-direction: column; gap: 10px">`;
  question.options.forEach((option, i) => {
- const checked = window.currentExamState.answers[question.id] === option  'checked' : '';
+ const checked = window.currentExamState.answers[question.id] === option ? 'checked' : '';
  questionHtml += `
  <label style="display: flex; align-items: center; padding: 12px; border: 1px solid var(--border); border-radius: 8px; cursor: pointer; transition: all 0.2s">
  <input type="radio" name="question_${question.id}" value="${option}" ${checked} style="margin-right: 10px" onchange="saveAnswer('${question.id}', '${option}')">
@@ -1125,8 +1132,8 @@
  });
  questionHtml += `</div>`;
  } else if (question.type === 'true_false') {
- const trueChecked = window.currentExamState.answers[question.id] === 'true'  'checked' : '';
- const falseChecked = window.currentExamState.answers[question.id] === 'false'  'checked' : '';
+ const trueChecked = window.currentExamState.answers[question.id] === 'true' ? 'checked' : '';
+ const falseChecked = window.currentExamState.answers[question.id] === 'false' ? 'checked' : '';
  questionHtml += `
  <div style="display: flex; gap: 16px">
  <label style="display: flex; align-items: center; padding: 12px; border: 1px solid var(--border); border-radius: 8px; cursor: pointer">
@@ -1225,6 +1232,71 @@
  alert('Tính năng này sẽ sớm ra mắt!');
  };
 
+ window.stSaveProfile = async function() {
+ const name = (document.getElementById('stName') || {}).value || '';
+ const phone = (document.getElementById('stPhone') || {}).value || '';
+ if (!name.trim()) {
+ alert('Vui long nhap ten.');
+ return;
+ }
+ try {
+ const data = await apiCall('/api/profile', {
+ method: 'PATCH',
+ body: JSON.stringify({ name: name.trim(), phone: phone.trim() })
+ });
+ state.user = data.user || { ...state.user, name: name.trim(), phone: phone.trim() };
+ localStorage.setItem('ec_current_user', JSON.stringify(state.user));
+ updateUserUI();
+ alert('Da luu thong tin ca nhan.');
+ } catch (error) {
+ alert('Khong luu duoc thong tin. Vui long thu lai.');
+ }
+ };
+
+ window.stChangePassword = async function() {
+ const currentPassword = (document.getElementById('stCurrentPassword') || {}).value || '';
+ const newPassword = (document.getElementById('stNewPassword') || {}).value || '';
+ const confirmPassword = (document.getElementById('stConfirmPassword') || {}).value || '';
+ if (!currentPassword || !newPassword) {
+ alert('Vui long nhap day du mat khau.');
+ return;
+ }
+ if (newPassword !== confirmPassword) {
+ alert('Mat khau moi khong khop.');
+ return;
+ }
+ try {
+ await apiCall('/api/profile/password', {
+ method: 'PATCH',
+ body: JSON.stringify({ currentPassword, newPassword })
+ });
+ ['stCurrentPassword', 'stNewPassword', 'stConfirmPassword'].forEach(id => {
+ const el = document.getElementById(id);
+ if (el) el.value = '';
+ });
+ alert('Da doi mat khau.');
+ } catch (error) {
+ alert(error.message || 'Khong doi duoc mat khau.');
+ }
+ };
+
+ window.startSpeakingPractice = async function() {
+ if (!window.speakingPractice || typeof window.speakingPractice.startRecording !== 'function') {
+ alert('Trinh duyet chua san sang ghi am. Vui long thu lai.');
+ return;
+ }
+ const ok = await window.speakingPractice.startRecording();
+ if (!ok) return;
+ alert('Dang ghi am. Bam OK de dung va gui bai speaking.');
+ window.speakingPractice.stopRecording();
+ await window.speakingPractice.submitRecording({
+ topic: 'Dashboard speaking practice',
+ prompt: 'Free speaking practice from student dashboard',
+ status: 'submitted',
+ submittedAt: new Date().toISOString()
+ });
+ };
+
  window.filterNotif = function(type, button) {
  document.querySelectorAll('.ntab').forEach(b => b.style.color = 'var(--text-muted)');
  document.querySelectorAll('.ntab').forEach(b => b.style.borderBottomColor = 'transparent');
@@ -1267,22 +1339,22 @@
  const label = document.getElementById('notifUnreadLabel');
  if (label) label.textContent = `${unread} chưa đọc`;
  const dot = document.getElementById('notifDot');
- if (dot) dot.style.display = unread > 0  'block' : 'none';
+ if (dot) dot.style.display = unread > 0 ? 'block' : 'none';
 
  if (!list) return;
  if (!notifs.length) {
  list.innerHTML = '<div style="padding: 24px; text-align: center; color: var(--text-muted); font-size: 13px">Không có thông báo nào</div>';
  return;
  }
- const iconFor = type => type === 'exam'  '' : type === 'material'  '' : type === 'qa'  '' : type === 'schedule'  '' : '';
+ const iconFor = type => type === 'exam' ? '' : type === 'material' ? '' : type === 'qa' ? '' : type === 'schedule' ? '' : '';
  list.innerHTML = notifs.map(n => `
- <div style="display: flex; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--border); background: ${n.isRead  'transparent' : 'var(--blue-light, #eef4ff)'}; cursor: ${n.isRead  'default' : 'pointer'}" ${n.isRead  '' : `onclick="markNotifRead('${n.id}', event)"`}>
+ <div style="display: flex; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--border); background: ${n.isRead ? 'transparent' : 'var(--blue-light, #eef4ff)'}; cursor: ${n.isRead ? 'default' : 'pointer'}" ${n.isRead ? '' : `onclick="markNotifRead('${n.id}', event)"`}>
  <div style="font-size: 18px; line-height: 1.2">${iconFor(n.type)}</div>
  <div style="flex: 1; min-width: 0">
  <div style="font-size: 13px; font-weight: 700; color: var(--text)">${escapeHtml(n.title)}</div>
  <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px">${escapeHtml(n.body || '')}</div>
  </div>
- ${n.isRead  '' : '<div style="width: 8px; height: 8px; border-radius: 50%; background: var(--blue); flex-shrink: 0; margin-top: 4px"></div>'}
+ ${n.isRead ? '' : '<div style="width: 8px; height: 8px; border-radius: 50%; background: var(--blue); flex-shrink: 0; margin-top: 4px"></div>'}
  </div>
  `).join('');
  }

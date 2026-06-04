@@ -44,9 +44,9 @@
     const body = document.getElementById("realScheduleBody");
     if (!body) return;
     const rows = state.sessions.slice().sort((a, b) => new Date(a.startAt) - new Date(b.startAt)).slice(0, 30);
-    body.innerHTML = rows.length  rows.map(row => {
-      const statusText = row.status === "done"  "Da hoc" : row.status === "cancelled"  "Da huy" : "Sap hoc";
-      const statusKind = row.status === "done"  "success" : row.status === "cancelled"  "danger" : "warning";
+    body.innerHTML = rows.length ? rows.map(row => {
+      const statusText = row.status === "done" ? "Da hoc" : row.status === "cancelled" ? "Da huy" : "Sap hoc";
+      const statusKind = row.status === "done" ? "success" : row.status === "cancelled" ? "danger" : "warning";
       return `<tr>
         <td><strong>${dateLabel(row.startAt, true)}</strong><div style="font-size:10px;color:#94a3b8;">${dateLabel(row.endAt, true)}</div></td>
         <td>${escapeHtml(row.courseName)}</td>
@@ -85,7 +85,7 @@
         method: "POST",
         body: JSON.stringify({
           courseId,
-          teacherId: course  course.teacherId : null,
+          teacherId: course ? course.teacherId : null,
           title,
           sessionNo: state.sessions.filter(item => item.courseId === courseId).length + 1,
           startAt: startAt.replace("T", " "),

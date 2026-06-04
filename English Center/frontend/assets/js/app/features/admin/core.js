@@ -12,6 +12,7 @@
     sessions: [],
     notifications: [],
     materialRequests: [],
+    questions: [],
     dashboard: null,
     khFilter: "all",
     honorStudentIds: new Set()
@@ -31,7 +32,7 @@
       ...options,
       headers: {
         "Content-Type": "application/json",
-        ...(token()  { Authorization: `Bearer ${token()}` } : {}),
+        ...(token() ? { Authorization: `Bearer ${token()}` } : {}),
         ...((options && options.headers) || {})
       }
     });
@@ -52,7 +53,7 @@
   }
 
   function escapeHtml(value) {
-    return String(value  "").replace(/[&<>"']/g, ch => ({
+    return String(value ?? "").replace(/[&<>"']/g, ch => ({
       "&": "&amp;",
       "<": "&lt;",
       ">": "&gt;",
@@ -71,7 +72,7 @@
 
   function number(value) {
     const parsed = Number(value);
-    return Number.isFinite(parsed)  parsed : 0;
+    return Number.isFinite(parsed) ? parsed : 0;
   }
 
   function money(value) {
@@ -86,7 +87,7 @@
       day: "2-digit",
       month: "2-digit",
       year: "numeric",
-      ...(withTime  { hour: "2-digit", minute: "2-digit" } : {})
+      ...(withTime ? { hour: "2-digit", minute: "2-digit" } : {})
     });
   }
 
@@ -108,7 +109,7 @@
 
   function progressBar(value) {
     const pct = Math.max(0, Math.min(100, number(value)));
-    const cls = pct >= 75  "bg-success" : pct >= 45  "bg-warning" : "bg-danger";
+    const cls = pct >= 75 ? "bg-success" : pct >= 45 ? "bg-warning" : "bg-danger";
     return `<div style="display:flex;align-items:center;gap:7px;min-width:120px;">
       <div class="progress flex-grow-1" style="height:6px;"><div class="progress-bar ${cls}" style="width:${pct}%"></div></div>
       <span style="font-size:12px;font-weight:700;color:#0f172a;min-width:34px;">${pct.toFixed(0)}%</span>
@@ -156,7 +157,7 @@
 
   function renderAll() {
     const renderers = window.EC_ADMIN_RENDERERS || {};
-    ["courses", "finance", "approvals", "notifications", "honor", "schedule", "materials", "reports"].forEach(key => {
+    ["overview", "courses", "finance", "approvals", "notifications", "honor", "schedule", "materials", "reports"].forEach(key => {
       if (typeof renderers[key] === "function") renderers[key]();
     });
   }
@@ -166,6 +167,7 @@
     const renderers = window.EC_ADMIN_RENDERERS || {};
     const map = {
       "sec-dskh": ["courses"],
+      "overview": ["overview"],
       "sec-khstats": ["courses"],
       "sec-taichinh": ["finance"],
       "sec-thongbao": ["notifications"],
@@ -179,20 +181,26 @@
     (map[sectionId] || []).forEach(key => {
       if (typeof renderers[key] === "function") renderers[key]();
     });
+    if (sectionId === "sec-dshv" || sectionId === "sec-dsgv") {
+      if (window.EC_ADMIN_MGMT && typeof window.EC_ADMIN_MGMT.refresh === "function") {
+        window.EC_ADMIN_MGMT.refresh();
+      }
+    }
   }
 
   async function loadAll(silent) {
     if (state.loading) return;
     state.loading = true;
     try {
-      const [courses, teachers, students, enrollments, sessions, notifications, materials, dashboard] = await Promise.all([
+      const [courses, teachers, students, enrollments, sessions, notifications, materials, questions, dashboard] = await Promise.all([
         request("/api/courses"),
-        request("/api/usersrole=teacher&limit=500"),
-        request("/api/usersrole=student&limit=500"),
-        request("/api/enrollmentslimit=1000"),
-        request("/api/class-sessionslimit=1000"),
-        request("/api/notificationslimit=100"),
-        request("/api/material-requestslimit=300"),
+        request("/api/users?role=teacher&limit=500"),
+        request("/api/users?role=student&limit=500"),
+        request("/api/enrollments?limit=1000"),
+        request("/api/class-sessions?limit=1000"),
+        request("/api/notifications?limit=100"),
+        request("/api/material-requests?limit=300"),
+        request("/api/questions?limit=300"),
         request("/api/dashboard/admin")
       ]);
       state.courses = courses.courses || [];
@@ -202,6 +210,7 @@
       state.sessions = sessions.sessions || [];
       state.notifications = notifications.notifications || [];
       state.materialRequests = materials.requests || [];
+      state.questions = questions.questions || [];
       state.dashboard = dashboard.dashboard || null;
       state.loaded = true;
       renderAll();

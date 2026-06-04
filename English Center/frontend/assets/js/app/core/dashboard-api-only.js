@@ -112,16 +112,58 @@
  setHtml("reportTopStudents", emptyBlock());
  }
 
+ function teacherSectionExists(id) {
+ return !!id && !!document.getElementById(`s-${id}`);
+ }
+
+ function teacherSectionFromRoute(fallback) {
+ let hash = "";
+ try {
+ hash = decodeURIComponent((window.location.hash || "").replace(/^#/, "")).trim();
+ } catch (_) {
+ hash = "";
+ }
+ if (teacherSectionExists(hash)) return hash;
+ if (teacherSectionExists(fallback)) return fallback;
+ return "dashboard";
+ }
+
+ function syncTeacherActiveNav(id) {
+ document.querySelectorAll(".nav-link,.mi,.sb-item").forEach(item => {
+ item.classList.remove("active");
+ item.removeAttribute("aria-current");
+ });
+ const activeItem = Array.from(document.querySelectorAll(".nav-link,.mi,.sb-item")).find(item => {
+ const navId = item.getAttribute("data-nav");
+ const onclick = item.getAttribute("onclick") || "";
+ return navId === id || onclick.includes(`nav('${id}'`) || onclick.includes(`nav("${id}"`);
+ });
+ if (activeItem) {
+ activeItem.classList.add("active");
+ activeItem.setAttribute("aria-current", "page");
+ }
+ }
+
+ function setTeacherRouteSection(id) {
+ const nextHash = `#${encodeURIComponent(id)}`;
+ if (window.location.hash === nextHash) return;
+ window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}${nextHash}`);
+ }
+
  function installTeacherNavigation() {
  if (typeof window.nav === "function") return;
- window.nav = function (id, trigger) {
+ window.syncTeacherActiveNav = syncTeacherActiveNav;
+ window.nav = function (id) {
+ const targetId = teacherSectionExists(id) ? id : teacherSectionFromRoute("dashboard");
  document.querySelectorAll("[id^='s-']").forEach(section => {
- section.style.display = section.id === `s-${id}` ? "" : "none";
+ section.style.display = section.id === `s-${targetId}` ? "" : "none";
  });
- document.querySelectorAll(".nav-link,.mi").forEach(item => item.classList.remove("active"));
- if (trigger && trigger.classList) trigger.classList.add("active");
+ syncTeacherActiveNav(targetId);
+ setTeacherRouteSection(targetId);
  window.scrollTo(0, 0);
  };
+ window.addEventListener("hashchange", () => window.nav(teacherSectionFromRoute("dashboard")));
+ window.nav(teacherSectionFromRoute("dashboard"));
  }
 
  ready(function () {

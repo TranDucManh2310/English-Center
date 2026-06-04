@@ -44,7 +44,7 @@
  const body = ((document.getElementById("tbBody") || {}).value || "").trim();
  const target = (document.getElementById("tbTarget") || {}).value || "all";
  const typeInput = document.querySelector("input[name='tbType']:checked");
- const type = typeInput  typeInput.value : "system";
+ const type = typeInput ? typeInput.value : "system";
  if (!title) return notify("Tieu de thong bao la bat buoc.", "warning");
  try {
  const recipients = recipientsForTarget(target);
@@ -59,7 +59,7 @@
  body: JSON.stringify({ userId: user.id, title, body, type })
  })));
  }
- notify(`Da gui ${target === "all"  1 : recipients.length} thong bao.`, "success");
+ notify(`Da gui ${target === "all" ? 1 : recipients.length} thong bao.`, "success");
  log("Gui thong bao he thong", "success");
  const titleInput = document.getElementById("tbTitle");
  const bodyInput = document.getElementById("tbBody");
@@ -76,7 +76,7 @@
  const list = document.getElementById("thongbaoList");
  if (!list) return;
  const rows = state.notifications.slice(0, 12);
- list.innerHTML = rows.length  rows.map(row => `<div style="padding:12px 14px;border-radius:10px;border:1px solid #e2e8f0;background:#fff;">
+ list.innerHTML = rows.length ? rows.map(row => `<div style="padding:12px 14px;border-radius:10px;border:1px solid #e2e8f0;background:#fff;">
  <div class="d-flex justify-content-between align-items-start mb-1">
  <span style="font-size:12px;font-weight:700;color:#0f172a;">${escapeHtml(row.title)}</span>
  <span style="font-size:10px;color:#94a3b8;white-space:nowrap;">${dateLabel(row.createdAt, true)}</span>
@@ -91,7 +91,7 @@
  if (pick) {
  pick.innerHTML = `<option value="">Chon hoc vien</option>` + state.students.map(student => {
  const courseNames = enrollmentsByStudent(student.id).map(row => row.courseName).slice(0, 2).join(", ");
- return `<option value="${escapeHtml(student.id)}">${escapeHtml(student.name)}${courseNames  ` - ${escapeHtml(courseNames)}` : ""}</option>`;
+ return `<option value="${escapeHtml(student.id)}">${escapeHtml(student.name)}${courseNames ? ` - ${escapeHtml(courseNames)}` : ""}</option>`;
  }).join("");
  }
  renderHonorStudentList();
@@ -104,7 +104,7 @@
  const list = document.getElementById("vd2StudentList");
  if (!list) return;
  const students = Array.from(state.honorStudentIds).map(studentById).filter(Boolean);
- list.innerHTML = students.length  students.map((student, index) => `<span style="display:inline-flex;align-items:center;gap:5px;background:#fef3c7;border:1px solid #fde68a;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;color:#92400e;">
+ list.innerHTML = students.length ? students.map((student, index) => `<span style="display:inline-flex;align-items:center;gap:5px;background:#fef3c7;border:1px solid #fde68a;border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;color:#92400e;">
  ${index + 1}. ${escapeHtml(student.name)} <span onclick="EC_ADMIN_OPS.removeHonorStudent('${student.id}')" style="cursor:pointer;margin-left:3px;color:#d97706;font-size:13px;">x</span>
  </span>`).join("") : `<span class="text-muted small">Chua chon hoc vien.</span>`;
  }
@@ -123,7 +123,7 @@
  const list = document.getElementById("vdHistoryList");
  if (!list) return;
  const rows = state.notifications.filter(item => item.type === "honor").slice(0, 6);
- list.innerHTML = rows.length  rows.map(row => `<div style="padding:12px 14px;border-radius:10px;border:1px solid #fef3c7;background:#fffbf0;">
+ list.innerHTML = rows.length ? rows.map(row => `<div style="padding:12px 14px;border-radius:10px;border:1px solid #fef3c7;background:#fffbf0;">
  <div class="d-flex justify-content-between align-items-start mb-1">
  <span style="font-size:12px;font-weight:700;color:#92400e;">${escapeHtml(row.title)}</span>
  <span style="font-size:10px;color:#94a3b8;white-space:nowrap;">${dateLabel(row.createdAt, false)}</span>

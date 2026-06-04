@@ -36,9 +36,9 @@
       const id = Date.now();
       const notifEl = document.createElement('div');
       
-      const bgColor = type === 'success'  '#16a34a' :
-                      type === 'error'  '#dc2626' :
-                      type === 'warning'  '#ea580c' : '#1a6ef5';
+      const bgColor = type === 'success' ? '#16a34a' :
+                      type === 'error' ? '#dc2626' :
+                      type === 'warning' ? '#ea580c' : '#1a6ef5';
       
       notifEl.style.cssText = `
         background: ${bgColor};
@@ -382,7 +382,7 @@
     static get(key) {
       try {
         const item = localStorage.getItem(key);
-        return item  JSON.parse(item) : null;
+        return item ? JSON.parse(item) : null;
       } catch (error) {
         console.error('Error reading from localStorage:', error);
         return null;

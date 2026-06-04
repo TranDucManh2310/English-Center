@@ -29,7 +29,7 @@
       ...options,
       headers: {
         "Content-Type": "application/json",
-        ...(token()  { Authorization: `Bearer ${token()}` } : {}),
+        ...(token() ? { Authorization: `Bearer ${token()}` } : {}),
         ...((options && options.headers) || {})
       }
     });
@@ -50,7 +50,7 @@
   }
 
   function escapeHtml(value) {
-    return String(value  "").replace(/[&<>"']/g, ch => ({
+    return String(value ?? "").replace(/[&<>"']/g, ch => ({
       "&": "&amp;",
       "<": "&lt;",
       ">": "&gt;",
@@ -63,19 +63,19 @@
     return String(value || "")
       .normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "")
-      .replace(/[đĐ]/g, match => (match === "Đ"  "D" : "d"))
+      .replace(/[đĐ]/g, match => (match === "Đ" ? "D" : "d"))
       .toLowerCase()
       .trim();
   }
 
   function number(value) {
     const parsed = Number(value);
-    return Number.isFinite(parsed)  parsed : 0;
+    return Number.isFinite(parsed) ? parsed : 0;
   }
 
   function initials(name) {
     const parts = String(name || "").trim().split(/\s+/).filter(Boolean);
-    return (parts.length > 1  parts[0][0] + parts[parts.length - 1][0] : (parts[0] || "").slice(0, 2)).toUpperCase();
+    return (parts.length > 1 ? parts[0][0] + parts[parts.length - 1][0] : (parts[0] || "").slice(0, 2)).toUpperCase();
   }
 
   function avatar(name, size) {
@@ -196,12 +196,12 @@
       const totalProgress = studentEnrollments.reduce((sum, item) => sum + number(item.progress), 0);
       const scoreRows = studentEnrollments.filter(item => number(item.averageScore) > 0);
       const progress = Math.round(totalProgress / Math.max(studentEnrollments.length, 1));
-      const averageScore = scoreRows.length
+      const averageScore = scoreRows.length ?
          Math.round(scoreRows.reduce((sum, item) => sum + number(item.averageScore), 0) / scoreRows.length * 10) / 10
         : 0;
       const statuses = studentEnrollments.map(item => item.status || "active");
-      const enrolledAt = primary.enrolledAt  new Date(primary.enrolledAt) : null;
-      const days = enrolledAt && !Number.isNaN(enrolledAt.getTime())
+      const enrolledAt = primary.enrolledAt ? new Date(primary.enrolledAt) : null;
+      const days = enrolledAt && !Number.isNaN(enrolledAt.getTime()) ?
          Math.max(0, Math.floor((Date.now() - enrolledAt.getTime()) / 86400000))
         : 0;
       const allCompleted = statuses.length > 0 && statuses.every(status => status === "completed");
@@ -215,19 +215,19 @@
         lop: student.education || primary.studentClass || "-",
         email: student.email || primary.studentEmail,
         sdt: student.phone || primary.studentPhone || "-",
-        khoa: courseNames.length <= 1  (courseNames[0] || "Chua dang ky") : `${courseNames[0]} +${courseNames.length - 1} khoa`,
+        khoa: courseNames.length <= 1 ? (courseNames[0] || "Chua dang ky") : `${courseNames[0]} +${courseNames.length - 1} khoa`,
         courseNames,
         courseSummary: courseNames.join(", "),
         primaryCourseName: primary.courseName || courseNames[0] || "",
-        gv: teacherNames.length <= 1  (teacherNames[0] || "Chua phan cong") : `${teacherNames[0]} +${teacherNames.length - 1} GV`,
+        gv: teacherNames.length <= 1 ? (teacherNames[0] || "Chua phan cong") : `${teacherNames[0]} +${teacherNames.length - 1} GV`,
         teacherNames,
         pr: progress,
         streak: Math.max(0, studentEnrollments.reduce((sum, item) => sum + number(item.completedLessons), 0)),
-        tt: allCompleted  "Hoan thanh" : anyCancelled  "Nguy co bo hoc" : anyPaused || progress < 35  "Cham tien do" : "Dang hoc",
+        tt: allCompleted ? "Hoan thanh" : anyCancelled ? "Nguy co bo hoc" : anyPaused || progress < 35 ? "Cham tien do" : "Dang hoc",
         absences: studentEnrollments.reduce((sum, item) => sum + number(item.absences), 0),
         submissions: studentEnrollments.reduce((sum, item) => sum + number(item.submissions), 0),
         averageScore,
-        status: anyCancelled  "cancelled" : allCompleted  "completed" : anyPaused  "paused" : "active",
+        status: anyCancelled ? "cancelled" : allCompleted ? "completed" : anyPaused ? "paused" : "active",
         paymentStatus: primary.paymentStatus || "",
         paidAmount: studentEnrollments.reduce((sum, item) => sum + number(item.paidAmount), 0),
         enrolledAt: primary.enrolledAt || null,
@@ -252,7 +252,7 @@
       if (!haystack.includes(normalize(search))) return false;
     }
     if (course) {
-      const courseNames = row.courseNames && row.courseNames.length  row.courseNames : [row.khoa];
+      const courseNames = row.courseNames && row.courseNames.length ? row.courseNames : [row.khoa];
       if (!courseNames.some(name => normalize(name) === normalize(course))) return false;
     }
     if (status && normalize(row.tt) !== normalize(status)) return false;
@@ -293,7 +293,7 @@
           <div class="progress progress-md mb-1"><div class="progress-bar ${progressClass(row.pr)}" style="width:${Math.min(row.pr, 100)}%"></div></div>
           <span style="font-size:11px;font-weight:700;">${row.pr}%</span>
         </td>
-        <td style="font-size:12px;">${row.streak  `${row.streak} bai` : '<span class="text-muted">-</span>'}</td>
+        <td style="font-size:12px;">${row.streak ? `${row.streak} bai` : '<span class="text-muted">-</span>'}</td>
         <td>${segBadge(row.seg)}</td>
         <td><span style="border-radius:20px;padding:2px 9px;font-size:11px;font-weight:600;${statusStyle}">${escapeHtml(row.tt)}</span></td>
         <td>${riskBadge(risk)}</td>
@@ -315,7 +315,7 @@
     }
     container.innerHTML = rows.map((row, index) => {
       const risk = riskLevel(row);
-      const border = risk === "high"  "#ef4444" : risk === "medium"  "#f59e0b" : "#10b981";
+      const border = risk === "high" ? "#ef4444" : risk === "medium" ? "#f59e0b" : "#10b981";
       return `<div style="background:#fff;border-radius:10px;border:1px solid #f1f5f9;border-top:3px solid ${border};padding:16px;box-shadow:0 2px 8px rgba(15,23,42,.05);">
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
           ${avatar(row.ten, 40)}
@@ -349,7 +349,7 @@
     const footer = document.getElementById("hvTableFooter");
     if (footer) {
       const highRisk = filtered.filter(row => riskLevel(row) === "high").length;
-      footer.innerHTML = `<span style="font-size:12px;color:#64748b;">Hien thi <strong>${filtered.length}</strong> / ${rows.length} hoc vien${highRisk  ` - <span style="color:#ef4444;font-weight:700;">${highRisk} nguy co cao</span>` : ""}</span>`;
+      footer.innerHTML = `<span style="font-size:12px;color:#64748b;">Hien thi <strong>${filtered.length}</strong> / ${rows.length} hoc vien${highRisk ? ` - <span style="color:#ef4444;font-weight:700;">${highRisk} nguy co cao</span>` : ""}</span>`;
     }
 
     const cards = Array.from(document.querySelectorAll("#segmentCards .seg-card"));
@@ -363,7 +363,7 @@
       const pct = card.querySelector("span");
       const total = totals[seg] || 0;
       if (value) value.textContent = total;
-      if (pct) pct.textContent = rows.length  `${Math.round(total / rows.length * 100)}%` : "0%";
+      if (pct) pct.textContent = rows.length ? `${Math.round(total / rows.length * 100)}%` : "0%";
     });
   }
 
@@ -385,7 +385,7 @@
       const select = document.getElementById(id);
       if (!select) return;
       const current = select.value;
-      const first = id === "hvFilterKhoa"  '<option value="">Tat ca khoa hoc</option>' : "";
+      const first = id === "hvFilterKhoa" ? '<option value="">Tat ca khoa hoc</option>' : "";
       select.innerHTML = first + state.courses.map(course => `<option value="${escapeHtml(course.name)}">${escapeHtml(course.name)}</option>`).join("");
       if (current && Array.from(select.options).some(option => option.value === current)) select.value = current;
     });
@@ -479,7 +479,7 @@
     if (title) title.textContent = "Sua Thong Tin Hoc Vien";
     setValue("hvName", row.ten);
     setValue("hvEmail", row.email);
-    setValue("hvPhone", row.sdt === "-"  "" : row.sdt);
+    setValue("hvPhone", row.sdt === "-" ? "" : row.sdt);
     setValue("hvLop", row.lop);
     setValue("hvKhoa", row.primaryCourseName || row.khoa);
     showModal("modalThemHV");
@@ -511,7 +511,10 @@
     const edit = document.getElementById("btnSuaHV");
     if (edit) edit.onclick = () => openStudentEditor(row.userId);
     const remind = document.getElementById("btnNhacNhoHV");
-    if (remind) remind.onclick = () => notify(`Da tao nhac nho cho ${row.ten}.`, "warning");
+    if (remind) {
+      remind.onclick = () => sendStudentReminder(row)
+        .catch(error => notify(error.message, "error"));
+    }
     const del = document.getElementById("btnXoaHV");
     if (del) del.onclick = () => deleteUser(row.userId, row.ten);
     showModal("modalChiTietHV");
@@ -602,6 +605,40 @@
     await loadAdminManagementData();
   }
 
+  async function sendStudentReminder(row) {
+    await request("/api/notifications", {
+      method: "POST",
+      body: JSON.stringify({
+        userId: row.userId,
+        title: "Nhac nho hoc tap",
+        body: `Hay tiep tuc cap nhat tien do khoa hoc ${row.primaryCourseName || row.khoa || ""}.`,
+        type: "study"
+      })
+    });
+    notify(`Da gui nhac nho cho ${row.ten}.`, "success");
+    log(`Gui nhac nho hoc tap cho ${row.ten}`, "info");
+  }
+
+  async function notifyTeacher(teacherId) {
+    const teacher = state.teachers.find(item => item.id === teacherId);
+    if (!teacher) return notify("Khong tim thay giao vien.", "error");
+    const message = prompt(`Noi dung thong bao gui ${teacher.name || teacher.email}:`, "Vui long cap nhat tien do lop hoc trong dashboard.");
+    if (message === null) return;
+    const body = message.trim();
+    if (!body) return notify("Noi dung thong bao la bat buoc.", "warning");
+    await request("/api/notifications", {
+      method: "POST",
+      body: JSON.stringify({
+        userId: teacher.id,
+        title: "Thong bao tu quan tri vien",
+        body,
+        type: "admin"
+      })
+    });
+    notify(`Da gui thong bao cho ${teacher.name || teacher.email}.`, "success");
+    log(`Gui thong bao cho giao vien ${teacher.name || teacher.email}`, "info");
+  }
+
   function closeModal(id) {
     const el = document.getElementById(id);
     if (!el || !window.bootstrap) return;
@@ -639,7 +676,7 @@
     const dashboards = state.teachers.map(teacher => teacherDashboard(teacher.id));
     const pending = dashboards.reduce((sum, item) => sum + number(item.stats && item.stats.pendingGrading), 0);
     const ratings = dashboards.map(item => number(item.stats && item.stats.averageRating)).filter(Boolean);
-    const avgRating = ratings.length  (ratings.reduce((sum, rating) => sum + rating, 0) / ratings.length).toFixed(1) : "0.0";
+    const avgRating = ratings.length ? (ratings.reduce((sum, rating) => sum + rating, 0) / ratings.length).toFixed(1) : "0.0";
     const activeCourses = state.courses.filter(course => course.status === "active" && course.teacherId).length;
     const values = [
       { value: total, sub: "Tai khoan giao vien dang quan ly" },
@@ -670,12 +707,12 @@
         <td><div class="d-flex align-items-center gap-2">${avatar(teacher.name, 32)}<div><strong style="font-size:13px;">${escapeHtml(teacher.name || teacher.email)}</strong><br><span class="text-muted" style="font-size:11px;">${escapeHtml(teacher.experience || teacher.email)}</span></div></div></td>
         <td style="font-size:12px;">${escapeHtml(courses.map(course => course.name).join(", ") || "Chua phan cong")}</td>
         <td><span class="badge badge-opacity-success">${todaySessions} buoi hom nay</span></td>
-        <td><span class="${pending  "text-warning" : "text-success"} fw-bold">${pending} bai</span></td>
-        <td>${rating  rating.toFixed(1) : "0.0"}</td>
+        <td><span class="${pending ? "text-warning" : "text-success"} fw-bold">${pending} bai</span></td>
+        <td>${rating ? rating.toFixed(1) : "0.0"}</td>
         <td class="text-muted fw-bold">0 VND</td>
         <td style="white-space:nowrap;">
           <button class="btn btn-xs btn-outline-primary py-0 px-2 me-1" style="font-size:11px" onclick="EC_ADMIN_MGMT.editTeacher('${escapeHtml(teacher.id)}')" title="Sua"><i class="mdi mdi-pencil"></i></button>
-          <button class="btn btn-xs btn-outline-secondary py-0 px-2 me-1" style="font-size:11px" onclick="EC_ADMIN_MGMT.notifyTeacher('${escapeHtml(teacher.name || teacher.email)}')" title="Thong bao"><i class="mdi mdi-email"></i></button>
+          <button class="btn btn-xs btn-outline-secondary py-0 px-2 me-1" style="font-size:11px" onclick="EC_ADMIN_MGMT.notifyTeacher('${escapeHtml(teacher.id)}')" title="Thong bao"><i class="mdi mdi-email"></i></button>
           <button class="btn btn-xs btn-outline-danger py-0 px-2" style="font-size:11px" onclick="EC_ADMIN_MGMT.deleteUser('${escapeHtml(teacher.id)}','${escapeHtml(teacher.name || teacher.email)}')" title="Xoa"><i class="mdi mdi-delete"></i></button>
         </td>
       </tr>`;
@@ -693,9 +730,8 @@
         <td><div style="display:flex;align-items:center;gap:8px;">${avatar(teacher.name, 28)}<strong style="font-size:13px;">${escapeHtml(teacher.name || teacher.email)}</strong></div></td>
         <td><code style="background:#f1f5f9;color:#374151;padding:2px 7px;border-radius:5px;font-size:12px;">${escapeHtml(teacher.email)}</code></td>
         <td style="font-size:12px;color:#64748b;">${dateLabel(teacher.lastActiveAt)}</td>
-        <td><span style="background:${online  "#d1fae5" : "#f1f5f9"};color:${online  "#059669" : "#64748b"};border-radius:20px;padding:2px 9px;font-size:11px;font-weight:700;">${online  "Dang online" : "Offline"}</span></td>
+        <td><span style="background:${online ? "#d1fae5" : "#f1f5f9"};color:${online ? "#059669" : "#64748b"};border-radius:20px;padding:2px 9px;font-size:11px;font-weight:700;">${online ? "Dang online" : "Offline"}</span></td>
         <td style="white-space:nowrap;">
-          <button class="btn btn-xs btn-outline-warning py-0 px-2 me-1" style="font-size:11px" onclick="EC_ADMIN_MGMT.resetPasswordHint('${escapeHtml(teacher.email)}')" title="Mat khau"><i class="mdi mdi-lock-reset"></i></button>
           <button class="btn btn-xs btn-outline-primary py-0 px-2 me-1" style="font-size:11px" onclick="EC_ADMIN_MGMT.editTeacher('${escapeHtml(teacher.id)}')" title="Sua"><i class="mdi mdi-pencil"></i></button>
           <button class="btn btn-xs btn-outline-danger py-0 px-2" style="font-size:11px" onclick="EC_ADMIN_MGMT.deleteUser('${escapeHtml(teacher.id)}','${escapeHtml(teacher.name || teacher.email)}')" title="Xoa"><i class="mdi mdi-delete"></i></button>
         </td>
@@ -711,10 +747,10 @@
     }
     tbody.innerHTML = rows.map(course => {
       const teacher = state.teachers.find(item => item.id === course.teacherId);
-      const teacherName = teacher  teacher.name : course.teacherName || "Khong ro";
+      const teacherName = teacher ? teacher.name : course.teacherName || "Khong ro";
       const check = '<i class="mdi mdi-check-circle" style="color:#10b981;font-size:16px;"></i>';
       return `<tr>
-        <td><div style="display:flex;align-items:center;gap:8px;">${avatar(teacherName, 32)}<div><div style="font-size:13px;font-weight:700;">${escapeHtml(teacherName)}</div><div style="font-size:10px;color:#94a3b8;">${escapeHtml(teacher  teacher.email : "")}</div></div></div></td>
+        <td><div style="display:flex;align-items:center;gap:8px;">${avatar(teacherName, 32)}<div><div style="font-size:13px;font-weight:700;">${escapeHtml(teacherName)}</div><div style="font-size:10px;color:#94a3b8;">${escapeHtml(teacher ? teacher.email : "")}</div></div></div></td>
         <td><span class="ec-badge ec-badge-purple" style="font-size:10px;">${escapeHtml(course.name)}</span></td>
         <td><span class="ec-badge ec-badge-purple">Chu nhiem</span></td>
         <td>${check}</td>
@@ -743,7 +779,7 @@
   async function loadTeacherDashboards() {
     state.teacherDashboards.clear();
     const results = await Promise.allSettled(state.teachers.map(teacher =>
-      request(`/api/dashboard/teacherteacherId=${encodeURIComponent(teacher.id)}`, { method: "GET" })
+      request(`/api/dashboard/teacher?teacherId=${encodeURIComponent(teacher.id)}`, { method: "GET" })
         .then(data => [teacher.id, data.dashboard])
     ));
     results.forEach(result => {
@@ -755,10 +791,10 @@
     if (!token()) return;
     try {
       const [studentData, teacherData, courseData, enrollmentData] = await Promise.all([
-        request("/api/usersrole=student&limit=500", { method: "GET" }),
-        request("/api/usersrole=teacher&limit=500", { method: "GET" }),
+        request("/api/users?role=student&limit=500", { method: "GET" }),
+        request("/api/users?role=teacher&limit=500", { method: "GET" }),
         request("/api/courses", { method: "GET" }),
-        request("/api/enrollmentslimit=1000", { method: "GET" })
+        request("/api/enrollments?limit=1000", { method: "GET" })
       ]);
       state.students = studentData.users || [];
       state.teachers = teacherData.users || [];
@@ -795,8 +831,7 @@
       editStudent: openStudentEditor,
       editTeacher: openTeacherEditor,
       deleteUser: (userId, name) => deleteUser(userId, name).catch(error => notify(error.message, "error")),
-      notifyTeacher: name => notify(`Da tao thong bao cho ${name}.`, "success"),
-      resetPasswordHint: email => notify(`Chuc nang reset mat khau cho ${email} can cau hinh email SMTP.`, "warning")
+      notifyTeacher: teacherId => notifyTeacher(teacherId).catch(error => notify(error.message, "error"))
     };
   }
 

@@ -28,10 +28,10 @@
       return filterOk && (!query || text.includes(query));
     });
 
-    body.innerHTML = rows.length  rows.map(course => {
-      const filter = course.status === "active"  "dangmo" : course.status === "draft"  "sapkhai" : "all";
-      const statusText = course.status === "active"  "Dang mo" : course.status === "draft"  "Ban nhap" : course.status === "completed"  "Da ket thuc" : "Da an";
-      const statusKind = course.status === "active"  "success" : course.status === "draft"  "warning" : course.status === "completed"  "info" : "danger";
+    body.innerHTML = rows.length ? rows.map(course => {
+      const filter = course.status === "active" ? "dangmo" : course.status === "draft" ? "sapkhai" : "all";
+      const statusText = course.status === "active" ? "Dang mo" : course.status === "draft" ? "Ban nhap" : course.status === "completed" ? "Da ket thuc" : "Da an";
+      const statusKind = course.status === "active" ? "success" : course.status === "draft" ? "warning" : course.status === "completed" ? "info" : "danger";
       const rating = ((state.dashboard && state.dashboard.teacherRatings) || []).find(item => item.id === course.teacherId);
       return `<tr data-filter="${filter}" data-search="${escapeHtml(normalize(course.name))}">
         <td>
@@ -65,13 +65,13 @@
     };
     document.querySelectorAll("#khFilterChips .kh-chip").forEach(chip => {
       const filter = chip.dataset.filter;
-      const label = filter === "all"  "Tat ca" : filter === "dangmo"  "Dang mo" : filter === "mienhi"  "Mien phi" : "Sap khai giang";
+      const label = filter === "all" ? "Tat ca" : filter === "dangmo" ? "Dang mo" : filter === "mienhi" ? "Mien phi" : "Sap khai giang";
       chip.textContent = `${label} (${counts[filter] || 0})`;
       const active = filter === state.khFilter;
       chip.classList.toggle("active", active);
-      chip.style.background = active  "#6366f1" : "#f1f5f9";
-      chip.style.color = active  "#fff" : "#475569";
-      chip.style.border = active  "none" : "1px solid #e2e8f0";
+      chip.style.background = active ? "#6366f1" : "#f1f5f9";
+      chip.style.color = active ? "#fff" : "#475569";
+      chip.style.border = active ? "none" : "1px solid #e2e8f0";
     });
   }
 
