@@ -67,11 +67,11 @@
 
 | Thành phần | Công nghệ | Mô tả |
 |-----------|-----------|-------|
-| Frontend | Vanilla JS + Bootstrap 5 | Multi-page app, không dùng framework |
-| Backend | Node.js 20 (thuần HTTP) | Không Express, tự xử lý routing |
-| Database | MySQL 8 | Schema đầy đủ, migration tự động |
-| AI | OpenAI-compatible API | DeepSeek / Mimo hoặc bất kỳ provider nào |
-| Real-time | WebSocket (tự viết) | Theo dõi người dùng online |
+| Frontend | Vanilla JS + Bootstrap 5 |
+| Backend | Node.js 20 |
+| Database | MySQL 8 | 
+| AI | OpenAI-compatible API |
+| Real-time | WebSocket (tự viết) | 
 
 ---
 
