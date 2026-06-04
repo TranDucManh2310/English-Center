@@ -15,4 +15,4 @@ WORKDIR /app/backend
 EXPOSE 3000
 
 # Tự migrate DB rồi khởi động server
-CMD ["sh", "-c", "node migrate-db.js && node server.js"]
+CMD ["sh", "-c", "node setup-db.js && node migrate-db.js && node server.js"]
