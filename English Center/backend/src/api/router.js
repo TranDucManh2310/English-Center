@@ -285,47 +285,131 @@ HƯỚNG DẪN TRẢ LỜI:
   }
 
   // ── Demo fallback khi không có AI API key ────────────────────────────────
+  function normalizeStr(s) {
+    return String(s || '').toLowerCase()
+      .normalize('NFD').replace(/[̀-ͯ]/g, '')
+      .replace(/[^a-z0-9]/g, ' ').trim();
+  }
+
+  function analyzeUrl(url, fileType, title, courseName) {
+    const issues = [];
+    let penalty = 0;
+    if (!url) return { issues, penalty };
+
+    const lower = url.toLowerCase();
+    // Lấy tên file từ URL (bỏ query string)
+    const filename = normalizeStr(decodeURIComponent(lower.split('/').pop().split('?')[0]));
+
+    // Kiểm tra định dạng file có khớp loại không
+    const videoExts = ['mp4', 'mov', 'avi', 'webm', 'mkv', 'flv', 'wmv'];
+    const docExts = ['pdf', 'doc', 'docx', 'ppt', 'pptx', 'xlsx', 'xls'];
+    const imgExts = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp'];
+    const videoHosts = ['youtube.com', 'youtu.be', 'vimeo.com', 'loom.com', 'drive.google.com', 'zoom.us'];
+    const docHosts = ['drive.google.com', 'docs.google.com', 'dropbox.com', 'onedrive.live.com'];
+
+    const isVideoHost = videoHosts.some(h => lower.includes(h));
+    const isDocHost = docHosts.some(h => lower.includes(h));
+    const ext = filename.split(' ').pop();
+
+    if (fileType === 'video') {
+      if (imgExts.includes(ext)) {
+        issues.push(`URL video trỏ đến file ảnh (.${ext}) — không phải video`);
+        penalty += 4;
+      } else if (docExts.includes(ext)) {
+        issues.push(`URL video trỏ đến tài liệu (.${ext}) — không phải video bài giảng`);
+        penalty += 3;
+      } else if (!isVideoHost && !videoExts.includes(ext)) {
+        issues.push('Đường dẫn video không rõ định dạng, khó xác minh nội dung');
+        penalty += 1;
+      }
+    }
+
+    if (fileType === 'document') {
+      if (videoExts.includes(ext)) {
+        issues.push(`URL tài liệu trỏ đến file video (.${ext}) — nên đính kèm vào mục video`);
+        penalty += 3;
+      } else if (imgExts.includes(ext)) {
+        issues.push(`URL tài liệu trỏ đến file ảnh (.${ext}) — không phải tài liệu học tập`);
+        penalty += 3;
+      }
+    }
+
+    // Kiểm tra tên file có liên quan đến tiêu đề/khóa học không
+    const titleWords = normalizeStr(title + ' ' + (courseName || ''))
+      .split(/\s+/).filter(w => w.length >= 4);
+    const matchCount = titleWords.filter(w => filename.includes(w)).length;
+
+    // Từ khóa không liên quan rõ ràng
+    const irrelevant = ['cat', 'dog', 'meme', 'funny', 'troll', 'random', 'untitled',
+      'test123', 'abc123', 'sample', 'demo', 'clip', 'video1', 'file1', 'anh', 'chup',
+      'hinh', 'anh chup', 'screenshot', 'wallpaper', 'avatar', 'profile'];
+    const foundIrrelevant = irrelevant.filter(w => filename.includes(w));
+
+    if (foundIrrelevant.length > 0 && !isVideoHost && !isDocHost) {
+      issues.push(`Tên file "${foundIrrelevant[0]}" có vẻ không liên quan đến nội dung bài giảng`);
+      penalty += 3;
+    } else if (matchCount === 0 && filename.length > 3 && !isVideoHost && !isDocHost) {
+      issues.push('Tên file không có từ khóa trùng với tiêu đề bài giảng');
+      penalty += 1;
+    }
+
+    return { issues, penalty, filename };
+  }
+
   function generateDemoReview(material) {
     const hasVideo = !!material.videoUrl;
     const hasDoc = !!material.documentUrl;
     const hasDesc = !!(material.description && material.description.trim().length > 20);
     const titleLen = (material.title || '').length;
     const type = material.type || 'lesson';
+    const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
     const typeLabel = type === 'lesson' ? 'bài giảng' : type === 'exam' ? 'đề thi' : 'tài liệu';
 
-    // Tính điểm dựa trên các tiêu chí thực tế của bài nộp
-    let score = 5;
+    // Phân tích URL video và tài liệu
+    const videoAnalysis = analyzeUrl(material.videoUrl, 'video', material.title, material.courseName);
+    const docAnalysis = analyzeUrl(material.documentUrl, 'document', material.title, material.courseName);
+    const urlIssues = [...videoAnalysis.issues, ...docAnalysis.issues];
+    const urlPenalty = videoAnalysis.penalty + docAnalysis.penalty;
+
+    // Tính điểm
+    let score = 4;
     if (hasVideo) score += 2;
     if (hasDoc) score += 1;
     if (hasDesc) score += 1;
     if (titleLen > 15) score += 1;
-    score = Math.min(10, score);
+    if (hasVideo && hasDoc) score += 1;
+    score = Math.max(1, Math.min(10, score - urlPenalty));
 
-    const hasBoth = hasVideo && hasDoc;
     const hasNeither = !hasVideo && !hasDoc;
+    const hasUrlProblems = urlPenalty >= 3;
 
     let recommendation, confidence, summary, reason, adminNote;
+    const teacher = material.teacherName || 'giáo viên';
+    const course = material.courseName ? ` cho khóa "${material.courseName}"` : '';
 
-    if (score >= 8 || (hasVideo && hasDesc)) {
+    if (hasUrlProblems || (hasNeither) || score <= 3) {
+      recommendation = 'reject';
+      confidence = urlPenalty >= 4 ? 'high' : 'medium';
+      const urlIssueText = urlIssues.length ? ` Cụ thể: ${urlIssues.join('; ')}.` : '';
+      summary = `${cap(typeLabel)} "${material.title}" của ${teacher}${course} có vấn đề nghiêm trọng cần chỉnh sửa trước khi duyệt.`;
+      reason = hasNeither
+        ? 'Bài nộp không có file đính kèm (video hoặc tài liệu). Cần bổ sung nội dung thực tế để học viên có thể học.'
+        : `Phát hiện vấn đề với file đính kèm.${urlIssueText} ${!hasDesc ? 'Ngoài ra thiếu mô tả nội dung chi tiết.' : ''}`.trim();
+      adminNote = `Bài nộp "${material.title}" chưa được duyệt do:${urlIssues.map((i, idx) => `\n(${idx+1}) ${i}`).join('')}${!hasDesc ? '\n- Thiếu mô tả nội dung' : ''}.\n\nVui lòng kiểm tra lại file đính kèm đúng với nội dung bài giảng và nộp lại.`;
+    } else if (score >= 8 && urlIssues.length === 0) {
       recommendation = 'approve';
       confidence = score >= 9 ? 'high' : 'medium';
-      summary = `${typeLabel.charAt(0).toUpperCase() + typeLabel.slice(1)} "${material.title}" được nộp bởi ${material.teacherName || 'giáo viên'}${material.courseName ? ` cho khóa ${material.courseName}` : ''}. Nội dung đầy đủ với mô tả chi tiết${hasVideo ? ', kèm video minh họa' : ''}${hasDoc ? ' và tài liệu đính kèm' : ''}.`;
-      reason = `Bài nộp đáp ứng đầy đủ tiêu chí: tiêu đề rõ ràng${hasDesc ? ', mô tả chi tiết' : ''}${hasVideo ? ', có video' : ''}${hasDoc ? ', có tài liệu' : ''}. Phù hợp với chương trình giảng dạy.`;
-      adminNote = `Đã xem xét và chấp thuận ${typeLabel} "${material.title}". Nội dung chất lượng tốt, phù hợp với khóa học. Cảm ơn ${material.teacherName || 'giáo viên'}!`;
-    } else if (hasNeither || score <= 5) {
-      recommendation = 'reject';
-      confidence = hasNeither ? 'high' : 'medium';
-      summary = `${typeLabel.charAt(0).toUpperCase() + typeLabel.slice(1)} "${material.title}" chưa đáp ứng yêu cầu tối thiểu để được duyệt.`;
-      reason = hasNeither
-        ? 'Bài nộp không có file đính kèm (video hoặc tài liệu). Giáo viên cần bổ sung nội dung thực tế để học viên có thể học.'
-        : `Bài nộp còn thiếu: ${!hasDesc ? 'mô tả nội dung, ' : ''}${!hasVideo ? 'video minh họa, ' : ''}${!hasDoc ? 'tài liệu tham khảo' : ''}`.replace(/, $/, '.');
-      adminNote = `Bài nộp "${material.title}" chưa được duyệt. Vui lòng bổ sung: ${!hasVideo ? '(1) video bài giảng ' : ''}${!hasDoc ? '(2) tài liệu đính kèm ' : ''}${!hasDesc ? '(3) mô tả chi tiết nội dung' : ''}. Nộp lại sau khi hoàn chỉnh.`;
+      summary = `${cap(typeLabel)} "${material.title}" của ${teacher}${course} đầy đủ nội dung${hasVideo ? ', có video minh họa' : ''}${hasDoc ? ' và tài liệu đính kèm' : ''}${hasDesc ? ', mô tả chi tiết' : ''}.`;
+      reason = `Bài nộp đáp ứng đầy đủ tiêu chí: tiêu đề rõ ràng${hasDesc ? ', mô tả chi tiết' : ''}${hasVideo ? ', video phù hợp' : ''}${hasDoc ? ', tài liệu hợp lệ' : ''}. Nội dung liên quan đến khóa học.`;
+      adminNote = `Đã xem xét và chấp thuận ${typeLabel} "${material.title}". Nội dung chất lượng tốt, phù hợp chương trình. Cảm ơn ${teacher}!`;
     } else {
       recommendation = 'review';
       confidence = 'medium';
-      summary = `${typeLabel.charAt(0).toUpperCase() + typeLabel.slice(1)} "${material.title}" đã có một số thành phần nhưng cần bổ sung thêm trước khi duyệt chính thức.`;
-      reason = `Bài nộp có ${hasVideo ? 'video' : hasDoc ? 'tài liệu' : 'tiêu đề rõ ràng'} nhưng còn thiếu ${!hasDesc ? 'mô tả nội dung chi tiết' : !hasVideo ? 'video minh họa' : 'tài liệu tham khảo'}.`;
-      adminNote = `Bài nộp "${material.title}" cần bổ sung thêm ${!hasDesc ? 'mô tả nội dung' : !hasVideo ? 'video bài giảng' : 'tài liệu đính kèm'} trước khi chính thức đưa vào chương trình. Vui lòng cập nhật và nộp lại.`;
+      const missing = [!hasDesc && 'mô tả nội dung chi tiết', !hasVideo && 'video minh họa', !hasDoc && 'tài liệu tham khảo'].filter(Boolean);
+      const urlWarn = urlIssues.length ? ` Lưu ý: ${urlIssues[0]}.` : '';
+      summary = `${cap(typeLabel)} "${material.title}" đã có một số thành phần nhưng cần bổ sung thêm.${urlWarn}`;
+      reason = `Bài nộp có ${hasVideo ? 'video' : hasDoc ? 'tài liệu' : 'tiêu đề'} nhưng còn thiếu: ${missing.join(', ') || 'một số yêu cầu'}.${urlWarn}`;
+      adminNote = `Bài nộp "${material.title}" cần bổ sung: ${missing.join(', ') || 'xem chi tiết bên trên'}. ${urlIssues.length ? 'Kiểm tra lại tính phù hợp của file đính kèm.' : 'Nộp lại sau khi hoàn chỉnh.'}`;
     }
 
     return { recommendation, confidence, qualityScore: score, summary, reason, adminNote };
