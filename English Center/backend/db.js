@@ -1,17 +1,38 @@
 const crypto = require('crypto');
 const mysql = require('mysql2/promise');
 
-const DB_CONFIG = {
-  host: process.env.DB_HOST || '127.0.0.1',
-  port: Number(process.env.DB_PORT || 3306),
-  user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || '',
-  database: process.env.DB_NAME || 'english_center',
-  waitForConnections: true,
-  connectionLimit: Number(process.env.DB_CONNECTION_LIMIT || 10),
-  queueLimit: 0,
-  charset: 'utf8mb4'
-};
+function parseDbConfig() {
+  const url = process.env.MYSQL_URL || process.env.DATABASE_URL || process.env.MYSQL_PUBLIC_URL || '';
+  if (url) {
+    try {
+      const u = new URL(url);
+      return {
+        host: u.hostname,
+        port: Number(u.port) || 3306,
+        user: decodeURIComponent(u.username),
+        password: decodeURIComponent(u.password),
+        database: u.pathname.replace(/^\//, '') || 'railway',
+        waitForConnections: true,
+        connectionLimit: Number(process.env.DB_CONNECTION_LIMIT || 10),
+        queueLimit: 0,
+        charset: 'utf8mb4'
+      };
+    } catch (_) {}
+  }
+  return {
+    host: process.env.DB_HOST || '127.0.0.1',
+    port: Number(process.env.DB_PORT || 3306),
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASSWORD || '',
+    database: process.env.DB_NAME || 'english_center',
+    waitForConnections: true,
+    connectionLimit: Number(process.env.DB_CONNECTION_LIMIT || 10),
+    queueLimit: 0,
+    charset: 'utf8mb4'
+  };
+}
+
+const DB_CONFIG = parseDbConfig();
 
 let pool;
 
