@@ -5,7 +5,9 @@ const { DB_CONFIG } = require('./db');
 
 async function setupDatabase() {
   const schemaPath = path.join(__dirname, 'database.sql');
-  const schema = fs.readFileSync(schemaPath, 'utf8');
+  const dbName = DB_CONFIG.database || 'english_center';
+  const schema = fs.readFileSync(schemaPath, 'utf8')
+    .replace(/english_center/g, dbName);
 
   const connection = await mysql.createConnection({
     host: DB_CONFIG.host,
@@ -20,7 +22,6 @@ async function setupDatabase() {
   } finally {
     await connection.end();
   }
-
 }
 
 setupDatabase()
